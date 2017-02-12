@@ -14,7 +14,7 @@ public class Schedule {
 	private Date endDate;
 	private String shift;
 
-	public ArrayList<Worker> workers;
+	public ArrayList<SysUser> workers;
 
 	public Schedule() {
 		super();

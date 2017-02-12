@@ -1,0 +1,5 @@
+package com.sms.beans;
+
+public enum UserType {
+	BARTENDER, COOK, GUEST, RESTAURANTMANAGER, OFFERER, SYSTEMMANAGER, WAITER
+}

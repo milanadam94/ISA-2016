@@ -9,47 +9,62 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "worker")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Worker implements Serializable{
-	
+@Table(name = "Sys_User")
+public class SysUser implements Serializable {
+
 	private static final long serialVersionUID = 5512894695046769675L;
 
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.TABLE)
+	@GeneratedValue
 	private Integer id;
-	
+
+	@Column(name = "email", unique = true, nullable = false)
+	private String email;
+
+	@Column(name = "password", nullable = false)
+	private String password;
+
 	@Column(name = "name")
 	private String name;
-	
+
 	@Column(name = "last_name")
 	private String lastName;
-	
-	@Column(name = "suite_size")
-	private Integer suiteSize;
-	
-	@Column(name = "shoe_size")
-	private Integer shoeSize;
-	
 
-	public Worker() {
+	@Column(name = "user_type", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private UserType userType;
+
+	public SysUser() {
+
 	}
 
-	public Worker(String name, String lastName, Integer suiteSize, Integer shoeSize) {
+	public SysUser(String email, String password, String name, String lastName, UserType userType) {
 		super();
+		this.email = email;
+		this.password = password;
 		this.name = name;
 		this.lastName = lastName;
-		this.suiteSize = suiteSize;
-		this.shoeSize = shoeSize;
+		this.userType = userType;
+	}
+	
+	public SysUser(String email, String password) {
+		this.email = email;
+		this.password = password;
+	}
+
+	public SysUser(String email, String password, UserType userType) {
+		super();
+		this.email = email;
+		this.password = password;
+		this.userType = userType;
 	}
 
 	public Integer getId() {
@@ -76,22 +91,28 @@ public class Worker implements Serializable{
 		this.lastName = lastName;
 	}
 
-	public Integer getSuiteSize() {
-		return suiteSize;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setSuiteSize(Integer suiteSize) {
-		this.suiteSize = suiteSize;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public Integer getShoeSize() {
-		return shoeSize;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setShoeSize(Integer shoeSize) {
-		this.shoeSize = shoeSize;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	
-	
+
+	public UserType getUserType() {
+		return userType;
+	}
+
+	public void setUserType(UserType userType) {
+		this.userType = userType;
+	}
 
 }

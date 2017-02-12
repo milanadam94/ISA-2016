@@ -5,45 +5,52 @@
  ***********************************************************************/
 package com.sms.beans;
 
-public class RestaurantManager {
+import java.io.Serializable;
 
-	private String name;
-	private String email;
-	private String password;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Restaurant_Manager")
+public class RestaurantManager implements Serializable{
+
+	private static final long serialVersionUID = 6116878816679029187L;
+
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.TABLE)
+	private Integer id;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	private SysUser user;
 
 	public RestaurantManager() {
-		super();
 	}
 
-	public RestaurantManager(String name, String email, String password) {
-		super();
-		this.name = name;
-		this.email = email;
-		this.password = password;
+	public RestaurantManager(SysUser user) {
+		this.user = user;
 	}
 
-	public String getName() {
-		return name;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public String getEmail() {
-		return email;
+	public SysUser getUser() {
+		return user;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUser(SysUser user) {
+		this.user = user;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
 }

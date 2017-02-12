@@ -1,3 +1,10 @@
+insert into Sys_User(id, email, password, user_type) values(null, 'admin', 'admin', 'SYSTEMMANAGER')
+
+
+
+
+
+
 --
 -- Sample dataset containing a number of Hotels in various Cities across the world.  The reviews are entirely fictional :)
 --

@@ -5,59 +5,54 @@
  ***********************************************************************/
 package com.sms.beans;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class SystemManager {
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-	private String name;
-	private String surname;
-	private String email;
-	private String password;
+@Entity
+@Table(name = "System_Manager")
+public class SystemManager implements Serializable {
 
-	public ArrayList<Restaurant> restaurants;
+	private static final long serialVersionUID = -6185735289382550891L;
+
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.TABLE)
+	private Integer id;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	private SysUser user;
+
+	// public ArrayList<Restaurant> restaurants;
 
 	public SystemManager() {
-		super();
 	}
 
-	public SystemManager(String name, String surname, String email, String password) {
-		super();
-		this.name = name;
-		this.surname = surname;
-		this.email = email;
-		this.password = password;
+	public SystemManager(SysUser user) {
+		this.user = user;
 	}
 
-	public String getName() {
-		return name;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public String getSurname() {
-		return surname;
+	public SysUser getUser() {
+		return user;
 	}
 
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setUser(SysUser user) {
+		this.user = user;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
 }

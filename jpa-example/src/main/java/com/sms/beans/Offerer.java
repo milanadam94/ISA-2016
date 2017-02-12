@@ -4,51 +4,55 @@
  * Purpose: Defines the Class Offerer
  ***********************************************************************/
 package com.sms.beans;
-import java.util.ArrayList;
 
-public class Offerer {
-	
-   private String email;
-   private String name;
-   private String password;
-   private String surname;
-   
-   public ArrayList<Offerings> offerings;
-   public ArrayList<Supply> supplies;
+import java.io.Serializable;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Offerer")
+public class Offerer implements Serializable{
+
+	private static final long serialVersionUID = 8785063526775850679L;
+
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.TABLE)
+	private Integer id;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	private SysUser user;
+
+	// public ArrayList<Offerings> offerings;
+	// public ArrayList<Supply> supplies;
 	public Offerer() {
-		super();
 	}
-	public Offerer(String email, String name, String password, String surname) {
-		super();
-		this.email = email;
-		this.name = name;
-		this.password = password;
-		this.surname = surname;
+
+	public Offerer(SysUser user) {
+		this.user = user;
 	}
-	public String getEmail() {
-		return email;
+
+	public SysUser getUser() {
+		return user;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+
+	public void setUser(SysUser user) {
+		this.user = user;
 	}
-	public String getName() {
-		return name;
+
+	public Integer getId() {
+		return id;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getSurname() {
-		return surname;
-	}
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-   
-	
+
 }

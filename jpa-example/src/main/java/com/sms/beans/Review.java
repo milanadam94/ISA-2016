@@ -31,7 +31,7 @@ public class Review implements Serializable {
 	private int index;
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	private Rating rating;
 
 	@Column(nullable = false)

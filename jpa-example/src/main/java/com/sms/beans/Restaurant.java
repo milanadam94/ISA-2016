@@ -17,7 +17,7 @@ public class Restaurant {
 	public Menu menu;
 	public ArrayList<Reservation> reservations;
 	public ArrayList<Segment> segments;
-	public ArrayList<Worker> workrers;
+	public ArrayList<SysUser> workrers;
 	public ArrayList<RestaurantManager> restaurantManagers;
 	public ArrayList<Offerer> offerers;
 	public ArrayList<Tender> tenders;

@@ -1,8 +1,8 @@
 package com.sms.service;
 
-import com.sms.beans.Guest;
+import com.sms.beans.SysUser;
 
-public interface GuestService {
+public interface UserService {
 
-	public String validateLogin(Guest guest);
+	public String validateLogin(SysUser user);
 }

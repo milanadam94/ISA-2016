@@ -1,38 +1,36 @@
-
 angular.element(document).ready(function () {
     console.log('page loading completed');
 });
 
-var app = angular.module('app', [])
+var app = angular.module('app', []);
 						 
-app.controller('startPageController', function($scope, validateLoginService){
-		
-	$scope.guest = {
-			email:"",
-			password:""
-	}	 
+app.controller('startPageController', function($scope, loginService){
 	
-	$scope.login = function(guest){
-		alert("aa");
-		validateLoginService.validateLogin(guest);
+	$scope.user = {
+			email : "",
+			password : ""
+	}
+
+	$scope.login = function(){
+		loginService.login($scope.user);
 	}
 		 
 });
 
-app.service('validateLoginService', function($http){
+app.service('loginService', function(){
 	
-	 this.validateLogin = function(guest) {
+	 this.login = function(user) {
 		 $.ajax({
-				type : "GET",
-				url : "../guest/a",
+				type : "POST",
+				data : user,
+				url : "../user/login",
 				success : function(data) {
-					console.log("SUCCESS: ", data);
+					alert(data);
 				},
-				error : function(e) {
-					console.log("ERROR: ", e);
+				error : function(data) {
+					alert(data);
 				}
 			});
-		 
 	   }
 	 
 });
