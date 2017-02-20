@@ -16,18 +16,16 @@ public class UserControllerImpl{
 	@Autowired
 	private UserService service;
 	
-	@PostMapping("/login")
+	@PostMapping(path = "/login", produces = "text/plain")
 	@ResponseBody
 	public String login(SysUser user) {
-		
-		return service.validateLogin(user);
+		return service.login(user);
 	}
 	
-	@PostMapping("/register")
+	@PostMapping(path = "/register", produces = "text/plain")
 	@ResponseBody
 	public String register(SysUser user) {
-		
-		return service.validateRegistration(user);
+		return service.register(user);
 	}
 	
 	

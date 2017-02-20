@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 	
-	public String validateLogin(SysUser user) {
+	public String login(SysUser user) {
 		if(user.getEmail() == null || user.getEmail().equals(""))
 			return Message.EMAILERROR;
 		else if(user.getPassword() == null || user.getPassword().equals(""))
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String validateRegistration(SysUser user) {
+	public String register(SysUser user) {
 		
 		if(user.getEmail() == null || user.getEmail().equals(""))
 			return Message.EMAILERROR;
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 		else if(user.getName() == null || user.getName().equals(""))
 			return Message.NAMEERROR;
 		else if(user.getLastName() == null || user.getLastName().equals(""))
-			return Message.PASSWORDERROR;
+			return Message.LASTNAMEERROR;
 		
 		SysUser sysUser = userDao.findByEmail(user.getEmail());
 		
