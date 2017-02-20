@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>rs.ac.uns.ftn.informatika.jpa</groupId>
-	<artifactId>jpa-example</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>com.sms</groupId>
+	<artifactId>RestaurantReservations</artifactId>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>jpa-example</name>
+	<name>RestaurantReservations</name>
 	<description>Demo project for Spring Boot with JPA</description>
 
 	<parent>
@@ -55,7 +55,6 @@
 			<plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
-            <version>2.4</version>
             <configuration>
                 <warSourceDirectory>src/main/webapp</warSourceDirectory>
                 <warName>RestaurantReservations</warName>

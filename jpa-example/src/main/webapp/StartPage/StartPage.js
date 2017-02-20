@@ -4,7 +4,7 @@ angular.element(document).ready(function () {
 
 var app = angular.module('app', []);
 						 
-app.controller('startPageController', function($scope, loginService){
+app.controller('startPageController', [ '$scope', 'loginService', 'registrationService',  function($scope, loginService, registrationService){
 	
 	$scope.user = {
 			email : "",
@@ -14,10 +14,14 @@ app.controller('startPageController', function($scope, loginService){
 	$scope.login = function(){
 		loginService.login($scope.user);
 	}
+	
+	$scope.register = function(){
+		registrationService.register();
+	}
 		 
-});
+}]);
 
-app.service('loginService', function(){
+app.service('loginService', [function(){
 	
 	 this.login = function(user) {
 		 $.ajax({
@@ -33,4 +37,12 @@ app.service('loginService', function(){
 			});
 	   }
 	 
-});
+}]);
+
+app.service('registrationService', ['$window', function($window){
+	
+	this.register = function(){
+		$window.location.href = '/StartPage/RegistrationPage.html'
+	}
+	 
+}]);

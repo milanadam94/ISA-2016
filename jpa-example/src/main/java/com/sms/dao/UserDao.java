@@ -12,4 +12,8 @@ public interface UserDao extends Repository<SysUser, Long>{
 
 	public SysUser findByEmailAndPassword(String email, String password);
 
+	public SysUser findByEmail(String email);
+	
+	public SysUser save(SysUser user);
+
 }

@@ -23,6 +23,13 @@ public class UserControllerImpl{
 		return service.validateLogin(user);
 	}
 	
+	@PostMapping("/register")
+	@ResponseBody
+	public String register(SysUser user) {
+		
+		return service.validateRegistration(user);
+	}
+	
 	
 
 }

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Početna strana</title>
+<title>Registracija</title>
 
 <!-- JQUERY -->
 <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
@@ -23,27 +23,39 @@
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
 
 <!-- ANGULAR SCRIPT -->
-<script src="StartPage.js"></script>
+<script src="RegistrationPage.js"></script>
 
 </head>
 <body ng-app="app">
 
 <div class="container-fluid">
 	<div class="jumbotron">
-		<h1>Početna strana</h1>
+		<h1>Registracija</h1>
 	</div>
 	
-	<div ng-controller="startPageController" >
+	<div ng-controller="registrationPageController" >
 		<div class="form-group">
 			<label for="email" class="control-label"> E-mail: </label>  
 			<input type = "text" class="form-control" id="email" ng-model="user.email" ng-click="validateEmail()" placeholder="Unesi e-mail"> 
 		</div>
 		<div class="form-group">	
 			<label for="password" class="control-label"> Lozinka: </label>  
-			<input type = "text" class="form-control" id="password" ng-click="validatePassword()" ng-model="user.password" placeholder="Unesi lozinku"> 
+			<input type = "text" class="form-control" id="password" ng-model="user.password" placeholder="Unesi lozinku"> 
 		</div>
 		<div class="form-group">	
-			<button type="submit" class="btn btn-primary" ng-click="login()"> Uloguj se </button>
+			<label for="confirmPassword" class="control-label"> Potvrda lozinke: </label>  
+			<input type = "text" class="form-control" id="confirmPassword" placeholder="Potvrdi lozinku"> 
+		</div>
+		<div class="form-group">	
+			<label for="name" class="control-label"> Ime: </label>  
+			<input type = "text" class="form-control" id="name" ng-model="user.name" placeholder="Unesi ime"> 
+		</div>
+		<div class="form-group">	
+			<label for="lastName" class="control-label"> Prezime: </label>  
+			<input type = "text" class="form-control" id="lastName" ng-model="user.lastName" placeholder="Unesi prezime"> 
+		</div>
+		<div class="form-group">	
+			<button type="submit" class="btn btn-primary" ng-click="register()"> Registracija </button>
 		</div>
 	</div>
 	
