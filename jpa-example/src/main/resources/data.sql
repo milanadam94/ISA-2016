@@ -1,5 +1,6 @@
 insert into Sys_User(id, email, password, user_type) values(null, 'admin', 'admin', 'SYSTEMMANAGER')
 
+insert into Sys_User(id, email, password, user_type) values(null, 'gost', 'gost', 'GUEST')
 
 
 

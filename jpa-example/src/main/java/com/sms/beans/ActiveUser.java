@@ -2,7 +2,6 @@ package com.sms.beans;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,29 +21,26 @@ public class ActiveUser implements Serializable {
 	@Column(name = "id")
 	@GeneratedValue
 	private Integer id;
-	
-	@ManyToOne(cascade = CascadeType.ALL)
+
+	@ManyToOne
 	private SysUser user;
 
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
-	
+
 	@Column(name = "user_type", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private UserType userType;
-	
+
 	public ActiveUser() {
-		
+
 	}
-	
+
 	public ActiveUser(SysUser user, String email, UserType userType) {
 		this.user = user;
 		this.email = email;
 		this.userType = userType;
 	}
-
-
-
 
 	public Integer getId() {
 		return id;
@@ -77,7 +73,5 @@ public class ActiveUser implements Serializable {
 	public void setUserType(UserType userType) {
 		this.userType = userType;
 	}
-	
-	
 
 }
