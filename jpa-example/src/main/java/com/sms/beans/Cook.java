@@ -9,7 +9,6 @@ package com.sms.beans;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,10 +29,10 @@ public class Cook implements Serializable {
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	private Integer id;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	private SysUser user;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	private List<GuestOrder> orders;
 
 	public Cook() {

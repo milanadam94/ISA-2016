@@ -106,5 +106,21 @@ public class UserServiceImpl implements UserService {
 		}
 		
 	}
+
+	@Override
+	public void logout(SysUser user) {
+		
+		if(user.getId() != null) {
+			
+			ActiveUser activeUser = activeUserDao.findByUser(user);
+			
+			if(activeUser != null)
+			{
+				activeUserDao.delete(activeUser);
+			}
+			
+		}
+		
+	}
 	
 }

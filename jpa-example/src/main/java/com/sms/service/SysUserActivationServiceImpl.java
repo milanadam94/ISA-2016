@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sms.beans.Guest;
+import com.sms.beans.RestaurantManager;
 import com.sms.beans.SysUser;
 import com.sms.beans.SysUserActivation;
 import com.sms.beans.UserType;
 import com.sms.dao.GuestDao;
+import com.sms.dao.RestaurantManagerDao;
 import com.sms.dao.SysUserActivationDao;
 import com.sms.dao.UserDao;
 import com.sms.utilities.Message;
@@ -23,6 +25,9 @@ public class SysUserActivationServiceImpl implements SysUserActivationService {
 	
 	@Autowired
 	private GuestDao guestDao;
+	
+	@Autowired
+	private RestaurantManagerDao restManagerDao;
 	
 	@Override
 	public String activate(String activationCode) {
@@ -40,6 +45,9 @@ public class SysUserActivationServiceImpl implements SysUserActivationService {
 		if (sysUser.getUserType().equals(UserType.GUEST)) {
 			Guest guest = new Guest(sysUser);
 			guestDao.save(guest);
+		}else if(sysUser.getUserType().equals(UserType.RESTAURANTMANAGER)){
+			RestaurantManager restManager = new RestaurantManager(sysUser);
+			restManagerDao.save(restManager);
 		}
 
 		return Message.ERRORFREE;

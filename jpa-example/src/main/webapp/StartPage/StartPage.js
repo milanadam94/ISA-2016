@@ -7,10 +7,13 @@ var app = angular.module('app', []).config(function ($httpProvider) {
     $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';
 }).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
 	
-	if (typeof $.cookie('user') !== "undefined") {
-		//$window.location.href = "/StartPage/StartPage.html"
+	if (typeof $.cookie('user') !== 'undefined') {
+		user = JSON.parse($.cookie('user'));
 		
-		// SALJEM TE NA TVOJ PAGE AKO SI VEC LOGOVAN
+		if(user.userType == "GUEST") {
+			$window.location.href = "/GuestPage/GuestPage.html";
+		}
+		// DALJE
 	}
 		 
 	
@@ -59,24 +62,25 @@ app.service('loginService', ['$http', '$window', function($http, $window){
 	}
 	
 	 this.login = function(user) {
-		 var promise = $http({
+		 return $http({
 				  method: 'POST',
 				  data : $.param(user),
 			      url : "../user/login"
 			}).then(function success(response) {
-				if(response.data.email == "") {
+				if(response.data.email == null || response.data.email == "") {
 					return "";
 				}
 				else {
-					//$window.location.href = '/GuestPage/GuestPage.html';
-					$.cookie('user', user)
-					alert("Uspesno logovanje")
+					$.cookie.json = true;
+					$.cookie("user", response.data, {path    : '/', domain  : ''});
+					
+					if(response.data.userType == "GUEST")
+						$window.location.href = '/GuestPage/GuestPage.html';
 				}
 				
 			  }, function error(response) {
 				  alert(response)
 			  });
-		 return promise;
 	 }
 			 
 	 

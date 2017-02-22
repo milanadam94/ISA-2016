@@ -7,4 +7,6 @@ public interface UserService {
 	public SysUser login(SysUser user);
 
 	public String register(SysUser user);
+
+	public void logout(SysUser user);
 }

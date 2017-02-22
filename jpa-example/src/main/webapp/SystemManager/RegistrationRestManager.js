@@ -5,7 +5,13 @@ angular.element(document).ready(function () {
 var app = angular.module('restManager', []).config(function ($httpProvider) {
     $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
     $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';
-})
+}).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
+	if (typeof $.cookie('user') !== "undefined") {
+		//$window.location.href = "/StartPage/StartPage.html"
+		
+		// AKO SI ULOGOVAN NE MOZES VRSITI REGISTRACIJU, REDIREKCIJA NA TVOJ PAGE
+	}
+}]);
 
 app.controller('restManagerContoller', [ '$scope', 'registrationService',  function($scope, registrationService){
 	
@@ -15,7 +21,8 @@ app.controller('restManagerContoller', [ '$scope', 'registrationService',  funct
 			email : "",
 			password : "",
 			name : "",
-			lastName : ""
+			lastName : "",
+			userType : "RESTAURANTMANAGER"
 	}
 	$scope.passwordConfirm = "";
 	
@@ -29,8 +36,23 @@ app.controller('restManagerContoller', [ '$scope', 'registrationService',  funct
 		}
 		else {
 			registrationService.registerManager($scope.restManager).then(function(data){
-				$scope.errorMessage = "Menadzer restorana sa tim email-om vec postoji."
-				});
+				if(data == "Email error") {
+					$scope.errorMessage = "E-mail nije u validnom formatu."
+				}
+				else if(data == "Password error") {
+					$scope.errorMessage = "Lozinka nije u validnom formatu ili nije dovoljno dugacka (minimum 7 karaktera). Dozvoljeni su samo slova i brojevi."
+				}
+				else if(data == "Name error") {
+					$scope.errorMessage = "Ime nije u validnom formatu. Mora poceti velikim slovom i sadrzati iskljucivo slova."
+				}
+				else if(data == "LastName error") {
+					$scope.errorMessage = "Prezime nije u validnom formatu. Mora poceti velikim slovom i sadrzati iskljucivo slova."
+				}
+				else if(data == "Registration error"){
+					
+					$scope.errorMessage = "Korisnik sa navedenim e-mail-om vec postoji."
+				}
+			});
 		}
 	}
 		 
@@ -54,9 +76,12 @@ app.service('registrationService', ['$http', '$window', function($http, $window)
 			  data : $.param(restManager),
 		      url : "../sysManager/registerRestManager"
 		}).then(function success(response) {
-				if(response.data == "Error free")
-					$window.location.href = '/SystemManager/SystemManager.html'
-				else
+				if(response.data == "Error free"){
+					toastr.info('Aktivacioni kod je poslat na vas e-mail.')
+					$timeout(function() {
+						$window.location.href = '/SystemManager/SystemManager.html'
+						}, 2000);
+				}else
 					return response.data;
 			
 		  }, function error(response) {
