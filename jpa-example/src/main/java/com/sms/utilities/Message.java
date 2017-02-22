@@ -9,4 +9,5 @@ public class Message {
 	public static final String NAMEERROR = "Name error";
 	public static final String LASTNAMEERROR = "LastName error";
 	public static final String REGISTRATIONERROR = "Registration error";
+	public static final String ACTIVATIONERROR = "Activation error";
 }

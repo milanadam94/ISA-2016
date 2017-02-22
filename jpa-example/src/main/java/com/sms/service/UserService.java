@@ -4,7 +4,7 @@ import com.sms.beans.SysUser;
 
 public interface UserService {
 
-	public String login(SysUser user);
+	public SysUser login(SysUser user);
 
 	public String register(SysUser user);
 }

@@ -5,9 +5,22 @@ angular.element(document).ready(function () {
 var app = angular.module('app', []).config(function ($httpProvider) {
     $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
     $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';
-})
+}).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
+	
+	if (typeof $.cookie('user') !== "undefined") {
+		//$window.location.href = "/StartPage/StartPage.html"
+		
+		// SALJEM TE NA TVOJ PAGE AKO SI VEC LOGOVAN
+	}
+		 
+	
+	
+}]);
+				
 						 
 app.controller('startPageController', [ '$scope', 'loginService', 'registrationService',  function($scope, loginService, registrationService){
+	
+	$scope.errorMessage = false;
 	
 	$scope.user = {
 			email : "",
@@ -15,9 +28,19 @@ app.controller('startPageController', [ '$scope', 'loginService', 'registrationS
 	}
 
 	$scope.login = function(){
-		loginService.login($scope.user).then(function(data){
-			alert("vraceno")
-	    });
+		
+		var retVal = loginService.validateLoginInput($scope.user);
+		
+		if(retVal != "") {
+			$scope.errorMessage = retVal;
+			return;
+		}
+		else {
+			loginService.login($scope.user).then(function(data){
+				if(data == "")
+					$scope.errorMessage = "Korisnik sa unetim podacima ne postoji.";
+		    });
+		}
 	}
 	
 	$scope.register = function(){
@@ -28,18 +51,27 @@ app.controller('startPageController', [ '$scope', 'loginService', 'registrationS
 
 app.service('loginService', ['$http', '$window', function($http, $window){
 	
+	this.validateLoginInput = function(user){
+		if(user.email == "" || user.password == "")
+			return "Potrebno je uneti e-mail i lozinku."
+		
+		return "";
+	}
+	
 	 this.login = function(user) {
 		 var promise = $http({
 				  method: 'POST',
 				  data : $.param(user),
 			      url : "../user/login"
 			}).then(function success(response) {
-				alert(response.data)
-				if(response.data == "Error free")
+				if(response.data.email == "") {
+					return "";
+				}
+				else {
 					//$window.location.href = '/GuestPage/GuestPage.html';
+					$.cookie('user', user)
 					alert("Uspesno logovanje")
-				else
-					return response.data;
+				}
 				
 			  }, function error(response) {
 				  alert(response)

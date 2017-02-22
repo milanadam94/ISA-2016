@@ -16,9 +16,9 @@ public class UserControllerImpl{
 	@Autowired
 	private UserService service;
 	
-	@PostMapping(path = "/login", produces = "text/plain")
+	@PostMapping(path = "/login", produces = "application/json")
 	@ResponseBody
-	public String login(SysUser user) {
+	public SysUser login(SysUser user) {
 		return service.login(user);
 	}
 	
