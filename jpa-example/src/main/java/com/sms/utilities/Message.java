@@ -10,4 +10,6 @@ public class Message {
 	public static final String LASTNAMEERROR = "LastName error";
 	public static final String REGISTRATIONERROR = "Registration error";
 	public static final String ACTIVATIONERROR = "Activation error";
+	public static final String DESCRIPTIONERROR = "Restaurant-description error";
+	public static final String CATEGORYERROR = "Restaurant-category error";
 }

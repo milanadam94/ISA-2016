@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Menadzeri sistema</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<!-- TOASTR -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
+
+<!-- ANGULAR SCRIPT -->
+<script src="SystemManager.js"></script>
+<style>
+	.navbar {
+		background-color: blue
+	}
+</style>
+</head>
+<body ng-app="sysManager" ng-controller="sysManagerContoller">
+	<nav id="myNavbar" class="navbar">
+		<div class="navbar-header">
+			<a href="SystemManager.html" class="navbar-brand" >Menadzeri sistema</a>
+		</div>
+		<ul class="nav navbar-nav">
+			<li><a href="" ng-click="getRestaurants()">Restorani</a></li>
+			<li><a href="" ng-click="getRestManagers()">Menadzeri restorana</a></li>
+		</ul>
+	</nav>
+	<div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary" ng-click="registerRestManager()">Registracija menadzera restorana</button>
+			<button type="submit" class="btn btn-primary pull-down" ng-click="registerRestaurant()">Registracija restorana</button>
+		</div>
+		<div id="rest" ng-show="viewRestaurants">
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Naziv</th>
+					<th>Opis</th>
+					<th>Kategorija</th>
+				</tr>
+				<tr ng-repeat="r in restaurants | orderBy:'name'">
+					<td> {{ r.name }} </td>
+					<td> {{ r.description }} </td>
+					<td> {{ r.category }} </td>
+				</tr>
+			</table>
+		</div>
+		<div id="restManagers" ng-show="viewManagers">
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Email</th>
+				</tr>
+				<tr ng-repeat="m in managers | orderBy:'name'">
+					<td> {{ m.name }} </td>
+					<td> {{ m.lastName }} </td>
+					<td> {{ m.email }} </td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+</html>

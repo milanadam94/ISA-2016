@@ -5,26 +5,45 @@
  ***********************************************************************/
 package com.sms.beans;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Restaurant {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Restaurant")
+public class Restaurant implements Serializable{
 	
+	private static final long serialVersionUID = -7680455787368156622L;
+	
+	@Id
+	@Column(name = "id")
+	@GeneratedValue
+	private Integer id;
+	
+	@Column(name = "name", unique = true, nullable = false)
 	private String name;
-	//tip restorana
+	
+	@Column(name = "description", nullable = false)
 	private String description;
+	
+	@Column(name = "category", nullable = false)
 	private String category;
 
-	public Menu menu;
-	public ArrayList<Reservation> reservations;
-	public ArrayList<Segment> segments;
-	public ArrayList<SysUser> workrers;
-	public ArrayList<RestaurantManager> restaurantManagers;
-	public ArrayList<Offerer> offerers;
-	public ArrayList<Tender> tenders;
-	public ArrayList<Offerings> offerings;
-	public ArrayList<RestaurantProfit> restaurantProfits;
-	public ArrayList<RestaurantVisitRate> restaurantVisitRates;
-	public ArrayList<RestaurantRecension> restaurantRecensions;
+	//public Menu menu;
+	//public ArrayList<Reservation> reservations;
+	//public ArrayList<Segment> segments;
+	//public ArrayList<SysUser> workrers;
+	//public ArrayList<RestaurantManager> restaurantManagers;
+	//public ArrayList<Offerer> offerers;
+	//public ArrayList<Tender> tenders;
+	//public ArrayList<Offerings> offerings;
+	//public ArrayList<RestaurantProfit> restaurantProfits;
+	//public ArrayList<RestaurantVisitRate> restaurantVisitRates;
+	//public ArrayList<RestaurantRecension> restaurantRecensions;
 	
 	public Restaurant() {
 		super();
@@ -37,6 +56,14 @@ public class Restaurant {
 		this.category = category;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
 	public String getName() {
 		return name;
 	}
