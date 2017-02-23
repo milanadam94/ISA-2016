@@ -6,6 +6,7 @@
 package com.sms.beans;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,9 +27,16 @@ public class RestaurantManager implements Serializable{
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	private Integer id;
 
+	@Column(name="email")
+	private String email;
+	
 	@ManyToOne
 	private SysUser user;
-
+	
+	@ManyToOne
+	private Restaurant restaurant;
+	
+	
 	public RestaurantManager() {
 	}
 
@@ -52,4 +60,15 @@ public class RestaurantManager implements Serializable{
 		this.user = user;
 	}
 
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	
+
+	
 }

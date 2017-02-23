@@ -1,0 +1,99 @@
+var restManager = angular.module('restManager', []).config(function ($httpProvider) {
+    $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
+    $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';
+})
+
+
+
+sysManager.controller('restManagerController', [ '$scope', 'regRestManagerService', 'regRestaurantService', function($scope, regRestManagerService, regRestaurantService){
+	
+	
+	
+	$scope.getRestaurant = function() {
+		
+	}
+	
+	$scope.saveRestaurantInfo = function() {
+		
+	}
+		
+	$scope.getFoods = function(){
+		
+	}
+	
+	$scope.saveFoodChanges = function(){
+		
+	}
+	
+	$scope.addFood = function(){
+		
+	}
+	
+	$scope.getDrinks = function(){
+		
+	}
+	
+	$scope.saveDrinkChanges = function(){
+		
+	}
+	
+	$scope.addDrink = function(){
+		
+	}
+	
+	
+	$scope.getKonf = function(){
+		
+	}
+	
+	$scope.saveKonfChanges = function(){
+		
+	}
+	
+	$scope.addKonf = function(){
+		
+	}
+	
+	
+}]);
+
+
+
+
+
+
+
+
+restManager.service('restaurantInfoService',['$window', '$http', function($window, $http){
+	this.getRestaurant;
+	this.saveChanges;
+	
+}]);
+
+restManager.service('foodService',['$window', '$http', function($window, $http){
+	
+	this.getFoods;
+	this.saveChanges;
+	this.addFood;
+	
+}]);
+
+restManager.service('dringService', ['$window', '$http', function($window, $http){
+	this.getDrinks;
+	this.saveChanges;
+	this.addDring;
+	
+}]);
+
+restManager.service('konfService', ['$window', '$http', function($window, $http){
+	this.getKonf;
+	this.saveChanges;
+	this.addKonf;
+	
+}]);
+
+
+
+
+
+

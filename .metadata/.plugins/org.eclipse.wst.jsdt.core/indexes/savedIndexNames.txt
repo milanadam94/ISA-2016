@@ -1,0 +1,6 @@
+INDEX VERSION 1.3+D:\4 GODINA\ISA PROJEKAT\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+2094635359.index
+3261995478.index
+674399588.index
+1077693496.index
+385780200.index

@@ -1,0 +1,7 @@
+package com.sms.service;
+
+public class RestaurantManagerService implements RestaurantManagerServiceImpl{
+	
+	
+
+}
