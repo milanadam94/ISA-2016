@@ -11,3 +11,4 @@ insert into Restaurant(id, name, description, category) values('3', 'Stapic', 'k
 
 insert into Sys_User(id, email, last_name, name, password, user_type) values(null, 'adam1994@gmail.com', 'Adamovic','Milan','adam','RESTAURANTMANAGER')
 insert into Restaurant_Manager(id, user_id) values('4', '4')
+insert into Restaurant_Manager(id, email, restaurant_id, user_id) values ('1','1','1','1')

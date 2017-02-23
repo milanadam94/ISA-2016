@@ -19,4 +19,16 @@ public class RestaurantServiceImpl implements RestaurantService {
 		return restaurantDao.findAll();
 	}
 
+	@Override
+	public Restaurant getRestaurant(Integer restaurantID) {
+		// TODO Auto-generated method stub
+		return restaurantDao.findById(restaurantID);
+	}
+
+	@Override
+	public void saveChanges(Restaurant restaurant) {
+		// TODO Auto-generated method stub
+		restaurantDao.save(restaurant);
+	}
+
 }

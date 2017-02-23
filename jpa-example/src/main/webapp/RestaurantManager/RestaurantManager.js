@@ -7,14 +7,30 @@ var restManager = angular.module('restManager', []).config(function ($httpProvid
 
 restManager.controller('restManagerController', [ '$scope', 'konfService', 'dringService', 'restaurantInfoService', 'foodService', function($scope, konfService, dringService, restaurantInfoService, foodService ){
 	
-	$scope.profilShow = true;
+	setShows = function(profilShow, picaShow, jelovnikShow, konfiguracijaShow){
+		$scope.profilShow = profilShow;
+		$scope.picaShow = picaShow;
+		$scope.jelovnikShow = jelovnikShow;
+		$scope.konfiguracijaShow = konfiguracijaShow;
+	}
+	setShows(false,false,false,false);
 	
-	$scope.getRestaurant = function() {
+	$scope.setButtonShow = function(){
+		return ($scope.profilShow || $scope.picaShow || $scope.jelovnikShow || $scope.konfiguracijaShow);
+	}
+	$scope.error = false;
+	$scope.errorMessage = "";
+	
+	$scope.getRestaurant = function() {		
 		restaurantInfoService.getRestaurant().then(
 				function(response){
 					$scope.restaurant = response.data;
-					alert($scope.restaurant);
-					console.log($scope.restaurant);
+					if(response.data.name != null){
+						setShows(true, false, false, false);
+					}else{
+						alert("Restoran nije pronadjen!");
+					}
+					
 				}
 		
 		); 
@@ -22,15 +38,33 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	
 	$scope.saveRestaurantInfo = function() {
 		
+		if($scope.profilShow){
+			if($scope.restaurant.name == "" || $scope.restaurant.description == ""){
+				$scope.error = true;
+				$scope.errorMessage = "Ne moze biti prazno!";
+				return;
+			}else{
+				$scope.error = false;
+				$scope.errorMessage = "";
+			}			
+			restaurantInfoService.saveChanges($scope.restaurant);
+			
+		}else if ($scope.jelovnikShow) {
+			
+		}else if ($scope.piceShow){
+			
+		}else if ($scope.konfiguracijaShow){
+			
+		}else {
+			alert("Error! Nothing selected.");
+		}
+		
 	}
 		
 	$scope.getFoods = function(){
 		
 	}
 	
-	$scope.saveFoodChanges = function(){
-		
-	}
 	
 	$scope.addFood = function(){
 		
@@ -40,9 +74,6 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 		
 	}
 	
-	$scope.saveDrinkChanges = function(){
-		
-	}
 	
 	$scope.addDrink = function(){
 		
@@ -53,9 +84,6 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 		
 	}
 	
-	$scope.saveKonfChanges = function(){
-		
-	}
 	
 	$scope.addKonf = function(){
 		
@@ -76,8 +104,18 @@ restManager.service('restaurantInfoService',['$window', '$http', function($windo
 		return $http.get("../restManager/myRestaurant/1");
 	}
 	
-	
-	this.saveChanges;
+	this.saveChanges = function(restaurant){
+		$http({
+			  method: 'PUT',
+			  data : $.param(restaurant),
+		      url : "../restManager/saveRestaurantInfo/1"
+		}).then(function success(response) {
+					alert(response.data);
+			  }, function error(response) {
+				  	alert(response.data);
+			  }
+			);
+	};
 	
 }]);
 
