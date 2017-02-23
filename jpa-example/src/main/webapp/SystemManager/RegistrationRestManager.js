@@ -77,10 +77,11 @@ app.service('registrationService', ['$http', '$window', function($http, $window)
 		      url : "../sysManager/registerRestManager"
 		}).then(function success(response) {
 				if(response.data == "Error free"){
-					toastr.info('Aktivacioni kod je poslat na vas e-mail.')
-					$timeout(function() {
-						$window.location.href = '/SystemManager/SystemManager.html'
-						}, 2000);
+					$window.location.href = '/SystemManager/SystemManager.html'
+					//toastr.info('Aktivacioni kod je poslat na vas e-mail.')
+					//$timeout(function() {
+					//	$window.location.href = '/SystemManager/SystemManager.html'
+					//	}, 2000);
 				}else
 					return response.data;
 			

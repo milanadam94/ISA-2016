@@ -14,6 +14,8 @@ public interface UserDao extends Repository<SysUser, Long>{
 
 	public SysUser findByEmail(String email);
 	
+	public SysUser findById(Integer id);
+	
 	public SysUser save(SysUser user);
 
 }

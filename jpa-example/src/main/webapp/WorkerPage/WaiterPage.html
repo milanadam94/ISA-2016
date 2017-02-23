@@ -26,7 +26,13 @@
 <script src="WaiterPage.js"></script>
 <style>
 	.navbar {
-		background-color: blue
+		background-color: lightblue
+	}
+	.form-inline .form-group input {
+		width:200px;
+	}
+	.control-label {
+		width:300px;
 	}
 </style>
 </head>
@@ -36,47 +42,69 @@
 			<a href="" class="navbar-brand" >Konobar</a>
 		</div>
 		<ul class="nav navbar-nav">
-			<li><a href="" ng-click="getProfile()">Profil</a></li>
-			<li><a href="" ng-click="getTables()">Raspored stolova</a></li>
-			<li><a href="" ng-click="getTables()">Kalendar</a></li>
-			<li><a href="" ng-click="getTables()">Porudzbine</a></li>
+			<li><a href="#" ng-click="getProfile()">Profil</a></li>
+			<li><a href="#" ng-click="getTables()">Raspored stolova</a></li>
+			<li><a href="#" ng-click="getTables()">Kalendar</a></li>
+			<li><a href="#" ng-click="getTables()">Porudzbine</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+		      <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
 		</ul>
 	</nav>
 	<div>
-		<form class="form-horizontal">
-			<div id="profile" ng-show="viewProfile" class="container">
-				<img src="../Images/hotel-waiter.jpg" class="img-rounded" alt="Cinque Terre" width="350" height="250">
+		<div id="profile" ng-show="viewProfile" class="container-fluid">
+			<img src="../Images/hotel-waiter.jpg" class="img-rounded" alt="Cinque Terre" width="350" height="250">
+			<form class="form-inline">
 				<div class="form-group">
-					<label class="control-label col-sm-2" for="ime">Ime:</label>
-					<label class="control-label col-sm-2" for="ime2">Milan</label>
+					<br />
+					<label class="control-label" for="ime">Ime:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="ime" ng-model="waiter.user.name">
+					</div>
 				</div>
+				<br />
 				<div class="form-group">
-					<label class="control-label col-sm-2" for="prezime">Prezime:</label>
-					<label class="control-label col-sm-2" for="prezime2">Adamovic</label>
+					<label class="control-label" for="prezime">Prezime:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="prz" ng-model="waiter.lastName">
+					</div>
 				</div>
+				<br />
 				<div class="form-group">
-					<label class="control-label col-sm-2" for="email">email:</label>
-					<label class="control-label col-sm-2" for="email2">email</label>
+					<label class="control-label" for="email">Email:</label>
+					<div class="col-sm-10">
+						<input type="email" class="form-control" id="email" ng-model="waiter.email">
+					</div>
 				</div>
+				<br />
 				<div class="form-group">
-					<label class="control-label col-sm-2" for="datum">Datum rodjenja:</label>
-					<label class="control-label col-sm-2" for="datum2">datum</label>
+					<label class="control-label" for="datum">Datum rodjenja:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="datum" ng-model="waiter.birthday">
+					</div>
 				</div>
+				<br />
 				<div class="form-group">
-					<label class="control-label col-sm-2" for="broj">Konfekcijski broj:</label>
-					<label class="control-label col-sm-2" for="broj2">broj</label>
+					<label class="control-label" for="broj">Konfekcijski broj:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="broj" ng-model="waiter.suitsize" ng-view="waiter.suitsize">
+					</div>
 				</div>
+				<br />
 				<div class="form-group">
-					<label class="control-label col-sm-2" for="obuca">Velicina obuce:</label>
-					<label class="control-label col-sm-2" for="datum2">obuca</label>
+					<label class="control-label" for="obuca">Velicina obuce:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="obuca" ng-model="waiter.shoesize">
+					</div>
 				</div>
+				<br /><br />
 				<div class="form-group"> 
-    			<div class="col-sm-offset-2 col-sm-10">
-      				<button type="submit" class="btn btn-primary" ng-click="updateProfile()">Izmeni</button>
-    			</div>
-  			</div>
-			</div>
-		</form>
+    				<div class="col-sm-offset-2 col-sm-10">
+      					<button type="submit" class="btn btn-primary" ng-click="updateProfile()">Izmeni</button>
+    				</div>
+  				</div>
+  			</form>
+		</div>
 	</div>
 	
 </body>
