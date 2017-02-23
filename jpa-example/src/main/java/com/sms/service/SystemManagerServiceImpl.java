@@ -1,14 +1,20 @@
 package com.sms.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import com.sms.beans.Restaurant;
 import com.sms.beans.SysUser;
+import com.sms.beans.SysUserActivation;
 import com.sms.beans.UserType;
 import com.sms.dao.RestaurantsDao;
+import com.sms.dao.SysUserActivationDao;
 import com.sms.dao.SystemManagerDao;
 import com.sms.utilities.Message;
 
@@ -19,9 +25,19 @@ public class SystemManagerServiceImpl implements SystemManagerService{
 	private SystemManagerDao sysManagerDao;
 	
 	@Autowired
+	private SysUserActivationDao sysUserActDao;
+	
+	@Autowired
 	private RestaurantsDao restDao;
 	
+	@Autowired
+	private MailSender mailSender;
+	
+	
+	//fali mi i za login,kao sto je u UserServiceImpl
+	
 	public String registarRestManager(SysUser user) {
+		
 		if(user.getEmail() == null || user.getEmail().equals(""))
 			return Message.EMAILERROR;
 		else if(user.getPassword() == null || user.getPassword().equals(""))
@@ -36,9 +52,23 @@ public class SystemManagerServiceImpl implements SystemManagerService{
 		if(sysUser != null)
 			return Message.REGISTRATIONERROR;
 		
-		SysUser newUser = new SysUser(user.getEmail(), user.getPassword(), user.getName(), user.getLastName(), UserType.RESTAURANTMANAGER);
+		SysUserActivation sysUserActivation = sysUserActDao.findByEmail(user.getEmail());
+		if(sysUserActivation != null)
+			sysUserActDao.delete(sysUserActivation);
+		
+		sysUserActivation = new SysUserActivation(user.getEmail(), user.getPassword(), user.getName(),
+				user.getLastName(), user.getUserType());
+		
+		sysUserActivation.setActivationCode(UUID.randomUUID().toString());
+		
+		sysUserActDao.save(sysUserActivation);
+		
+		sendEmail(user.getEmail(), sysUserActivation.getActivationCode());
+		
+		
+		//SysUser newUser = new SysUser(user.getEmail(), user.getPassword(), user.getName(), user.getLastName(), UserType.RESTAURANTMANAGER);
 		//RestaurantManager rest = new RestaurantManager(newUser);
-		sysManagerDao.save(newUser);
+		//sysManagerDao.save(newUser);
 		
 		return Message.ERRORFREE;
 	}
@@ -75,5 +105,20 @@ public class SystemManagerServiceImpl implements SystemManagerService{
 		return sysManagerDao.findByUserType(UserType.RESTAURANTMANAGER);
 	}
 	
+private void sendEmail(String email, String activationCode) {
+		
+		final SimpleMailMessage message = new SimpleMailMessage();
+		message.setSubject("Potvrda registracije");
+		message.setFrom("isasms2016@gmail.com");
+		message.setTo(email);
+		message.setText("http://localhost:8080/activation/activate" + "/" + activationCode);
+
+		try {
+			mailSender.send(message);
+		} catch (MailException e) {
+			System.out.println(e.toString());
+		}
+		
+	}
 
 }

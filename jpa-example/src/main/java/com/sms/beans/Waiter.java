@@ -29,6 +29,15 @@ public class Waiter implements Serializable {
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	private Integer id;
+	
+	@Column(name = "suitSize")
+	private String suitSize;
+	
+	@Column(name = "shoeSize")
+	private int shoeSize;
+	
+	@Column(name = "birthday")
+	private String birthday;
 
 	@ManyToOne
 	private SysUser user;
@@ -36,8 +45,11 @@ public class Waiter implements Serializable {
 	public Waiter() {
 	}
 
-	public Waiter(String email, String password, SysUser user) {
+	public Waiter(String email, String password, String suitSize, int shoeSize, String birthday, SysUser user) {
 		this.user = user;
+		this.suitSize = suitSize;
+		this.shoeSize = shoeSize;
+		this.birthday = birthday;
 	}
 
 	public Integer getId() {
@@ -56,4 +68,27 @@ public class Waiter implements Serializable {
 		this.user = user;
 	}
 
+	public String getSuitSize() {
+		return suitSize;
+	}
+
+	public void setSuitSize(String suitSize) {
+		this.suitSize = suitSize;
+	}
+
+	public int getShoeSize() {
+		return shoeSize;
+	}
+
+	public void setShoeSize(int shoeSize) {
+		this.shoeSize = shoeSize;
+	}
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
 }
