@@ -6,12 +6,15 @@
 package com.sms.beans;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "Restaurant")
@@ -23,6 +26,8 @@ public class Restaurant implements Serializable{
 	@Column(name = "id")
 	@GeneratedValue
 	private Integer id;
+	@OneToMany
+	private List<RestaurantManager> restaurantManagers;
 	
 	@Column(name = "name", unique = true, nullable = false)
 	private String name;
@@ -37,7 +42,8 @@ public class Restaurant implements Serializable{
 	//public ArrayList<Reservation> reservations;
 	//public ArrayList<Segment> segments;
 	//public ArrayList<SysUser> workrers;
-	//public ArrayList<RestaurantManager> restaurantManagers;
+	
+	
 	//public ArrayList<Offerer> offerers;
 	//public ArrayList<Tender> tenders;
 	//public ArrayList<Offerings> offerings;
@@ -68,6 +74,14 @@ public class Restaurant implements Serializable{
 		return name;
 	}
 
+	public List<RestaurantManager> getRestaurantManagers() {
+		return restaurantManagers;
+	}
+
+	public void setRestaurantManagers(List<RestaurantManager> restaurantManagers) {
+		this.restaurantManagers = restaurantManagers;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -87,6 +101,10 @@ public class Restaurant implements Serializable{
 	public void setCategory(String category) {
 		this.category = category;
 	}
+
+
+
+	
 	
 	
 

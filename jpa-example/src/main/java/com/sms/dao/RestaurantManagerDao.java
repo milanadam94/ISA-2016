@@ -7,4 +7,7 @@ import com.sms.beans.RestaurantManager;
 public interface RestaurantManagerDao extends Repository<RestaurantManager, Long> {
 	
 	public RestaurantManager save(RestaurantManager restManager);
+	
+	public RestaurantManager findByEmail(String email);
+	
 }
