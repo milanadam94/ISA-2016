@@ -6,12 +6,15 @@
 package com.sms.beans;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -29,19 +32,23 @@ public class Guest implements Serializable {
 	@ManyToOne
 	private SysUser user;
 
-	/*
-	 * @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL) public
-	 * ArrayList<Friendship> friendships; public ArrayList<FriendRequest>
-	 * requests; public ArrayList<Reservation> guestReservations; public
-	 * ArrayList<Event> createdEvents; public ArrayList<AcceptedEvent>
-	 * asseptedEvents; public ArrayList<GuestOrder> orders;
-	 * 
-	 * public RestaurantRecension restaurantRecension; public FoodRecension
-	 * foodRecensions; public WaiterRecension waiterRecension; public History
-	 * history;
-	 */
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<Guest> friends;
 
 	public Guest() {
+
+	}
+
+	public void addFriend(Guest friend) {
+		this.friends.add(friend);
+	}
+
+	public List<Guest> getFriends() {
+		return friends;
+	}
+
+	public void setFriends(List<Guest> friends) {
+		this.friends = friends;
 	}
 
 	public Guest(SysUser user) {

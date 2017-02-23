@@ -1,0 +1,24 @@
+<div class="table-zebra">
+	<table class="table">
+	    <thead>
+	      <tr>
+	        <th>Naziv</th>
+	        <th>Kategorija</th>
+	        <th>Udaljenost</th>
+	        <th>Ocena</th>
+	        <th>Ocena prijatelja</th>
+	        <th>Rezervacija</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      <tr ng-repeat="restaurant in restaurants">
+	        <td>{{restaurant.name}}</td>
+	        <td>{{restaurant.category}}</td>
+	        <td>{{udaljenost}}</td>
+	        <td>{{ocena}}</td>
+	        <td>{{ocena prijatelja}}</td>
+	        <td>{{rezervacija}}</td>
+	      </tr>
+	    </tbody>
+	</table>
+</div>

@@ -4,7 +4,7 @@ import org.springframework.data.repository.Repository;
 
 import com.sms.beans.RestaurantManager;
 
-public interface RestaurantManagerDao extends Repository<RestaurantManager, Long>{
+public interface RestaurantManagerDao extends Repository<RestaurantManager, Long> {
 	
 	public RestaurantManager save(RestaurantManager restManager);
 }

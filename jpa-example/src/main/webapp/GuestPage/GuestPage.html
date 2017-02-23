@@ -42,15 +42,84 @@
 				<a href="/GuestPage/GuestPage.html" class="navbar-brand" >Gost</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li><a href="#" ng-click="restaurants()">Restorani</a></li>
-				<li><a href="#" ng-click="friends()">Prijatelji</a></li>
-				<li><a href="#" ng-click="profile()">Nalog</a></li>
+				<li><a href="#" ng-click="loadRestaurants()">Restorani</a></li>
+				<li><a href="#" ng-click="loadUserFriends()">Prijatelji</a></li>
+				<li><a href="#" ng-click="loadUserProfile()">Nalog</a></li>
 			</ul>
 			 <ul class="nav navbar-nav navbar-right">
-		      <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Izloguj se</a></li>
+		      <li><a href="#" ng-click="userLogout()"><span class="glyphicon glyphicon-log-out"></span> Izloguj se</a></li>
 		    </ul>
 		    </div>
 		</nav>
+		<div ng-show="showRestaurants" class="table-zebra">
+			<table class="table">
+			    <thead>
+			      <tr>
+			        <th>Naziv</th>
+			        <th>Kategorija</th>
+			        <th>Udaljenost</th>
+			        <th>Ocena</th>
+			        <th>Ocena prijatelja</th>
+			        <th>Rezervacija</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr ng-repeat="restaurant in restaurants">
+			        <td>{{restaurant.name}}</td>
+			        <td>{{restaurant.category}}</td>
+			        <td>{{udaljenost}}</td>
+			        <td>{{ocena}}</td>
+			        <td>{{ocena prijatelja}}</td>
+			        <td>{{rezervacija}}</td>
+			      </tr>
+			    </tbody>
+			</table>
+		</div>
+		<div ng-show="showFriends" class="table-zebra">
+			<div class="form-group">	
+				<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#myModal"> Pronadji prijatelje </button>
+			</div>
+
+			<!-- Modal -->
+			<div id="myModal" class="modal fade" role="dialog">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title">Pronadji prijatelje</h4>
+			      </div>
+			      <div class="modal-body">
+			      <div class="form-group">
+			        <input type="text" ng-change="searchFriends()">
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Zatvori</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<table class="table">
+			    <thead>
+			      <tr>
+			        <th>Ime i prezime</th>
+			        <th>Poseta</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr ng-repeat="friend in friends">
+			        <td>{{friend.name + " " + friend.lastName}}</td>
+			        <td>{{posete}}</td>
+			      </tr>
+			    </tbody>
+			</table>
+		
+		
+		</div>
+		<div ng-show="showProfile">
+		
+		
+		
+		</div>
 		
 		
 	</div>
