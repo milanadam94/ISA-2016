@@ -12,4 +12,6 @@ public class Message {
 	public static final String ACTIVATIONERROR = "Activation error";
 	public static final String DESCRIPTIONERROR = "Restaurant-description error";
 	public static final String CATEGORYERROR = "Restaurant-category error";
+	public static final String ADDRESSERROR = "Address error";
+	public static final String CITYERROR = "City error";
 }

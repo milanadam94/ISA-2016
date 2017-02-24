@@ -29,6 +29,15 @@
 <!-- ANGULAR SCRIPT -->
 <script src="GuestPage.js"></script>
 
+<style type="text/css">
+
+.modal-body {
+    min-height:400px; 
+    overflow-y: false;
+}
+
+</style>
+
 </head>
 <body ng-app="app">
 
@@ -51,37 +60,93 @@
 		    </ul>
 		    </div>
 		</nav>
-		<div ng-show="showRestaurants" class="table-zebra">
-			<table class="table">
+		<div ng-show="showRestaurants" ng-controller="restaurantsController">
+			<table class="table table-bordered table-striped">
 			    <thead>
 			      <tr>
-			        <th>Naziv</th>
-			        <th>Kategorija</th>
-			        <th>Udaljenost</th>
+			        <th>
+			        	<a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+				        Naziv 
+				        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
+				        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
+        			</th>
+        			<th>
+			        	<a href="#" ng-click="sortType = 'category'; sortReverse = !sortReverse">
+				        Kategorija 
+				        <span ng-show="sortType == 'category' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
+				        <span ng-show="sortType == 'category' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
+        			</th>
+        			<th>
+			        	<a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+				        Udaljenost 
+				        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
+				        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
+        			</th>
 			        <th>Ocena</th>
 			        <th>Ocena prijatelja</th>
 			        <th>Rezervacija</th>
 			      </tr>
 			    </thead>
 			    <tbody>
-			      <tr ng-repeat="restaurant in restaurants">
+			      <tr ng-repeat="restaurant in restaurants | orderBy:sortType:sortReverse">
 			        <td>{{restaurant.name}}</td>
 			        <td>{{restaurant.category}}</td>
-			        <td>{{udaljenost}}</td>
-			        <td>{{ocena}}</td>
-			        <td>{{ocena prijatelja}}</td>
-			        <td>{{rezervacija}}</td>
+			        <td>{{restaurant.name}}</td>
+			        <td>{{restaurant.name}}</td>
+			        <td>{{restaurant.name}}</td>
+			        <td>{{restaurant.name}}</td>
 			      </tr>
 			    </tbody>
 			</table>
 		</div>
-		<div ng-show="showFriends" class="table-zebra">
+		<div ng-show="showFriends" ng-controller="friendsController">
 			<div class="form-group">	
-				<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#myModal"> Pronadji prijatelje </button>
+				<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addFriendsModal"> Pronadji prijatelje </button>
 			</div>
 
-			<!-- Modal -->
-			<div id="myModal" class="modal fade" role="dialog">
+			<table class="table table-bordered table-striped">
+			    <thead>
+			      <tr>
+			        <th>
+			        	<a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+				        Ime i prezime 
+				        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
+				        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
+        			</th>
+			        <th>Poseta</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr ng-repeat="friend in guest.friends | orderBy:sortType:sortReverse">
+			        <td>{{friend.user.name + " " + friend.user.lastName}}</td>
+			        <td>{{friend.user.name}}</td>
+			      </tr>
+			    </tbody>
+			</table>
+			
+			
+		</div>
+		<div ng-show="showProfile" ng-controller="profileController">
+		<div class="row">
+			<div class="col-md-4">
+				<img src="../Images/user.png" class="img-rounded" alt="Cinque Terre" width="200" height="200">
+			</div>
+			<div class="col-md-8">
+				<h4>E-mail: {{guest.user.email}}</h4>
+				<h4>Ime i prezime: {{guest.user.name + " " + guest.user.lastName}}</h4>
+				<h4>Mesto: {{guest.city}}</h4>
+				<h4>Adresa: {{guest.address}}</h4>
+				<h4>Broj poseta: {{guest.visits}}</h4>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal" ng-click="resetNewGuest()"> Izmeni svoj profil </button>
+				</div>
+			</div>
+
+		</div>
+		</div>
+		
+		<!-- Modal -->
+			<div id="addFriendsModal" class="modal fade" role="dialog" ng-controller="friendsController">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">
@@ -90,38 +155,69 @@
 			      </div>
 			      <div class="modal-body">
 			      <div class="form-group">
-			        <input type="text" ng-change="searchFriends()">
+					<input type = "text" class="form-control" ng-model="friendsSearch" ng-change="searchFriends()" placeholder="Potrazi prijatelje"> 
+				  </div>
 			      </div>
 			      <div class="modal-footer">
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Zatvori</button>
+			        <button type="button" class="btn btn-primary" data-dismiss="modal">Izadji</button>
+			        <button type="submit" class="btn btn-primary pull-left" ng-click="addFriend()"> Dodaj prijatelja </button>
 			      </div>
-			    </div>
 			  </div>
 			</div>
-			<table class="table">
-			    <thead>
-			      <tr>
-			        <th>Ime i prezime</th>
-			        <th>Poseta</th>
-			      </tr>
-			    </thead>
-			    <tbody>
-			      <tr ng-repeat="friend in friends">
-			        <td>{{friend.name + " " + friend.lastName}}</td>
-			        <td>{{posete}}</td>
-			      </tr>
-			    </tbody>
-			</table>
-		
-		
-		</div>
-		<div ng-show="showProfile">
-		
-		
-		
-		</div>
-		
-		
+			</div>
+			
+			<!-- Modal -->
+			<div id="editProfileModal" class="modal fade" role="dialog" ng-controller="profileController">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title">Izmena profila</h4>
+			      </div>
+			      <div class="modal-body">
+			      	<div class="form-group">
+						<label for="email" class="control-label"> E-mail: </label>  
+						<input type = "text" class="form-control" id="email" ng-model="newGuest.user.email" placeholder="Unesi e-mail"> 
+					</div>
+					<div class="form-group">
+						<label for="password" class="control-label"> Trenutna lozinka: </label>  
+						<input type = "password" class="form-control" id="password" ng-model="password" placeholder="Unesi trenutnu lozinku"> 
+					</div>
+			      	<div class="form-group">
+						<label for="password" class="control-label"> Nova lozinka: </label>  
+						<input type = "password" class="form-control" id="password" ng-model="newPassword" placeholder="Unesi lozinku"> 
+					</div>
+			      	<div class="form-group">
+						<label for="passwordConfirm" class="control-label"> Potvrda nove lozinke: </label>  
+						<input type = "password" class="form-control" id="passwordConfirm" ng-model="newPasswordConfirm" placeholder="Potvrdi lozinku"> 
+					</div>
+			      	<div class="form-group">
+						<label for="name" class="control-label"> Ime: </label>  
+						<input type = "text" class="form-control" id="name" ng-model="newGuest.user.name" placeholder="Unesi ime"> 
+					</div>
+			      	<div class="form-group">
+						<label for="lastName" class="control-label"> Prezime: </label>  
+						<input type = "text" class="form-control" id="lastName" ng-model="newGuest.user.lastName" placeholder="Unesi prezime"> 
+					</div>
+			      	<div class="form-group">
+						<label for="city" class="control-label"> Mesto stanovanja: </label>  
+						<input type = "text" class="form-control" id="city" ng-model="newGuest.city" placeholder="Unesi mesto stanovanja"> 
+					</div>
+					<div class="form-group">
+						<label for="address" class="control-label"> Adresa stanovanja: </label>  
+						<input type = "text" class="form-control" id="address" ng-model="newGuest.address" placeholder="Unesi adresu stanovanja"> 
+					</div>
+					<div class="form-group text-danger" ng-if="errorMessage">{{ errorMessage }}</div>
+			      
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="resetNewGuest()">Izadji</button>
+			        <button type="submit" class="btn btn-primary pull-left" ng-click="editProfile()" > Izmeni </button>
+			      </div>
+			  </div>
+			</div>
+			</div>
+			
 	</div>
 	
 </div>

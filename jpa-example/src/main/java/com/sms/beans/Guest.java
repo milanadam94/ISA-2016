@@ -8,11 +8,9 @@ package com.sms.beans;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -26,17 +24,46 @@ public class Guest implements Serializable {
 
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.TABLE)
+	@GeneratedValue
 	private Integer id;
 
 	@ManyToOne
 	private SysUser user;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	private List<Guest> friends;
+
+	@Column(name = "address")
+	private String address;
+
+	@Column(name = "city")
+	private String city;
+
+	@Column(name = "visits")
+	private String visits;
 
 	public Guest() {
 
+	}
+
+	public Guest(SysUser user) {
+		this.user = user;
+	}
+
+	public Guest(SysUser user, String address, String city) {
+		super();
+		this.user = user;
+		this.address = address;
+		this.city = city;
+	}
+
+	public Guest(Integer id, SysUser user, List<Guest> friends, String address, String city) {
+		super();
+		this.id = id;
+		this.user = user;
+		this.friends = friends;
+		this.address = address;
+		this.city = city;
 	}
 
 	public void addFriend(Guest friend) {
@@ -49,10 +76,6 @@ public class Guest implements Serializable {
 
 	public void setFriends(List<Guest> friends) {
 		this.friends = friends;
-	}
-
-	public Guest(SysUser user) {
-		this.user = user;
 	}
 
 	public Integer getId() {
@@ -69,6 +92,30 @@ public class Guest implements Serializable {
 
 	public void setUser(SysUser user) {
 		this.user = user;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getVisits() {
+		return visits;
+	}
+
+	public void setVisits(String visits) {
+		this.visits = visits;
 	}
 
 }
