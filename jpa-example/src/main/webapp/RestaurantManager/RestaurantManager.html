@@ -42,10 +42,21 @@
 			</ul>
 		</div>
 		<div id="profilDiv" ng-show="profilShow">
-			<label>Naziv Restorana: </label> <br/>
-			<label>Vrsta: </label>
+			<label>Naziv Restorana: <input type = "text" class="form-control" id="restaurantName" ng-model="restaurant.name" value="restaurant.name" placeholder="Izmenite ime restorana"></label> <br/>
+			<label>Vrsta: <input type = "text" class="form-control" id="restaurantDescription" ng-model="restaurant.description" value="restaurant.description" placeholder="Izmenite opis restorana"></label> <br/> </label>
+			<label>Kategorija:
+					 <div class="col-sm-10">
+						<select class="form-control" id="kategorija" ng-model="restaurant.category" title="restaurant.category">
+						<option>domaca kuhinja</option>
+						<option>italijanski</option>
+						<option>kineski</option>
+						<option>francuski</option>
+						<option>vegan</option>
+						</select>
+					</div>
+			</label>
 		</div>
-		<div id="jelovnikDiv" ng-show="">
+		<div id="jelovnikDiv" ng-show="jelovnikShow">
 			<table class="table">
 				<tr bgcolor="lightgrey">
 					<th>Ime</th>
@@ -55,7 +66,7 @@
 				
 			</table>
 		</div>
-		<div id="picaDiv" ng-show="">
+		<div id="picaDiv" ng-show="picaShow">
 			<table class="table">
 				<tr bgcolor="lightgrey">
 					<th>Ime</th>
@@ -71,11 +82,12 @@
 			</table>
 		</div>
 		
-		<div id="konfiguracijaDiv">
+		<div id="konfiguracijaDiv" ng-show="konfiguracijaShow">
 		
 		</div>
 		
-		<button type="submit" class="btn btn-success" ng-click="">Sacuvaj Izmene</button>
+		<button type="submit" class="btn btn-success" ng-show="setButtonShow()" ng-click="saveRestaurantInfo()" >Sacuvaj Izmene</button>
+		<label id="errorLabel" ng-show="error" >{{errorMessage}}</label>
 	</div>
 </body>
 

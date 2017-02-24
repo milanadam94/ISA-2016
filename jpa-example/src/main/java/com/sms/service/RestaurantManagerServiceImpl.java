@@ -25,6 +25,12 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		
 	}
 
+	@Override
+	public RestaurantManager getRestaurantManager(String restManagerID) {
+		// TODO Auto-generated method stub
+		return restaurantManagerDao.findByEmail(restManagerID);
+	}
+
 	
 	
 }
