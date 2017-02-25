@@ -2,10 +2,7 @@ angular.element(document).ready(function () {
     console.log('page loading completed');
 });
 
-var app = angular.module('app', []).config(function ($httpProvider) {
-    $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
-    $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';
-}).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
+var app = angular.module('app', []).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
 	
 	if (typeof $.cookie('user') !== 'undefined') {
 		user = JSON.parse($.cookie('user'));
@@ -26,17 +23,16 @@ app.controller('startPageController', [ '$scope', 'loginService', 'registrationS
 	$scope.errorMessage = false;
 	
 	$scope.user = {
-			email : "",
-			password : ""
+			"email" : "",
+			"password" : ""
 	}
 
 	$scope.login = function(){
 		
 		var retVal = loginService.validateLoginInput($scope.user);
 		
-		if(retVal != "") {
+		if(retVal) {
 			$scope.errorMessage = retVal;
-			return;
 		}
 		else {
 			loginService.login($scope.user).then(function(data){
@@ -58,13 +54,13 @@ app.service('loginService', ['$http', '$window', function($http, $window){
 		if(user.email == "" || user.password == "")
 			return "Potrebno je uneti e-mail i lozinku."
 		
-		return "";
+		return false;
 	}
 	
 	 this.login = function(user) {
 		 return $http({
 				  method: 'POST',
-				  data : $.param(user),
+				  data : user,
 			      url : "../user/login"
 			}).then(function success(response) {
 				if(response.data.email == null || response.data.email == "") {

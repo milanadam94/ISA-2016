@@ -1,10 +1,5 @@
 var app = angular
 		.module('app', [])
-		.config(
-				function($httpProvider) {
-					$httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
-					$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-				})
 		.run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
 	
 			if (typeof $.cookie('user') === 'undefined') {
@@ -68,15 +63,15 @@ app.controller('profileController', [ '$scope', 'guestService', function($scope,
 	$scope.editProfile = function() {
 		var retVal = guestService.validateEditInput($scope.$parent.newGuest, $scope.password, $scope.newPassword, $scope.newPasswordConfirm);
 		
-		if(retVal != "") {
+		if(retVal) {
 			$scope.errorMessage = retVal;
-			return;
 		}
 		else {
 			$scope.errorMessage = "";
+			$scope.$parent.newGuest.user.password = $scope.newPassword;
 			guestService.editProfile($scope.$parent.newGuest).then(function(data){
 				if(data != "") {
-					$scope.errorMessage = "Neuspesna izmena.";
+					$scope.errorMessage = data;
 				}
 				else
 				{
@@ -117,7 +112,7 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 			}
 			
 			$scope.userLogout = function() {
-				guestService.logout($scope.user);
+				guestService.logout();
 			}
 
 			$scope.loadUserProfile = function() {
@@ -162,21 +157,21 @@ app.service('guestService', [ '$http', '$window', function($http, $window) {
 		});
 	}
 	
-	this.logout = function(user) {
-		$.removeCookie('user', {
-			path : '/',
-			domain : ''
-		});
+	this.logout = function() {
+		user = $.cookie("user");
 		$http({
 			method : 'PUT',
-			data : $.param(user),
+			data : user,
 			url : "../user/logout"
 		}).then(function success(response) {
 
 		}, function error(response) {
 			
 		});
-
+		$.removeCookie('user', {
+			path : '/',
+			domain : ''
+		});
 		$window.location.href = '/StartPage/StartPage.html';
 	}
 	
@@ -186,7 +181,8 @@ app.service('guestService', [ '$http', '$window', function($http, $window) {
 			|| newPasswordConfirm == "" || guest.user.name == "" || guest.user.lastName == "" 
 			|| guest.address == "" || guest.city == "")
 			return "Potrebno je uneti sve podatke.";
-			
+			console.log(password)
+			console.log(guest.user.password)
 		if(password != guest.user.password) {
 			return "Lozinka nije ispravna.";
 		}
@@ -195,14 +191,15 @@ app.service('guestService', [ '$http', '$window', function($http, $window) {
 			return "Unete lozinke se ne podudaraju.";
 		}
 	
-		return "";
+		return false;
 	}
 	
 	 this.editProfile = function(guest) {
+		 
 		 return $http({
 				  method: 'POST',
-				  data : $.param(guest),
-			      url : "../guest/editProfile"
+				  data : guest,
+			      url : "../guest/editProfile",
 			}).then(function success(response) {
 				if(response.data == "Error free") {
 					return "";

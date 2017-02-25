@@ -41,7 +41,7 @@ public class SysUserActivationServiceImpl implements SysUserActivationService {
 		sysUser = userDao.save(sysUser);
 
 		if (sysUser.getUserType().equals(UserType.GUEST)) {
-			Guest guest = new Guest(sysUser);
+			Guest guest = new Guest(sysUser, 0);
 			guestDao.save(guest);
 		}
 //		else if(sysUser.getUserType().equals(UserType.RESTAURANTMANAGER)){

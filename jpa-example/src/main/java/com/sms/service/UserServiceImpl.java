@@ -10,9 +10,11 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import com.sms.beans.ActiveUser;
+import com.sms.beans.Guest;
 import com.sms.beans.SysUser;
 import com.sms.beans.SysUserActivation;
 import com.sms.dao.ActiveUserDao;
+import com.sms.dao.GuestDao;
 import com.sms.dao.SysUserActivationDao;
 import com.sms.dao.UserDao;
 import com.sms.utilities.Message;
@@ -28,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private SysUserActivationDao sysUserActivationDao;
+	
+	@Autowired
+	private GuestDao guestDao;
 
 	@Autowired
 	private MailSender mailSender;
@@ -43,6 +48,10 @@ public class UserServiceImpl implements UserService {
 
 		if (activeUser != null)
 			return new SysUser();
+		
+		Guest guest = guestDao.findByUserId(sysUser.getId());
+		guest.setVisits(guest.getVisits() + 1);
+		guestDao.save(guest);
 
 		activeUser = new ActiveUser(sysUser, sysUser.getEmail(), sysUser.getUserType());
 

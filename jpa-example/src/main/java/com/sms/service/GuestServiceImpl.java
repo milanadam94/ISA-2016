@@ -23,7 +23,6 @@ public class GuestServiceImpl implements GuestService{
 
 	@Override
 	public String editProfile(Guest guest) {
-		
 		if (guest.getUser().getEmail() == null || guest.getUser().getEmail().equals("")
 				|| !Pattern.matches(
 						"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",

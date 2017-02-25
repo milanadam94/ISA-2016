@@ -40,30 +40,33 @@ public class Guest implements Serializable {
 	private String city;
 
 	@Column(name = "visits")
-	private String visits;
+	private Integer visits;
 
 	public Guest() {
 
 	}
 
-	public Guest(SysUser user) {
+	public Guest(SysUser user, Integer visits) {
 		this.user = user;
+		this.visits = visits;
 	}
 
-	public Guest(SysUser user, String address, String city) {
+	public Guest(SysUser user, String address, String city, Integer visits) {
 		super();
 		this.user = user;
 		this.address = address;
 		this.city = city;
+		this.visits = visits;
 	}
 
-	public Guest(Integer id, SysUser user, List<Guest> friends, String address, String city) {
+	public Guest(Integer id, SysUser user, List<Guest> friends, String address, String city, Integer visits) {
 		super();
 		this.id = id;
 		this.user = user;
 		this.friends = friends;
 		this.address = address;
 		this.city = city;
+		this.visits = visits;
 	}
 
 	public void addFriend(Guest friend) {
@@ -110,11 +113,11 @@ public class Guest implements Serializable {
 		this.city = city;
 	}
 
-	public String getVisits() {
+	public Integer getVisits() {
 		return visits;
 	}
 
-	public void setVisits(String visits) {
+	public void setVisits(Integer visits) {
 		this.visits = visits;
 	}
 

@@ -1,9 +1,6 @@
-var app = angular.module('app', []).config(function ($httpProvider) {
-    $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
-    $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';
-}).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
+var app = angular.module('app', []).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
 	if (typeof $.cookie('user') !== 'undefined') {
-		user = JSON.parse($.cookie("user"));
+		user = JSON.parse($.cookie('user'));
 		
 		if(user.userType == "GUEST") {
 			$window.location.href = "/GuestPage/GuestPage.html";
@@ -17,11 +14,11 @@ app.controller('registrationPageController', [ '$scope', 'registrationService', 
 	$scope.errorMessage = false;
 	
 	$scope.user = {
-			email : "",
-			password : "",
-			name : "",
-			lastName : "",
-			userType : "GUEST"
+			"email" : "",
+			"password" : "",
+			"name" : "",
+			"lastName" : "",
+			"userType" : "GUEST"
 	}
 	$scope.passwordConfirm = "";
 	
@@ -29,31 +26,16 @@ app.controller('registrationPageController', [ '$scope', 'registrationService', 
 		
 		retVal = registrationService.validateRegistrationInput($scope.user, $scope.passwordConfirm)
 		
-		if(retVal != "") {
+		if(retVal) {
 			$scope.errorMessage = retVal;
-			return;
 		}
 		else {
 			registrationService.register($scope.user).then(function(data){
-				if(data == "Email error") {
-					$scope.errorMessage = "E-mail nije u validnom formatu."
-				}
-				else if(data == "Password error") {
-					$scope.errorMessage = "Lozinka nije u validnom formatu ili nije dovoljno dugacka (minimum 7 karaktera). Dozvoljeni su samo slova i brojevi."
-				}
-				else if(data == "Name error") {
-					$scope.errorMessage = "Ime nije u validnom formatu. Mora poceti velikim slovom i sadrzati iskljucivo slova."
-				}
-				else if(data == "LastName error") {
-					$scope.errorMessage = "Prezime nije u validnom formatu. Mora poceti velikim slovom i sadrzati iskljucivo slova."
-				}
-				else if(data == "Registration error"){
-					
-					$scope.errorMessage = "Korisnik sa navedenim e-mail-om vec postoji."
-				}
-					
-				
-		});
+				if(data != "Error free")
+					$scope.errorMessage = data;
+				else
+					$scope.errorMessage = "";
+			});
 		}
 	}
 		 
@@ -67,14 +49,14 @@ app.service('registrationService', ['$http', '$window', '$timeout', function($ht
 		if(user.password != passwordConfirm)
 			return "Lozinke se ne podudaraju.";
 		
-		return "";
+		return false;
 	}
 	
 	this.register = function(user){
 			
-		 var promise = $http({
+		 return $http({
 			  method: 'POST',
-			  data : $.param(user),
+			  data : user,
 		      url : "../user/register"
 		}).then(function success(response) {
 				if(response.data == "Error free") {
@@ -89,7 +71,5 @@ app.service('registrationService', ['$http', '$window', '$timeout', function($ht
 		  }, function error(response) {
 			  alert(response)
 		  });
-		 
-		 return promise;
 	}
 }]);
