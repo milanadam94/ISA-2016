@@ -3,12 +3,16 @@ package com.sms.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sms.beans.Drink;
+import com.sms.beans.Food;
+import com.sms.beans.Menu;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
 import com.sms.service.RestaurantManagerService;
@@ -31,14 +35,16 @@ public class RestaurantManagerController {
 		return restManagerService.getRestaurant(restManagerID);
 	}
 	
-	@PutMapping(path = "/saveRestaurantInfo/{restManagerID}", produces = MediaType.TEXT_PLAIN_VALUE)
+	@PostMapping(path = "/saveRestaurantInfo/{restManagerID}", produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
-	public String saveRestaurantInfo(Restaurant restaurant, @PathVariable(value="restManagerID") String restManagerID){
-		
-		if(restaurant.getName().equals("") || restaurant.getDescription().equals("")){
+	public String saveRestaurantInfo(@PathVariable(value="restManagerID") String restManagerID, Restaurant restaurant){
+	
+		if(restaurant == null  || restaurant.getName().equals("") || restaurant.getDescription().equals("")){
 			return "Ne moze biti prazno!";
 		}
+		
 		RestaurantManager manager = restManagerService.getRestaurantManager(restManagerID);
+		
 		Restaurant notModifiedRestaurant = restaurantService.getRestaurant(restaurant.getId());
 		
 		if(manager == null){
@@ -63,6 +69,54 @@ public class RestaurantManagerController {
 		
 		return "Uspesno promenjeni podaci!";
 	}
+	
+	
+	@PostMapping(path = "/getMenu/{restManagerID}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public Menu getMenu(@PathVariable("restManagerID") String managerID, Restaurant restaurant){
+		
+		return restManagerService.getMenu(managerID, restaurant);
+	}
+	
+	
+	@DeleteMapping(path = "/deleteFood/{foodID}/{menuID}")
+	@ResponseBody
+	public void deleteFood(@PathVariable("foodID") Integer foodID, @PathVariable("menuID") Integer menuID){
+		
+		restManagerService.deleteFood(foodID, menuID);
+	}
+	
+	
+	@PostMapping(path = "/addFood/{menuID}")
+	@ResponseBody
+	public void addFood(@PathVariable("menuID") Integer menuID,  Food newFood){
+		
+		restManagerService.addFood(menuID, newFood);		
+		
+	}
+	
+	@PostMapping(path = "/addDrink/{menuID}")
+	@ResponseBody
+	public void addDrink(@PathVariable("menuID") Integer menuID, Drink newDrink){
+		
+		restManagerService.addDrink(menuID, newDrink);		
+		
+	}
+	
+	@DeleteMapping(path = "/deleteDrink/{drinkID}/{menuID}")
+	@ResponseBody
+	public void deleteDrink(@PathVariable("drinkID") Integer drinkID, @PathVariable("menuID") Integer menuID){
+		
+		restManagerService.deleteDrink(drinkID, menuID);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }

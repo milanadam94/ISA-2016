@@ -27,9 +27,6 @@ public class RestaurantManager implements Serializable{
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	private Integer id;
 
-	@Column(name="email")
-	private String email;
-	
 	@ManyToOne
 	private SysUser user;
 	

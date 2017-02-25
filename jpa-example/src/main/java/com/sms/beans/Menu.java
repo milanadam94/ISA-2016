@@ -4,33 +4,78 @@
  * Purpose: Defines the Class Menu
  ***********************************************************************/
 package com.sms.beans;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Menu {
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "menu")
+public class Menu implements Serializable{
+
+	private static final long serialVersionUID = -7186795119462828700L;
+
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 	
-    private ArrayList<Food> foods;
-    private ArrayList<Drink> drinks;
+	@OneToMany
+	private List<Food> foods;
+	
+	@OneToMany
+	private List<Drink> drinks;
+	
+	@ManyToOne
+	private Restaurant restaurant;
+	
 	public Menu() {
-		super();
 	}
+	
 	public Menu(ArrayList<Food> foods, ArrayList<Drink> drinks) {
 		super();
 		this.foods = foods;
 		this.drinks = drinks;
 	}
-	public ArrayList<Food> getFoods() {
+	public List<Food> getFoods() {
 		return foods;
 	}
-	public void setFoods(ArrayList<Food> foods) {
+	public void setFoods(List<Food> foods) {
 		this.foods = foods;
 	}
-	public ArrayList<Drink> getDrinks() {
+	public List<Drink> getDrinks() {
 		return drinks;
 	}
-	public void setDrinks(ArrayList<Drink> drinks) {
+	public void setDrinks(List<Drink> drinks) {
 		this.drinks = drinks;
 	}
-  
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+	
 	
 
 }

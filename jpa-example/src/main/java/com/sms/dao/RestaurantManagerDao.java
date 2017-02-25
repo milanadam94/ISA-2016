@@ -8,6 +8,6 @@ public interface RestaurantManagerDao extends Repository<RestaurantManager, Long
 	
 	public RestaurantManager save(RestaurantManager restManager);
 	
-	public RestaurantManager findByEmail(String email);
+	public RestaurantManager findByUserId(Integer id);
 	
 }

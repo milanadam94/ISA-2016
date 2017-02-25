@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -39,7 +40,7 @@ public class Food implements Serializable{
 
 	@Column(name = "grade")
 	private Integer grade;
-
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<FoodRecension> foodRecensions;
 
@@ -54,6 +55,13 @@ public class Food implements Serializable{
 		this.foodRecensions = foodRecensions;
 	}
 
+	public Food(String name, String Description, Integer price){
+		this.name = name;
+		this.description = description;
+		this.price = price;
+		this.grade = 0;
+	}
+	
 	public String getName() {
 		return name;
 	}

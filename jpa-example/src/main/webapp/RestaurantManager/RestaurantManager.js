@@ -1,13 +1,46 @@
-var restManager = angular.module('restManager', []).config(function ($httpProvider) {
+angular.element(document).ready(function () {
+    console.log('page loading completed');
+});
+var restManager = angular.module('restManager', []).config(['$qProvider', '$httpProvider', function ($qProvider, $httpProvider)  {
     $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
     $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';
-})
+    $qProvider.errorOnUnhandledRejections(false);
+    
+}]).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
+	
+	//namestiti dole u funckcijama gde treba user.email kada se ovo namesti!
+	if (typeof $.cookie('user') !== 'undefined') {
+		$scope.user = JSON.parse($.cookie('user'));
+		
+		if(user.userType == "GUEST") {
+			$window.location.href = "/GuestPage/GuestPage.html";
+		}
+		// DALJE
+	}
+		 
+	
+	
+}]);
 
 
 
-restManager.controller('restManagerController', [ '$scope', 'konfService', 'dringService', 'restaurantInfoService', 'foodService', function($scope, konfService, dringService, restaurantInfoService, foodService ){
+restManager.controller('restManagerController', [ '$scope', 'konfService', 'drinkService', 'restaurantInfoService', 'foodService', function($scope, konfService, drinkService, restaurantInfoService, foodService ){
+
+	$scope.newFood = {
+			name: "",
+			description: "",
+			price: 0
+	}
+	
+	$scope.newDrink = {
+			name: "",
+			description: "",
+			price: 0
+	}
+	
 	
 	setShows = function(profilShow, picaShow, jelovnikShow, konfiguracijaShow){
+		$scope.saveButton = (profilShow || picaShow || jelovnikShow || konfiguracijaShow);
 		$scope.profilShow = profilShow;
 		$scope.picaShow = picaShow;
 		$scope.jelovnikShow = jelovnikShow;
@@ -15,68 +48,149 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	}
 	setShows(false,false,false,false);
 	
-	$scope.setButtonShow = function(){
-		return ($scope.profilShow || $scope.picaShow || $scope.jelovnikShow || $scope.konfiguracijaShow);
-	}
 	$scope.error = false;
 	$scope.errorMessage = "";
 	
-	$scope.getRestaurant = function() {		
-		restaurantInfoService.getRestaurant().then(
-				function(response){
-					$scope.restaurant = response.data;
-					if(response.data.name != null){
-						setShows(true, false, false, false);
-					}else{
-						alert("Restoran nije pronadjen!");
-					}
-					
+	restaurantInfoService.getRestaurant($scope.user).then(
+			function(response){
+				$scope.restaurant = response.data;
+				
+				if(response.data.name == null){
+					alert("Restoran nije pronadjen!");
 				}
-		
-		); 
+			}
+	);
+	
+	
+	$scope.getRestaurant = function() {		
+			if($scope.restaurant.name != null){
+				setShows(true, false, false, false);
+			}else{
+				alert("Restoran nije pronadjen!");
+			}
+			
 	}
 	
-	$scope.saveRestaurantInfo = function() {
-		
-		if($scope.profilShow){
-			if($scope.restaurant.name == "" || $scope.restaurant.description == ""){
-				$scope.error = true;
-				$scope.errorMessage = "Ne moze biti prazno!";
-				return;
-			}else{
-				$scope.error = false;
-				$scope.errorMessage = "";
-			}			
-			restaurantInfoService.saveChanges($scope.restaurant);
-			
-		}else if ($scope.jelovnikShow) {
-			
-		}else if ($scope.piceShow){
-			
-		}else if ($scope.konfiguracijaShow){
-			
-		}else {
-			alert("Error! Nothing selected.");
-		}
-		
-	}
-		
+
 	$scope.getFoods = function(){
+		restaurantInfoService.getMenu($scope.user, $scope.restaurant).then(
+				function(response){
+
+					if(response.data != null){
+						setShows(false, false, true, false);
+						$scope.menu = response.data;
+					}else{
+						alert("Meni nije pronadjen!");
+					}	
+					
+				}
+		);	
 		
 	}
+	
+	
 	
 	
 	$scope.addFood = function(){
 		
+		if($scope.newFood.name == "" || $scope.newFood.price < 0){
+			alert("Ime ne sme biti prazno i cena ne sme biti manja od 0!");
+			return;
+		}
+		
+		foodService.addFood($scope.newFood, $scope.menu);
+		restaurantInfoService.getMenu($scope.user, $scope.restaurant).then(
+				function(response){
+								
+					if(response.data != null){
+						$scope.menu = response.data;
+						location.reload();
+					}else{
+						alert("Meni nije pronadjen!");
+					}	
+								
+				}
+			);	
+		
+		
 	}
 	
+	
+	$scope.deleteFood = function(foodID){
+		
+		foodService.deleteFood(foodID, $scope.menu);
+		restaurantInfoService.getMenu($scope.user, $scope.restaurant).then(
+			function(response){
+							
+				if(response.data != null){
+					$scope.menu = response.data;
+					location.reload();
+				}else{
+					alert("Meni nije pronadjen!");
+				}	
+							
+			}
+		);	
+			
+	
+	}
+	
+	
+	
 	$scope.getDrinks = function(){
+		restaurantInfoService.getMenu($scope.user, $scope.restaurant).then(
+				function(response){
+					
+					if(response.data != null){
+						setShows(false, true, false, false);
+						$scope.menu = response.data;
+					}else{
+						alert("Meni nije pronadjen!");
+					}	
+					
+				}
+		);	
 		
 	}
 	
 	
 	$scope.addDrink = function(){
 		
+		if($scope.newDrink.name == "" || $scope.newDrink.price < 0){
+			alert("Ime ne sme biti prazno i cena ne sme biti manja od 0!");
+			return;
+		}
+		
+		drinkService.addDrink($scope.newDrink, $scope.menu);
+		restaurantInfoService.getMenu($scope.user, $scope.restaurant).then(
+				function(response){
+								
+					if(response.data != null){
+						$scope.menu = response.data;
+						location.reload();
+					}else{
+						alert("Meni nije pronadjen!");
+					}	
+								
+				}
+			);	
+	}
+	
+	
+	$scope.deleteDrink = function(drinkID){
+		drinkService.deleteDrink(drinkID, $scope.menu);
+		restaurantInfoService.getMenu($scope.user, $scope.restaurant).then(
+			function(response){
+							
+				if(response.data != null){
+					$scope.menu = response.data;
+					location.reload();
+				}else{
+					alert("Meni nije pronadjen!");
+				}	
+							
+			}
+		);		
 	}
 	
 	
@@ -90,6 +204,34 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	}
 	
 	
+	
+	
+
+	$scope.saveRestaurantInfo = function() {
+		
+		if($scope.profilShow){
+			if($scope.restaurant.name == "" || $scope.restaurant.description == ""){
+				$scope.error = true;
+				$scope.errorMessage = "Ne moze biti prazno!";
+				return;
+			}else{
+				$scope.error = false;
+				$scope.errorMessage = "";
+			}			
+			restaurantInfoService.saveChanges($scope.restaurant, $scope.user);
+			
+		}else if ($scope.jelovnikShow) {
+			
+		}else if ($scope.piceShow){
+			
+		}else if ($scope.konfiguracijaShow){
+			
+		}else {
+			alert("Error! Nothing selected.");
+		}
+		
+	}
+	
 }]);
 
 
@@ -100,37 +242,75 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 
 
 restManager.service('restaurantInfoService',['$window', '$http', function($window, $http){
-	this.getRestaurant = function(){
-		return $http.get("../restManager/myRestaurant/1");
+	this.getRestaurant = function(user){
+		return $http.get("../restManager/myRestaurant/1"); // ================================= OVDE NAMESTITI EMAIL USERA
 	}
 	
-	this.saveChanges = function(restaurant){
+	this.saveChanges = function(restaurant, user){
+		
 		$http({
-			  method: 'PUT',
+			  method: 'POST',
 			  data : $.param(restaurant),
-		      url : "../restManager/saveRestaurantInfo/1"
+		      url : "../restManager/saveRestaurantInfo/1" // =================================== OVDE NAMESTITI EMAIL USERA
 		}).then(function success(response) {
-					alert(response.data);
+					alert("Success!");
 			  }, function error(response) {
-				  	alert(response.data);
+				  	alert("Error!");
 			  }
 			);
 	};
+	
+	this.getMenu = function (user, restaurant){
+		return $http({
+			method: 'POST',
+			data : $.param(restaurant),
+			url: "../restManager/getMenu/1"  // ==================== user.mail
+		});
+	}
+	
 	
 }]);
 
 restManager.service('foodService',['$window', '$http', function($window, $http){
 	
-	this.getFoods;
 	this.saveChanges;
-	this.addFood;
+	
+	this.addFood = function (newFood, menu){
+		$http({
+			method: 'POST',
+			data: $.param(newFood),
+			url: "../restManager/addFood/"+menu.id
+		});
+		
+	}
+	
+	this.deleteFood = function (foodID, menu){
+		$http({
+			method: 'DELETE',
+			url: "../restManager/deleteFood/"+foodID+"/"+menu.id
+		});
+	}
 	
 }]);
 
-restManager.service('dringService', ['$window', '$http', function($window, $http){
-	this.getDrinks;
+restManager.service('drinkService', ['$window', '$http', function($window, $http){
+
 	this.saveChanges;
-	this.addDring;
+	
+	this.deleteDrink = function(drinkID, menu){
+		$http({
+			method: 'DELETE',
+			url: "../restManager/deleteDrink/"+drinkID+"/"+menu.id
+		}); 
+	}
+	
+	this.addDrink = function (newDrink, menu){
+		$http({
+			method: 'POST',
+			data: $.param(newDrink),
+			url: "../restManager/addDrink/"+menu.id
+		});
+	}
 	
 }]);
 

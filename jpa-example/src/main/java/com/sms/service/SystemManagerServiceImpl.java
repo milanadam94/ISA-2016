@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sms.beans.Menu;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
 import com.sms.beans.SysUser;
 import com.sms.beans.UserType;
+import com.sms.dao.MenuDao;
 import com.sms.dao.RestaurantManagerDao;
 import com.sms.dao.RestaurantsDao;
 import com.sms.dao.SystemManagerDao;
@@ -19,6 +21,9 @@ public class SystemManagerServiceImpl implements SystemManagerService{
 
 	@Autowired
 	private SystemManagerDao sysManagerDao;
+	
+	@Autowired
+	private MenuDao menuDao;
 	
 	//@Autowired
 	//private SysUserActivationDao sysUserActDao;
@@ -91,6 +96,10 @@ public class SystemManagerServiceImpl implements SystemManagerService{
 		Restaurant newRest = new Restaurant(restaurant.getName(), restaurant.getDescription(), restaurant.getCategory());
 		
 		sysManagerDao.save(newRest);
+		
+		Menu menu = new Menu();
+		menu.setRestaurant(newRest);
+		menuDao.save(menu);
 		
 		return Message.ERRORFREE;
 	}

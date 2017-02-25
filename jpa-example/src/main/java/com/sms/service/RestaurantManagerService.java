@@ -1,5 +1,8 @@
 package com.sms.service;
 
+import com.sms.beans.Drink;
+import com.sms.beans.Food;
+import com.sms.beans.Menu;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
 
@@ -8,4 +11,14 @@ public interface RestaurantManagerService {
 	public Restaurant getRestaurant(String restManagerID);
 	
 	public RestaurantManager getRestaurantManager(String restManagerID);
+	
+	public Menu getMenu(String restManagerID, Restaurant restourant);
+	
+	public void deleteFood(Integer foodID, Integer menuID);
+	
+	public void addFood(Integer menuID, Food newFood);
+	
+	public void addDrink(Integer menuID, Drink newDrink);
+	
+	public void deleteDrink(Integer drinkID, Integer menuID);
 }
