@@ -176,6 +176,38 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		drinkDao.delete(drink);
 	}
 
+	@Override
+	public void changeFood(Food newFood, Integer menuID) {
+		// TODO Auto-generated method stub
+		
+		Menu menu = menuDao.findById(menuID);
+		if(menu == null){
+			return;
+		}
+		
+		Food oldFood = foodDao.findById(newFood.getId());
+		
+		if(oldFood != null){
+			foodDao.save(newFood);
+		}
+		
+	}
+
+	@Override
+	public void changeDrink(Drink newDrink, Integer menuID) {
+		// TODO Auto-generated method stub
+		Menu menu = menuDao.findById(menuID);
+		if(menu == null){
+			return;
+		}
+		
+		Drink oldDrink = drinkDao.findById(newDrink.getId());
+		
+		if(oldDrink != null){
+			drinkDao.save(newDrink);
+		}
+	}
+	
 	
 	
 }

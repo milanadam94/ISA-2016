@@ -21,4 +21,8 @@ public interface RestaurantManagerService {
 	public void addDrink(Integer menuID, Drink newDrink);
 	
 	public void deleteDrink(Integer drinkID, Integer menuID);
+	
+	public void changeFood(Food newFood, Integer menuID);
+	
+	public void changeDrink(Drink newDrink, Integer menuID);
 }

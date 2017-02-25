@@ -9,4 +9,6 @@ public interface DrinkDao extends Repository<Drink, Long>{
 	public void delete(Drink drink);
 	
 	public void save(Drink drink);
+	
+	public Drink findById(Integer id);
 }

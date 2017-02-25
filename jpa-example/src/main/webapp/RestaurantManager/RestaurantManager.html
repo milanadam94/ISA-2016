@@ -58,6 +58,8 @@
 					</div>
 			</label>
 			<br/><br/><br/>
+			<button type="submit" class="btn btn-success" ng-click="saveRestaurantInfo()">Sacuvaj Izmene</button>
+			<label id="errorLabel" ng-show="error" >{{errorMessage}}</label>
 		</div>
 		<div id="jelovnikDiv" ng-show="jelovnikShow" >
 			<table class="table">
@@ -66,13 +68,15 @@
 					<th>Opis</th>
 					<th>Cena</th>
 					<th>Obrisi</th>
+					<th>Promeni</th>
 				</tr>
 				<tr ng-repeat="i in menu.foods | orderBy:'name'">
-				 <!--	<td><input type="text" class="form-control" id="{{i.id}}" ng-model="{{i.name}}" placeholder="Promenite ime jela" > </td>
-					<td><input type = "text" class="form-control" id="{{i.id}}-FoodDescription" ng-model="{{ i.description }}" placeholder="Promenite opis jela" value="{{ i.description }}"> </td>
-					<td> <input type = "number" class="form-control" id="{{i.id}}-FoodPrica" ng-model="{{ i.price }}" placeholder="Promenite cenu jela" value="{{ i.price }} "></td>
+					<td><input type="text" class="form-control" ng-model="i.name"  placeholder="Promenite ime jela" > </td>
+				 	<td><input type = "text" class="form-control" ng-model="i.description" placeholder="Promenite opis jela" value="{{ i.description }}"> </td>
+					<td> <input type = "number" class="form-control" ng-model="i.price" placeholder="Promenite cenu jela" value="{{ i.price }} "></td>
 					<td> <button type="submit" id="{{ i.id }}"  class="btn btn-danger" ng-click="deleteFood( i.id )" >Obrisi</button></td>
-				-->
+					<td> <button type="submit" id="{{ i.id }}"  class="btn btn-warning" ng-click="changeFood( i.id )" >Promeni</button></td>
+				
 				</tr>
 			</table>
 			<br/><br/>
@@ -88,13 +92,15 @@
 					<th>Opis</th>
 					<th>Cena</th>
 					<th>Obrisi</th>
+					<th>Promeni</th>
 				</tr>
 				<tr ng-repeat="i in menu.drinks | orderBy:'name'">
-					<td> {{ i.name }} </td>
-					<td> {{ i.description }} </td>
-					<td> {{ i.price }} </td>
-					<td> <button type="submit" id="{{ i.id }}"  class="btn btn-danger" ng-click="deleteDrink( i.id )" >Obrisi</button>
-						  </td>
+					<td><input type="text" class="form-control" ng-model="i.name"  placeholder="Promenite ime pica" > </td>
+				 	<td><input type = "text" class="form-control" ng-model="i.description" placeholder="Promenite opis pica" value="{{ i.description }}"> </td>
+					<td> <input type = "number" class="form-control" ng-model="i.price" placeholder="Promenite cenu pica" value="{{ i.price }} "></td>
+					<td> <button type="submit" id="{{ i.id }}"  class="btn btn-danger" ng-click="deleteDrink( i.id )" >Obrisi</button></td>
+					<td> <button type="submit" id="{{ i.id }}"  class="btn btn-warning" ng-click="changeDrink( i.id )" >Promeni</button></td>
+				
 				</tr>
 			</table>
 			<br/><br/>
@@ -107,8 +113,6 @@
 		<div id="konfiguracijaDiv" ng-show="konfiguracijaShow">
 		
 		</div>
-		<button type="submit" class="btn btn-success" ng-click="saveRestaurantInfo()" ng-show="saveButton">Sacuvaj Izmene</button>
-			<label id="errorLabel" ng-show="error" >{{errorMessage}}</label>
 	</div>
 </body>
 

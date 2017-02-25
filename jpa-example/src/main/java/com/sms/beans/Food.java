@@ -55,13 +55,21 @@ public class Food implements Serializable{
 		this.foodRecensions = foodRecensions;
 	}
 
-	public Food(String name, String Description, Integer price){
+	public Food(String name, String description, Integer price){
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.grade = 0;
 	}
-	
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -101,14 +109,7 @@ public class Food implements Serializable{
 	public void setFoodRecensions(List<FoodRecension> foodRecensions) {
 		this.foodRecensions = foodRecensions;
 	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	
 	
 	
 

@@ -10,4 +10,5 @@ public interface FoodDao extends Repository<Food, Long>{
 	
 	public void save(Food food);
 	
+	public Food findById(Integer id);
 }

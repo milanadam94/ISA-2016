@@ -41,21 +41,9 @@ public class Menu implements Serializable{
 	public Menu() {
 	}
 	
-	public Menu(ArrayList<Food> foods, ArrayList<Drink> drinks) {
+	public Menu(List<Food> foods, List<Drink> drinks) {
 		super();
 		this.foods = foods;
-		this.drinks = drinks;
-	}
-	public List<Food> getFoods() {
-		return foods;
-	}
-	public void setFoods(List<Food> foods) {
-		this.foods = foods;
-	}
-	public List<Drink> getDrinks() {
-		return drinks;
-	}
-	public void setDrinks(List<Drink> drinks) {
 		this.drinks = drinks;
 	}
 
@@ -67,7 +55,22 @@ public class Menu implements Serializable{
 		this.id = id;
 	}
 
-	
+	public List<Food> getFoods() {
+		return foods;
+	}
+
+	public void setFoods(List<Food> foods) {
+		this.foods = foods;
+	}
+
+	public List<Drink> getDrinks() {
+		return drinks;
+	}
+
+	public void setDrinks(List<Drink> drinks) {
+		this.drinks = drinks;
+	}
+
 	public Restaurant getRestaurant() {
 		return restaurant;
 	}
@@ -75,6 +78,7 @@ public class Menu implements Serializable{
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
 	}
+	
 	
 	
 

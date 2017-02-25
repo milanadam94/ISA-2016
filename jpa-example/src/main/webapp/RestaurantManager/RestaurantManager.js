@@ -40,7 +40,6 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	
 	
 	setShows = function(profilShow, picaShow, jelovnikShow, konfiguracijaShow){
-		$scope.saveButton = (profilShow || picaShow || jelovnikShow || konfiguracijaShow);
 		$scope.profilShow = profilShow;
 		$scope.picaShow = picaShow;
 		$scope.jelovnikShow = jelovnikShow;
@@ -88,7 +87,24 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 		
 	}
 	
-	
+	$scope.changeFood = function(foodID){
+		selectedFood = "";
+		
+		angular.forEach($scope.menu.foods, function(value){
+			if(value.id == foodID){
+				selectedFood = value;
+			}
+			
+		})
+		
+		if(selectedFood.name == "" || selectedFood.price < 0){
+			alert("Ime ne sme biti prazno. Cena ne sme biti manja od 0");
+			return;
+		}
+		
+		foodService.saveChanges(selectedFood, $scope.menu);
+		
+	}
 	
 	
 	$scope.addFood = function(){
@@ -176,6 +192,24 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 			);	
 	}
 	
+	$scope.changeDrink = function(drinkID){
+		selectedDrink = "";
+		
+		angular.forEach($scope.menu.drinks, function(value){
+			if(value.id == drinkID){
+				selectedDrink = value;
+			}
+			
+		})
+		
+		if(selectedDrink.name == "" || selectedDrink.price < 0){
+			alert("Ime ne sme biti prazno. Cena ne sme biti manja od 0");
+			return;
+		}
+		
+		drinkService.saveChanges(selectedDrink, $scope.menu);
+		
+	}
 	
 	$scope.deleteDrink = function(drinkID){
 		drinkService.deleteDrink(drinkID, $scope.menu);
@@ -220,7 +254,9 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 			}			
 			restaurantInfoService.saveChanges($scope.restaurant, $scope.user);
 			
+			
 		}else if ($scope.jelovnikShow) {
+			
 			
 		}else if ($scope.piceShow){
 			
@@ -273,7 +309,19 @@ restManager.service('restaurantInfoService',['$window', '$http', function($windo
 
 restManager.service('foodService',['$window', '$http', function($window, $http){
 	
-	this.saveChanges;
+	this.saveChanges = function (food, menu){
+		$http({
+			method: 'POST',
+			data: $.param(food),
+			url: "../restManager/changeFood/" + menu.id
+		}).then(function success() {
+			alert("Uspesno promenjeno!");
+		  }, function error() {
+			  	alert("Error!");
+		  }
+		  
+		);	
+	}
 	
 	this.addFood = function (newFood, menu){
 		$http({
@@ -295,7 +343,19 @@ restManager.service('foodService',['$window', '$http', function($window, $http){
 
 restManager.service('drinkService', ['$window', '$http', function($window, $http){
 
-	this.saveChanges;
+	this.saveChanges = function (drink, menu){
+		$http({
+			method: 'POST',
+			data: $.param(drink),
+			url: "../restManager/changeDrink/" + menu.id
+		}).then(function success() {
+			alert("Uspesno promenjeno!");
+		  }, function error() {
+			  	alert("Error!");
+		  }
+		  
+		);		
+	}
 	
 	this.deleteDrink = function(drinkID, menu){
 		$http({
