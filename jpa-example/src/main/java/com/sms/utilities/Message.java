@@ -14,4 +14,6 @@ public class Message {
 	public static final String CATEGORYERROR = "Restaurant-category error";
 	public static final String ADDRESSERROR = "Adresa stanovanja nije u ispravnom formatu.  Mora poceti velikim slovom i sadrzati iskljucivo slova i brojeve.";
 	public static final String CITYERROR = "Mesto stanovanja nije u ispravnom formatu.  Mora poceti velikim slovom i sadrzati iskljucivo slova.";
+	public static final String CREDIDENTIALSERROR = "Greska u podacima";
+	public static final String REQUESTERROR = "Neispravan zahtev.";
 }

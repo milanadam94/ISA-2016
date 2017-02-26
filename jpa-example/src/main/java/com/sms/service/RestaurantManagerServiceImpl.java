@@ -4,18 +4,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sms.beans.ActiveUser;
+import com.sms.beans.Bartender;
+import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.Menu;
+import com.sms.beans.Offerer;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.SysUser;
+import com.sms.beans.Tender;
 import com.sms.beans.UserType;
+import com.sms.beans.Waiter;
 import com.sms.dao.ActiveUserDao;
+import com.sms.dao.BartenderDao;
+import com.sms.dao.CookDao;
 import com.sms.dao.DrinkDao;
 import com.sms.dao.FoodDao;
 import com.sms.dao.MenuDao;
+import com.sms.dao.OffererDao;
 import com.sms.dao.RestaurantDao;
 import com.sms.dao.RestaurantManagerDao;
+import com.sms.dao.TenderDao;
+import com.sms.dao.UserDao;
+import com.sms.dao.WaiterDao;
+import com.sms.utilities.Message;
 
 @Service
 public class RestaurantManagerServiceImpl implements RestaurantManagerService{
@@ -37,6 +50,26 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	
 	@Autowired
 	private DrinkDao drinkDao;
+	
+	@Autowired
+	private UserDao userDao;
+	
+	@Autowired
+	private OffererDao offererDao;
+	
+	@Autowired
+	private WaiterDao waiterDao;
+	
+	@Autowired
+	private CookDao cookDao;
+	
+	@Autowired
+	private BartenderDao bartenderDao;
+	
+	@Autowired
+	private TenderDao tenderDao;
+	
+	
 	
 	@Override
 	public Restaurant getRestaurant(String restManagerID) {
@@ -207,6 +240,120 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 			drinkDao.save(newDrink);
 		}
 	}
+
+	@Override
+	public String registarOfferer(SysUser user) {
+		// TODO Auto-generated method stub
+		
+		if(user.getEmail() == null || user.getEmail().equals(""))
+			return Message.EMAILERROR;
+		else if(user.getPassword() == null || user.getPassword().equals(""))
+			return Message.PASSWORDERROR;
+		else if(user.getName() == null || user.getName().equals(""))
+			return Message.NAMEERROR;
+		else if(user.getLastName() == null || user.getLastName().equals(""))
+			return Message.LASTNAMEERROR;
+		else if(user.getUserType() == null || user.getUserType().equals(""))
+			return Message.REGISTRATIONERROR;
+		
+		SysUser sysUser = userDao.findByEmail(user.getEmail());
+		
+		if(sysUser != null)
+			return Message.REGISTRATIONERROR;
+	
+		SysUser newUser = new SysUser(user.getEmail(), user.getPassword(), user.getName(), user.getLastName(), user.getUserType());	
+		userDao.save(newUser);
+		Offerer rest = new Offerer(newUser);
+		offererDao.save(rest);
+		
+		
+		return Message.ERRORFREE;
+	}
+
+	@Override
+	public String createTender(Tender newTender, String userEmail) {
+		// TODO Auto-generated method stub
+		
+		RestaurantManager restManager = getRestaurantManager(userEmail);
+		
+		if(restManager == null){
+			return Message.USERNOTFOUNDERROR;
+		}
+		
+		newTender.setRestaurant(restManager.getRestaurant());	
+		tenderDao.save(newTender);
+		
+		return Message.ERRORFREE;
+	}
+	
+	
+	
+	
+	@Override
+	public String registarWorker(SysUser user, String managerID) {
+		// TODO Auto-generated method stub
+		
+		if(user.getEmail() == null || user.getEmail().equals(""))
+			return Message.EMAILERROR;
+		else if(user.getPassword() == null || user.getPassword().equals(""))
+			return Message.PASSWORDERROR;
+		else if(user.getName() == null || user.getName().equals(""))
+			return Message.NAMEERROR;
+		else if(user.getLastName() == null || user.getLastName().equals(""))
+			return Message.LASTNAMEERROR;
+		else if(user.getUserType() == null || user.getUserType().equals(""))
+			return Message.REGISTRATIONERROR;
+		
+		SysUser sysUser = userDao.findByEmail(user.getEmail());
+		
+		if(sysUser != null)
+			return Message.REGISTRATIONERROR;
+		
+		RestaurantManager manager = getRestaurantManager(managerID);
+	
+		if(manager == null){
+			return Message.REGISTRATIONERROR;
+		}
+	
+		SysUser newUser = new SysUser(user.getEmail(), user.getPassword(), user.getName(), user.getLastName(), user.getUserType());
+		
+		switch (newUser.getUserType().toString()) {
+		case "BARTENDER":
+			userDao.save(newUser);
+			Bartender bartender = new Bartender(newUser, manager.getRestaurant());
+			bartenderDao.save(bartender);
+			break;
+			
+		case "COOK":
+			userDao.save(newUser);
+			Cook cook = new Cook(newUser, manager.getRestaurant());
+			cookDao.save(cook);
+			break;
+			
+		case "WAITER":
+			userDao.save(newUser);
+			Waiter waiter = new Waiter(newUser, manager.getRestaurant());
+			waiterDao.save(waiter);
+			break;
+			
+		default:
+			return Message.REGISTRATIONERROR;
+		}
+		
+		
+		return Message.ERRORFREE;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

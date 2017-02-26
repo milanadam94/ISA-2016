@@ -1,5 +1,7 @@
 package com.sms.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -26,7 +28,23 @@ public class GuestController {
 		return guestService.getGuestByUserId(userId);
 		
 	}
+	
+	@PostMapping(path = "/searchGuests/{guestId}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Guest> searchGuests(@RequestBody(required = false) String searchInput, @PathVariable(value="guestId") Integer guestId) {
+		
+		return guestService.searchGuests(guestId, searchInput);
+		
+	}
 
+	@PostMapping(path = "/addFriend/{guestId}", produces=MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String addFriend(@RequestBody Guest friend, @PathVariable(value="guestId") Integer guestId) {
+		
+		return guestService.addFriend(guestId, friend);
+		
+	}
+	
 	@PostMapping(path = "/editProfile", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public String editProfile(@RequestBody Guest guest) {

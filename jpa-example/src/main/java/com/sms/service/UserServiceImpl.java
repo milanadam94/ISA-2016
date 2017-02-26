@@ -39,6 +39,9 @@ public class UserServiceImpl implements UserService {
 
 	public SysUser login(SysUser user) {
 
+		if (user.getEmail() == null || user.getPassword() == null)
+			return new SysUser();
+		
 		SysUser sysUser = userDao.findByEmailAndPassword(user.getEmail(), user.getPassword());
 
 		if (sysUser == null)

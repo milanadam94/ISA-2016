@@ -5,6 +5,8 @@ import com.sms.beans.Food;
 import com.sms.beans.Menu;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.SysUser;
+import com.sms.beans.Tender;
 
 public interface RestaurantManagerService {
 
@@ -25,4 +27,10 @@ public interface RestaurantManagerService {
 	public void changeFood(Food newFood, Integer menuID);
 	
 	public void changeDrink(Drink newDrink, Integer menuID);
+	
+	public String registarWorker(SysUser user, String managerID);
+	
+	public String registarOfferer(SysUser user);
+	
+	public String createTender(Tender newTender, String userEmail);
 }

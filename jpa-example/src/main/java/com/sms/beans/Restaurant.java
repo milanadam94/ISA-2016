@@ -31,9 +31,6 @@ public class Restaurant implements Serializable{
 	@GeneratedValue
 	private Integer id;
 	
-	@OneToMany
-	private List<RestaurantManager> restaurantManagers;
-	
 	@Column(name = "name", unique = true, nullable = false)
 	private String name;
 	
@@ -51,9 +48,6 @@ public class Restaurant implements Serializable{
 	//public ArrayList<Segment> segments;
 	//public ArrayList<SysUser> workrers;
 	
-	
-	//public ArrayList<Offerer> offerers;
-	//public ArrayList<Tender> tenders;
 	//public ArrayList<Offerings> offerings;
 	//public ArrayList<RestaurantProfit> restaurantProfits;
 	//public ArrayList<RestaurantVisitRate> restaurantVisitRates;
@@ -79,14 +73,6 @@ public class Restaurant implements Serializable{
 	
 	public String getName() {
 		return name;
-	}
-
-	public List<RestaurantManager> getRestaurantManagers() {
-		return restaurantManagers;
-	}
-
-	public void setRestaurantManagers(List<RestaurantManager> restaurantManagers) {
-		this.restaurantManagers = restaurantManagers;
 	}
 
 	public void setName(String name) {
@@ -119,8 +105,6 @@ public class Restaurant implements Serializable{
 	}
 */
 
-
-	
 	
 	
 

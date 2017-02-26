@@ -42,9 +42,23 @@ public class Waiter implements Serializable {
 	@ManyToOne
 	private SysUser user;
 
+	@ManyToOne
+	private Restaurant restaurant;
+	
+	
 	public Waiter() {
+	
 	}
 
+	public Waiter(SysUser user){
+		this.user = user;
+	}
+	
+	public Waiter(SysUser user, Restaurant restourant) {
+		this.user = user;
+		this.restaurant = restourant;
+	}
+	
 	public Waiter(String email, String password, String suitSize, int shoeSize, String birthday, SysUser user) {
 		this.user = user;
 		this.suitSize = suitSize;
@@ -91,4 +105,14 @@ public class Waiter implements Serializable {
 	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+	
+	
 }

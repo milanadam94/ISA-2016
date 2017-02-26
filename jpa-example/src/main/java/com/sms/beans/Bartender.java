@@ -30,6 +30,10 @@ public class Bartender implements Serializable{
 	@OneToMany
 	private List<GuestOrder> orders;
 	
+	@ManyToOne
+	private Restaurant restaurant;
+	
+	
     public Bartender() {
 	}
     
@@ -37,6 +41,11 @@ public class Bartender implements Serializable{
 		this.user = user;
 	}
 
+	public Bartender(SysUser user, Restaurant restourant) {
+		this.user = user;
+		this.restaurant = restourant;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -60,6 +69,14 @@ public class Bartender implements Serializable{
 
 	public void setUser(SysUser user) {
 		this.user = user;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
 	}
 	
 	 

@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -32,6 +33,9 @@ public class Guest implements Serializable {
 
 	@ManyToMany
 	private List<Guest> friends;
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	private List<Guest> friendRequests;
 
 	@Column(name = "address")
 	private String address;
