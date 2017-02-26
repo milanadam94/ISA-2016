@@ -16,26 +16,44 @@ var app = angular
 			}
 }]);
 
-app.controller('restaurantsController', [ '$scope', 'restaurantsService', function($scope, restaurantsService) {
+app.controller('restaurantsController', [ '$scope', 'restaurantsService',  function($scope, restaurantsService) {
 
 	$scope.sortType = 'name';
 	$scope.sortReverse = false;
 
 } ]);
 
-app.controller('friendsController', [ '$scope', function($scope) {
+angular.module('app').filter('isFriend', function() {
+	  return function (potFriend, guest) {
+		  
+		  var check = false;
+		  guest.friends.forEach(function(friend) {
+			  if(friend.id == potFriend.id) {
+				  check = true;
+				  return;
+			  }
+		  });
+		  return check;
+	  };
+	});
+
+app.controller('friendsController', [ '$scope', 'guestService', function($scope, guestService) {
 
 	$scope.sortType = 'name';
 	$scope.sortReverse = false;
 
-	$scope.friendsSearch = "";
+	$scope.searchInput = "";
 
-	$scope.addFriend = function() {
-
+	$scope.addFriend = function(friend) {
+		guestService.addFriend($scope.$parent.guest, friend).then(function(data) {
+			
+		})
 	}
 	
-	$scope.searchFriends = function() {
-		
+	$scope.searchGuests = function() {
+		guestService.searchGuests($scope.$parent.guest, $scope.searchInput).then(function(data) {
+			$scope.guests = data;
+		})
 	}
 
 } ]);
@@ -43,6 +61,9 @@ app.controller('friendsController', [ '$scope', function($scope) {
 app.controller('profileController', [ '$scope', 'guestService', function($scope, guestService) {
 	
 	$scope.errorMessage = false;
+	$scope.userInfoErrorMessage = false;
+	
+	$scope.searchInput = "";
 	
 	$scope.password = "";
 	$scope.newPassword = "";
@@ -60,15 +81,39 @@ app.controller('profileController', [ '$scope', 'guestService', function($scope,
 		$scope.errorMessage = false;
 	}
 	
+	$scope.editGuestInfo = function() {
+		
+		var retVal = guestService.validateEditUserInfoInput($scope.$parent.newGuest, $scope.password, $scope.newPassword, $scope.newPasswordConfirm);
+		if(retVal) {
+			$scope.userInfoErrorMessage = retVal;
+		}
+		else {
+			$scope.userInfoErrorMessage = "";
+			$scope.$parent.newGuest.user.password = $scope.newPassword;
+			guestService.editProfile($scope.$parent.newGuest).then(function(data){
+				if(data != "") {
+					$scope.userInfoErrorMessage = data;
+					$scope.$parent.newGuest.user.password = $scope.password;
+				}
+				else
+				{
+					$scope.$parent.guest = $scope.$parent.newGuest;
+					$.cookie.json = true;
+					$.cookie("user", $scope.$parent.newGuest.user, {path    : '/', domain  : ''});
+					angular.element('#editGuestInfoModal').modal('hide');
+				}
+		    });
+		}
+	}
+	
 	$scope.editProfile = function() {
-		var retVal = guestService.validateEditInput($scope.$parent.newGuest, $scope.password, $scope.newPassword, $scope.newPasswordConfirm);
+		var retVal = guestService.validateEditProfileInput($scope.$parent.newGuest);
 		
 		if(retVal) {
 			$scope.errorMessage = retVal;
 		}
 		else {
 			$scope.errorMessage = "";
-			$scope.$parent.newGuest.user.password = $scope.newPassword;
 			guestService.editProfile($scope.$parent.newGuest).then(function(data){
 				if(data != "") {
 					$scope.errorMessage = data;
@@ -78,6 +123,7 @@ app.controller('profileController', [ '$scope', 'guestService', function($scope,
 					$scope.$parent.guest = $scope.$parent.newGuest;
 					$.cookie.json = true;
 					$.cookie("user", $scope.$parent.newGuest.user, {path    : '/', domain  : ''});
+					angular.element('#editProfileModal').modal('hide');
 				}
 		    });
 		}
@@ -145,6 +191,30 @@ app.service('restaurantsService', [ '$http', '$window',
 
 app.service('guestService', [ '$http', '$window', function($http, $window) {
 	
+	this.addFriend = function(guest, friend) {
+		return $http({
+			method : 'POST',
+			url : "../guest/addFriend/" + guest.id,
+			data: friend
+		}).then(function success(response) {
+			return response.data;
+		}, function error(response) {
+			alert(response)
+		});
+	}
+	
+	this.searchGuests = function(guest, searchInput) {
+		return $http({
+			method : 'POST',
+			url : "../guest/searchGuests/" + guest.id,
+			data: searchInput
+		}).then(function success(response) {
+			return response.data;
+		}, function error(response) {
+			alert(response)
+		});
+	}
+	
 	this.loadGuest = function() {
 		user = JSON.parse($.cookie("user"));
 		return $http({
@@ -175,14 +245,22 @@ app.service('guestService', [ '$http', '$window', function($http, $window) {
 		$window.location.href = '/StartPage/StartPage.html';
 	}
 	
-	this.validateEditInput = function(guest, password, newPassword, newPasswordConfirm){
+	this.validateEditProfileInput = function(guest){
 		
-		if(guest.user.email == "" || password == "" || newPassword == "" 
-			|| newPasswordConfirm == "" || guest.user.name == "" || guest.user.lastName == "" 
-			|| guest.address == "" || guest.city == "")
+		if(guest.user.name == "" || guest.user.lastName == "")
+			return "Ime i prezime je obavezno.";
+		
+		return false;
+	}
+	
+	this.validateEditUserInfoInput = function(guest, password, newPassword, newPasswordConfirm){
+		
+		if(password == "" 
+			|| newPassword == "" || newPasswordConfirm == "")
 			return "Potrebno je uneti sve podatke.";
-			console.log(password)
-			console.log(guest.user.password)
+		
+		console.log(password)
+		console.log(guest.user.password)
 		if(password != guest.user.password) {
 			return "Lozinka nije ispravna.";
 		}
@@ -190,7 +268,11 @@ app.service('guestService', [ '$http', '$window', function($http, $window) {
 		if(newPassword != newPasswordConfirm) {
 			return "Unete lozinke se ne podudaraju.";
 		}
-	
+		
+		if(password == newPassword) {
+			return "Uneli ste lozinku koju vec posedujete.";
+		}
+		
 		return false;
 	}
 	
@@ -212,5 +294,5 @@ app.service('guestService', [ '$http', '$window', function($http, $window) {
 				  alert(response)
 			  });
 	 }
-	
+	 
 } ]);
