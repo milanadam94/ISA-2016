@@ -1,0 +1,23 @@
+package com.sms.dao;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.Repository;
+
+import com.sms.beans.SysUser;
+import com.sms.beans.Tender;
+
+public interface TenderDao extends Repository<Tender, Long>{
+	
+	public Page<Tender> findAll(Pageable pageable);
+
+	public SysUser findByEmailAndPassword(String email, String password);
+
+	public SysUser findByEmail(String email);
+	
+	public SysUser findById(Integer id);
+	
+	public SysUser save(SysUser user);
+
+	
+}

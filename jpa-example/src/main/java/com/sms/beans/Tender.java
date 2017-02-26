@@ -5,15 +5,42 @@
  ***********************************************************************/
 package com.sms.beans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Tender {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+
+@Entity
+@Table(name = "tender")
+public class Tender implements Serializable {
+
+	private static final long serialVersionUID = 7894950206141029595L;
+	
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
+	@Column(name = "startDate")
 	private Date startDate;
+	
+	@Column(name = "endDate")
 	private Date endDate;
+	
+	@Column(name = "description")
 	private String description;
 
+	@ManyToOne
+	private Restaurant restaurant;
+	
 	public ArrayList<Offerings> offerings;
 
 	public Tender() {
@@ -49,6 +76,22 @@ public class Tender {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	public ArrayList<Offerings> getOfferings() {
+		return offerings;
+	}
+
+	public void setOfferings(ArrayList<Offerings> offerings) {
+		this.offerings = offerings;
 	}
 
 }
