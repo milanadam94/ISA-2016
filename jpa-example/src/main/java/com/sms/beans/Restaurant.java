@@ -33,7 +33,7 @@ public class Restaurant implements Serializable{
 	
 	@OneToMany
 	private List<RestaurantManager> restaurantManagers;
-	
+
 	@Column(name = "name", unique = true, nullable = false)
 	private String name;
 	
@@ -119,8 +119,6 @@ public class Restaurant implements Serializable{
 	}
 */
 
-
-	
 	
 	
 

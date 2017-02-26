@@ -1,8 +1,5 @@
 package com.sms.controller;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -10,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -18,6 +16,8 @@ import com.sms.beans.Food;
 import com.sms.beans.Menu;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.SysUser;
+import com.sms.beans.Tender;
 import com.sms.service.RestaurantManagerService;
 import com.sms.service.RestaurantService;
 import com.sms.utilities.Message;
@@ -131,9 +131,19 @@ public class RestaurantManagerController {
 		
 	}
 	
+	@PostMapping(path = "/registarOfferer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String registarOfferer(@RequestBody SysUser user){
+		
+		return restManagerService.registarOfferer(user);
+	}
 	
 	
-	
+	@PostMapping(path = "/createTender/{userEmail}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String createTender(@RequestBody Tender newTender, @PathVariable("userEmail") String userEmail){
+		return restManagerService.createTender(newTender, userEmail);
+	}
 	
 	
 }

@@ -7,15 +7,22 @@ import com.sms.beans.ActiveUser;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.Menu;
+import com.sms.beans.Offerer;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.SysUser;
+import com.sms.beans.Tender;
 import com.sms.beans.UserType;
 import com.sms.dao.ActiveUserDao;
 import com.sms.dao.DrinkDao;
 import com.sms.dao.FoodDao;
 import com.sms.dao.MenuDao;
+import com.sms.dao.OffererDao;
 import com.sms.dao.RestaurantDao;
 import com.sms.dao.RestaurantManagerDao;
+import com.sms.dao.TenderDao;
+import com.sms.dao.UserDao;
+import com.sms.utilities.Message;
 
 @Service
 public class RestaurantManagerServiceImpl implements RestaurantManagerService{
@@ -37,6 +44,15 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	
 	@Autowired
 	private DrinkDao drinkDao;
+	
+	@Autowired
+	private UserDao userDao;
+	
+	@Autowired
+	private OffererDao offererDao;
+	
+	@Autowired
+	private TenderDao tenderDao;
 	
 	@Override
 	public Restaurant getRestaurant(String restManagerID) {
@@ -207,6 +223,66 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 			drinkDao.save(newDrink);
 		}
 	}
+
+	@Override
+	public String registarOfferer(SysUser user) {
+		// TODO Auto-generated method stub
+		
+		if(user.getEmail() == null || user.getEmail().equals(""))
+			return Message.EMAILERROR;
+		else if(user.getPassword() == null || user.getPassword().equals(""))
+			return Message.PASSWORDERROR;
+		else if(user.getName() == null || user.getName().equals(""))
+			return Message.NAMEERROR;
+		else if(user.getLastName() == null || user.getLastName().equals(""))
+			return Message.LASTNAMEERROR;
+		else if(user.getUserType() == null || user.getUserType().equals(""))
+			return Message.REGISTRATIONERROR;
+		
+		SysUser sysUser = userDao.findByEmail(user.getEmail());
+		
+		if(sysUser != null)
+			return Message.REGISTRATIONERROR;
+	
+		SysUser newUser = new SysUser(user.getEmail(), user.getPassword(), user.getName(), user.getLastName(), user.getUserType());
+		Offerer rest = new Offerer(newUser);
+		userDao.save(newUser);
+		offererDao.save(rest);
+		
+		return Message.ERRORFREE;
+	}
+
+	@Override
+	public String createTender(Tender newTender, String userEmail) {
+		// TODO Auto-generated method stub
+		
+		RestaurantManager restManager = getRestaurantManager(userEmail);
+		
+		if(restManager == null){
+			return Message.USERNOTFOUNDERROR;
+		}
+		
+		newTender.setRestaurant(restManager.getRestaurant());	
+		tenderDao.save(newTender);
+		
+		return Message.ERRORFREE;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
