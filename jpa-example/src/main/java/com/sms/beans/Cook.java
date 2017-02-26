@@ -34,6 +34,10 @@ public class Cook implements Serializable {
 	@ManyToMany
 	private List<GuestOrder> orders;
 
+	@ManyToOne
+	private Restaurant restaurant;
+	
+	
 	public Cook() {
 	}
 
@@ -41,6 +45,11 @@ public class Cook implements Serializable {
 		this.user = user;
 	}
 
+	public Cook(SysUser user, Restaurant restourant) {
+		this.user = user;
+		this.restaurant = restourant;
+	}
+	
 	public List<GuestOrder> getOrders() {
 		return orders;
 	}
@@ -65,4 +74,13 @@ public class Cook implements Serializable {
 		this.user = user;
 	}
 
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	
 }

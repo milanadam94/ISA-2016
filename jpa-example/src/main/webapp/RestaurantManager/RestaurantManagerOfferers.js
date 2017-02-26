@@ -69,6 +69,7 @@ restManager.controller('restManagerOfferersController', [ '$scope', 'registarSer
 				$scope.newOfferer.pasword == "" || 
 				$scope.newOfferer.name == "" || 
 				$scope.newOfferer.lastName == "" || 
+				$scope.newOfferer.userType != "OFFERER" ||
 				$scope.newOfferer.password != $scope.passwordConfirm){
 			
 			$scope.error = true;

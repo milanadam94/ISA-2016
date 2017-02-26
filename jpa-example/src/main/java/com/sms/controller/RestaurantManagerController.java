@@ -146,4 +146,11 @@ public class RestaurantManagerController {
 	}
 	
 	
+	@PostMapping(path = "/registarWorker/{managerID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String registarWorker(@RequestBody SysUser user, @PathVariable("managerID") String managerID){
+		
+		return restManagerService.registarWorker(user,managerID);
+	}
+	
 }

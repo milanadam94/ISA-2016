@@ -28,6 +28,8 @@ public interface RestaurantManagerService {
 	
 	public void changeDrink(Drink newDrink, Integer menuID);
 	
+	public String registarWorker(SysUser user, String managerID);
+	
 	public String registarOfferer(SysUser user);
 	
 	public String createTender(Tender newTender, String userEmail);
