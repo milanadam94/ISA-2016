@@ -26,7 +26,6 @@ public class GuestController {
 	public Guest loadGuest(@PathVariable(value="userId") Integer userId) {
 		
 		return guestService.getGuestByUserId(userId);
-		
 	}
 	
 	@PostMapping(path = "/searchGuests/{guestId}", produces=MediaType.APPLICATION_JSON_VALUE)
@@ -34,15 +33,34 @@ public class GuestController {
 	public List<Guest> searchGuests(@RequestBody(required = false) String searchInput, @PathVariable(value="guestId") Integer guestId) {
 		
 		return guestService.searchGuests(guestId, searchInput);
-		
 	}
 
 	@PostMapping(path = "/addFriend/{guestId}", produces=MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
-	public String addFriend(@RequestBody Guest friend, @PathVariable(value="guestId") Integer guestId) {
+	public String addFriend(@RequestBody Integer friendId, @PathVariable(value="guestId") Integer guestId) {
 		
-		return guestService.addFriend(guestId, friend);
+		return guestService.addFriend(guestId, friendId);
+	}
+	
+	@PostMapping(path = "/acceptRequest/{guestId}", produces=MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String acceptRequest(@RequestBody Integer friendId, @PathVariable(value="guestId") Integer guestId) {
 		
+		return guestService.acceptRequest(guestId, friendId);
+	}
+	
+	@PostMapping(path = "/declineRequest/{guestId}", produces=MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String declineRequest(@RequestBody Integer friendId, @PathVariable(value="guestId") Integer guestId) {
+		
+		return guestService.declineRequest(guestId, friendId);
+	}
+	
+	@PostMapping(path = "/removeFriend/{guestId}", produces=MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String removeFriend(@RequestBody Integer friendId, @PathVariable(value="guestId") Integer guestId) {
+		
+		return guestService.removeFriend(guestId, friendId);
 	}
 	
 	@PostMapping(path = "/editProfile", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -50,7 +68,6 @@ public class GuestController {
 	public String editProfile(@RequestBody Guest guest) {
 		
 		return guestService.editProfile(guest);
-		
 	}
 	
 }

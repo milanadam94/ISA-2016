@@ -12,6 +12,12 @@ public interface GuestService {
 
 	public List<Guest> searchGuests(Integer guestId, String searchInput);
 
-	public String addFriend(Integer guestId, Guest friend);
+	public String addFriend(Integer guestId, Integer friendId);
+
+	public String removeFriend(Integer guestId, Integer friendId);
+
+	public String acceptRequest(Integer guestId, Integer friendId);
+
+	public String declineRequest(Integer guestId, Integer friendId);
 
 }

@@ -23,17 +23,28 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 
 } ]);
 
-angular.module('app').filter('isFriend', function() {
-	  return function (potFriend, guest) {
-		  
-		  var check = false;
+angular.module('app').filter('doesntContain', function() {
+	  return function (guest, potFriend, what) {
+		  check = 'add';
 		  guest.friends.forEach(function(friend) {
 			  if(friend.id == potFriend.id) {
-				  check = true;
-				  return;
+				  check = 'remove';
 			  }
 		  });
-		  return check;
+		  guest.friendRequests.forEach(function(request) {
+			  if(request.id == potFriend.id) {
+				  check = 'requestRecieved';
+			  }
+		  });
+		  potFriend.friendRequests.forEach(function(request) {
+			  if(request.id == guest.id) {
+				  check = 'requestSent';
+			  }
+		  });
+		  if(what === check)
+			  return true;
+		  else
+			  return false;
 	  };
 	});
 
@@ -41,13 +52,41 @@ app.controller('friendsController', [ '$scope', 'guestService', function($scope,
 
 	$scope.sortType = 'name';
 	$scope.sortReverse = false;
+	$scope.checkGuest = '';
 
 	$scope.searchInput = "";
 
 	$scope.addFriend = function(friend) {
-		guestService.addFriend($scope.$parent.guest, friend).then(function(data) {
-			
-		})
+		guestService.addFriend($scope.$parent.guest, friend.id);
+		friend.friendRequests.push($scope.$parent.guest);
+	}
+	$scope.removeFriend = function(friend) {
+		guestService.removeFriend($scope.$parent.guest, friend.id);
+		$scope.$parent.guest.friends.forEach(function(f, index) { 
+				if(f.id === friend.id) {
+					$scope.$parent.guest.friends.splice(index,1);
+				}
+		});
+	}
+	
+	$scope.acceptRequest = function(friendRequest) {
+		guestService.acceptRequest($scope.$parent.guest, friendRequest.id);
+		$scope.$parent.guest.friendRequests.forEach(function(f, index) { 
+			if(f.id === friendRequest.id) {
+				$scope.$parent.guest.friendRequests.splice(index,1);
+			}
+		});
+		$scope.$parent.guest.friends.push(friendRequest);
+	}
+	
+	$scope.declineRequest = function(friendRequest) {
+		guestService.declineRequest($scope.$parent.guest, friendRequest.id);
+		$scope.$parent.guest.friendRequests.pop(friendRequest);
+		$scope.$parent.guest.friendRequests.forEach(function(f, index) { 
+			if(f.id === friendRequest.id) {
+				$scope.$parent.guest.friendRequest.splice(index,1);
+			}
+	});
 	}
 	
 	$scope.searchGuests = function() {
@@ -192,9 +231,45 @@ app.service('restaurantsService', [ '$http', '$window',
 app.service('guestService', [ '$http', '$window', function($http, $window) {
 	
 	this.addFriend = function(guest, friend) {
-		return $http({
+		$http({
 			method : 'POST',
 			url : "../guest/addFriend/" + guest.id,
+			data: friend
+		}).then(function success(response) {
+			return response.data;
+		}, function error(response) {
+			alert(response)
+		});
+	}
+	
+	this.acceptRequest = function(guest, friend) {
+		$http({
+			method : 'POST',
+			url : "../guest/acceptRequest/" + guest.id,
+			data: friend
+		}).then(function success(response) {
+			return response.data;
+		}, function error(response) {
+			alert(response)
+		});
+	}
+	
+	this.declineRequest = function(guest, friend) {
+		$http({
+			method : 'POST',
+			url : "../guest/declineRequest/" + guest.id,
+			data: friend
+		}).then(function success(response) {
+			return response.data;
+		}, function error(response) {
+			alert(response)
+		});
+	}
+	
+	this.removeFriend = function(guest, friend) {
+		$http({
+			method : 'POST',
+			url : "../guest/removeFriend/" + guest.id,
 			data: friend
 		}).then(function success(response) {
 			return response.data;
