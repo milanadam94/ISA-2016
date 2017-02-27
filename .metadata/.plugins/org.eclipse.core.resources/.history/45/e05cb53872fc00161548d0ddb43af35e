@@ -1,0 +1,17 @@
+package com.sms.service;
+
+import java.util.List;
+
+import com.sms.beans.Offerer;
+import com.sms.beans.Offerings;
+import com.sms.beans.Tender;
+
+public interface OffererService {
+
+	public List<Tender> getActiveTenders();
+	
+	public String createNewOfferings(Offerings offerings, Integer tenderID, Integer offererID);
+
+	Offerer getOfferer(String offererID);
+	
+}

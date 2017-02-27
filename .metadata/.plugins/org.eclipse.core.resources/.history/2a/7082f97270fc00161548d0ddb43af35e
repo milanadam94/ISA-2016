@@ -1,0 +1,121 @@
+angular.element(document).ready(function () {
+    console.log('page loading completed');
+});
+var offererApp = angular.module('offererApp', []).config(['$qProvider', '$httpProvider', function ($qProvider, $httpProvider)  {
+    $qProvider.errorOnUnhandledRejections(false);
+    
+}]).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
+	
+	//namestiti dole u funckcijama gde treba user.email kada se ovo namesti!
+	if (typeof $.cookie('user') !== 'undefined') {
+		$scope.user = JSON.parse($.cookie('user'));
+		
+		if(user.userType == "GUEST") {
+			$window.location.href = "/GuestPage/GuestPage.html";
+		}
+		// DALJE
+	}
+		 
+}]);
+
+
+offererApp.controller('offererControler', [ '$scope', 'tenderService', 'acceptedService', 'accountService', function($scope, tenderService, acceptedService, accountService){
+
+	setShows = function(tendersShow, acceptedShow, accountShow){
+		$scope.tendersShow = tendersShow;
+		$scope.acceptedShow = acceptedShow;
+		$scope.accountShow = accountShow;
+	}
+	setShows(false,false,false);
+	
+	// TENDER METODE
+	
+	$scope.newOfferings={
+			description : "",
+			price : 0,
+			deliveryDate: ""
+	}
+	
+	$scope.tender = function(){
+		setShows(true,false,false);
+		tenderService.getActiveTenders().then(
+				function(response){
+					$scope.activeTenders = response.data;
+				}
+		);
+		
+	}
+	
+	$scope.createNewOfferings = function(tenderID){
+		if($scope.newOfferings.price < 0 || $scope.newOfferings.deliveryDate == ""){
+			alert("Cena ne sme biti manja od nule i morate predefinisati datum dostavljanja")
+			return;
+		}
+		
+		tenderService.createNewOfferings($scope.newOfferings, tenderID);
+		
+	}
+	
+	
+	
+	// ACCEPTED METODE
+	$scope.accepted = function(){
+		setShows(false,true,false);
+	}
+	
+	
+	// ACCOUNT METODE
+	$scope.account = function(){
+		setShows(false,false,true);
+	}
+	
+	
+}]);
+
+
+
+offererApp.service('tenderService',['$window', '$http', function($window, $http){
+	
+	this.getActiveTenders = function(){
+		return $http({
+			  method: 'GET',
+		      url : "../offerer/getActiveTenders"
+		});
+	}
+	
+	
+	this.createNewOfferings = function(newOfferings, tenderID){
+		$http({
+			  method: 'POST',
+			  data: newOfferings,
+		      url : "../offerer/createNewOfferings/" + tenderID
+		});
+	}
+	
+
+}]);
+
+offererApp.service('acceptedService',['$window', '$http', function($window, $http){
+
+	
+
+}]);
+
+
+offererApp.service('accountService',['$window', '$http', function($window, $http){
+
+	
+
+}]);
+
+
+
+
+
+
+
+
+
+
+
+

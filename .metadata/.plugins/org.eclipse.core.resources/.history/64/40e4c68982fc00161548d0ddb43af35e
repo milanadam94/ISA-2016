@@ -1,0 +1,16 @@
+package com.sms.dao;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.Repository;
+
+import com.sms.beans.Offerer;
+import com.sms.beans.SysUser;
+
+public interface OffererDao extends Repository<Offerer, Long>{
+	
+	public Offerer findByUserId(Integer id);
+	
+	public Offerer save(Offerer user);
+
+}

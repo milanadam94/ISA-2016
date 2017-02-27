@@ -27,6 +27,9 @@ restManager.controller('restManagerOfferersController', [ '$scope', 'registarSer
 		$scope.registrovanjeShow = registrovanjeShow;
 		$scope.objavljivanjeShow = objavljivanjeShow;
 		$scope.pregledShow = pregledShow;
+		
+		$scope.tenderiPregled = false;
+		$scope.offeringsPregled = false;
 	}
 	setShows(false,false,false);
 	
@@ -44,6 +47,17 @@ restManager.controller('restManagerOfferersController', [ '$scope', 'registarSer
 	
 	$scope.pregled = function(){
 		setShows(false,false,true);
+		$scope.tenderiPregled = true;
+		$scope.offeringsPregled = false;
+		tenderService.getAllMyTenders().then(
+		
+				function(response){
+					$scope.myAllActiveTenders = response.data;
+				}
+				
+		);
+		
+		
 	}
 	
 	
@@ -95,6 +109,30 @@ restManager.controller('restManagerOfferersController', [ '$scope', 'registarSer
 		
 		tenderService.createTender($scope.newTender);
 		
+	}
+	
+	
+	// PREGLED
+	
+	$scope.showOfferings = function(tenderID){
+		
+		$scope.tenderiPregled = false;
+		$scope.offeringsPregled = true;
+		
+		tenderService.getOfferingsForTender(tenderID).then(
+				function(response){
+					$scope.selectedOfferings = response.data;
+				}
+		);
+	}
+	
+	
+	$scope.chooseOffering = function(offeringsID){
+		tenderService.chooseOffering(offeringsID).then(
+				function(response){
+					alert(response.data);
+				}
+		);
 	}
 	
 	
@@ -152,6 +190,32 @@ restManager.service('tenderService',['$window','$http', function($window, $http)
 				  	alert("Error!");
 			  }
 		);		
+		
+	}
+	
+	
+	this.getAllMyTenders = function(){
+		
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getAllMyTenders/1" //========================================== staviti user email
+		});
+	}
+	
+	
+	this.getOfferingsForTender = function (tenderID){
+		
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getOfferingsForTender/" + tenderID
+		});
+	}
+	
+	this.chooseOffering = function (offeringID){
+		return $http({
+			  method: 'POST',
+		      url : "../restManager/chooseOffering/" + offeringID
+		});
 		
 	}
 	

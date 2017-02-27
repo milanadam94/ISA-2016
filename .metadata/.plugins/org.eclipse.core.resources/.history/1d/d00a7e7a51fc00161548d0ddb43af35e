@@ -1,0 +1,33 @@
+#Spring DataSource
+spring.datasource.url = jdbc:mysql://localhost:3306/restaurantreservations?useSSL=false&createDatabaseIfNotExist=true
+spring.datasource.username = root
+spring.datasource.password = svitac94
+#korisno ako je konekcija dugo u idle stanju
+spring.datasource.testWhileIdle = true
+spring.datasource.validationQuery = SELECT 1
+#JPA-Hibernate
+spring.jpa.show-sql = true
+#kreira tabele na osnovu anotacija @Entity i kada aplikacija zavrsi
+#sa radom dropuje ih
+spring.jpa.hibernate.ddl-auto = create-drop
+#bira najbolje konvencije imenovanja za tabele i polja u bazi
+spring.jpa.hibernate.naming-strategy = org.hibernate.cfg.ImprovedNamingStrategy
+#optimizacija za mysql upite
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
+
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=isasms2016@gmail.com
+spring.mail.password=1100rh18
+
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.transport.protocol=smtps
+spring.mail.properties.mail.smtps.quitwait=false
+spring.mail.properties.mail.socketFactory.port=587
+spring.mail.properties.mail.socketFactory.class=javax.net.ssl.SSLSocketFactory
+spring.mail.properties.mail.socketFactory.fallback=false
+spring.mail.properties.mail.smtp.ssl.trust=smtp.gmail.com
+
+send.from.email=isasms2016@gmail.com

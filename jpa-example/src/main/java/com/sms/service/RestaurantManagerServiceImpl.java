@@ -1,6 +1,13 @@
 package com.sms.service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import com.sms.beans.ActiveUser;
@@ -10,6 +17,7 @@ import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerer;
+import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
 import com.sms.beans.SysUser;
@@ -23,6 +31,7 @@ import com.sms.dao.DrinkDao;
 import com.sms.dao.FoodDao;
 import com.sms.dao.MenuDao;
 import com.sms.dao.OffererDao;
+import com.sms.dao.OfferingsDao;
 import com.sms.dao.RestaurantDao;
 import com.sms.dao.RestaurantManagerDao;
 import com.sms.dao.TenderDao;
@@ -58,6 +67,9 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	private OffererDao offererDao;
 	
 	@Autowired
+	private OfferingsDao offeringsDao;
+	
+	@Autowired
 	private WaiterDao waiterDao;
 	
 	@Autowired
@@ -69,6 +81,9 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	@Autowired
 	private TenderDao tenderDao;
 	
+	
+	@Autowired
+	private MailSender mailSender;
 	
 	
 	@Override
@@ -343,9 +358,113 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		
 		return Message.ERRORFREE;
 	}
+
+	@Override
+	public List<Tender> getAllMyTenders(String managerEmail) {
+		// TODO Auto-generated method stub
+		
+		Restaurant restaurant = getRestaurant(managerEmail);
+		
+		if(restaurant == null){
+			return null;
+		}
+		
+		List<Tender> activeTenders = tenderDao.findActiveTenders();
+		List<Tender> tendersForSend = new ArrayList<Tender>();
+		
+		for(Tender tender : activeTenders){
+			if(tender.getRestaurant().getId() == restaurant.getId()){
+				tendersForSend.add(tender);
+			}
+		}
+		
+		return tendersForSend;
+	}
+
+	@Override
+	public List<Offerings> getOfferingsForTender(Integer tenderID) {
+		// TODO Auto-generated method stub
+		
+		Tender tender = tenderDao.findById(tenderID);
+		
+		if(tender == null){
+			return null;
+		}
+		
+		return offeringsDao.findByTender(tender);
+	}
+
+	@Override
+	public String chooseOffering(Integer offeringID) {
+		// TODO Auto-generated method stub
+		
+		Offerings offering = offeringsDao.findById(offeringID);
+		
+		if(offering == null){
+			return Message.REQUESTERROR;
+		}
+		
+		Tender tender = tenderDao.findById(offering.getTender().getId());
+		
+		Date date = new Date();
+	
+		if(tender == null || tender.isExpired() || tender.getEndDate().before(date) || tender.getStartDate().after(date)){
+			return Message.REQUESTERROR;
+		}
+		
+		tender.setExpired(true);
+		tenderDao.save(tender);
+		
+		List<Offerings> offerings = getOfferingsForTender(tender.getId());
+		
+		String text = "";
+		
+		for(Offerings offer : offerings){
+			text = "Vasa ponuda: " + offer.getDescription() + " ... sa cenom od: " + offer.getPrice();
+			text += " .. Za tender: " + offer.getTender().getDescription();
+			
+			
+			if(offer.getId() == offeringID){
+				offer.setIsAccepted(true);
+				text += " .. je PRIHVACENA";
+				text += ".. Molimo da nam isporucite dostavu do: " + offer.getDeliveryDate();
+				
+			}else{
+				offer.setIsAccepted(false);
+				text += " .. je nazalost ODBIJENA";
+			}
+			
+			
+			System.out.println("------------------------------");
+			System.out.println(text);
+			System.out.println("restaurantManagerServiceImpl.Class  ====== ne zaboraviti odkomentarisati MAIL");
+			offeringsDao.save(offer);
+			
+			//sendEmail(offer.getOfferer().getUser().getEmail(), text);
+			//sendEmail("sasa94sm2@gmail.com", text);
+			
+		}
+		
+		
+		return Message.ERRORFREE;
+	}
 	
 	
-	
+	private void sendEmail(String email, String text) {
+		
+		final SimpleMailMessage message = new SimpleMailMessage();
+		message.setSubject("Obavestenje o ponudi");
+		message.setFrom("isasms2016@gmail.com");
+		message.setTo(email);
+		message.setText(text);
+
+		try {
+			mailSender.send(message);
+		} catch (MailException e) {
+			System.out.println(e.toString());
+		}
+		
+	}
 	
 	
 	

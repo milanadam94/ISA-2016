@@ -1,0 +1,43 @@
+package com.sms.service;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.sms.beans.Tender;
+import com.sms.dao.TenderDao;
+
+@Service
+public class OffererServiceImpl implements OffererService {
+
+
+	@Autowired
+	private TenderDao tenderDao;
+
+	
+	
+	
+	@Override
+	public List<Tender> getActiveTenders() {
+		// TODO Auto-generated method stub
+		
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		System.out.println(date);
+		List<Tender> tenders = tenderDao.findActiveTenders(date);
+		
+		return tenders;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+}

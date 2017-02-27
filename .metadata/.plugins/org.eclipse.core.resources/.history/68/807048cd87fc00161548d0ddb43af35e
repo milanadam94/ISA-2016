@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Ponudjac</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
+<!-- TOASTR -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
+
+</head>
+<body ng-app="offererApp" ng-controller="offererControler">
+	<nav id="myNavbar" class="navbar">
+		<ul class="nav navbar-nav">
+			<li><a ng-click="tender()" >Otvoreni Tenderi</a></li>
+			<li><a ng-click="accepted()" >Prihvacene Porudzbine</a></li>
+			<li><a ng-click="account()" >Moj Profil</a></li>
+		</ul>
+	</nav>
+	<div>
+		<!--  TENDERS  -->
+		<!--  ====================================================== -->
+		<div ng-show="tendersShow">
+
+				<label for="description">Kreirajte Vasu Ponudu:</label> <br/>
+				<label>Cena: <input type="number" ng-model="newOfferings.price"></input> </label><br/>		
+				<label>Dostavljen do: <input type="date" ng-model="newOfferings.deliveryDate" > </input> </label> <br/>
+				<textarea class="form-control" rows="5"  ng-model="newOfferings.description" placeholder="Unesite opis..."></textarea>
+				<br/><br/><br/>
+			<div ng-repeat="i in activeTenders | orderBy:'restaurant.name'">
+				<label>{{i.restaurant.name}} ({{i.startDate | date: 'yyyy/MM/dd'}} - {{i.endDate | date: 'yyyy/MM/dd'}}) </label><br/>
+				<label>Opis: {{i.description}} </label>
+				<br/><br/>
+				<button type="submit" class="btn btn-success" ng-click="createNewOfferings( i.id )" >Posalji</button>
+				<br/><br/><br/><br/>
+				
+			</div> 
+			
+		</div>
+  			
+  				
+		<!--  PRIHVACENE PORUDZBINE -->
+		<!--  ================================ -->
+		<div ng-show="acceptedShow">
+			
+		
+		</div>
+		
+		
+		
+		<!--  PO SMENAMA -->
+		<!--  ================================ -->
+		<div  ng-show="accountShow">
+	
+		</div>
+		
+		
+	</div>
+	
+</body>
+
+
+<!-- ANGULAR SCRIPT -->
+<script src="Offerer.js"></script>
+</html>

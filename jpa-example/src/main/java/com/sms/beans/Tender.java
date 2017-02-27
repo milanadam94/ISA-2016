@@ -8,6 +8,7 @@ package com.sms.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.function.ToDoubleBiFunction;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,10 +16,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 
 @Entity
+@NamedNativeQuery(name = "Tender.findActiveTenders",
+			query = "SELECT * FROM tender t WHERE t.expired != 1 and CURRENT_DATE between t.start_date and t.end_date",
+			resultClass = Tender.class
+		)
 @Table(name = "tender")
 public class Tender implements Serializable {
 
@@ -41,7 +48,7 @@ public class Tender implements Serializable {
 	@ManyToOne
 	private Restaurant restaurant;
 	
-	public ArrayList<Offerings> offerings;
+	private boolean expired;
 
 	public Tender() {
 		super();
@@ -86,12 +93,22 @@ public class Tender implements Serializable {
 		this.restaurant = restaurant;
 	}
 
-	public ArrayList<Offerings> getOfferings() {
-		return offerings;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setOfferings(ArrayList<Offerings> offerings) {
-		this.offerings = offerings;
+	public void setId(Integer id) {
+		this.id = id;
 	}
+
+	public boolean isExpired() {
+		return expired;
+	}
+
+	public void setExpired(boolean expired) {
+		this.expired = expired;
+	}
+
+	
 
 }

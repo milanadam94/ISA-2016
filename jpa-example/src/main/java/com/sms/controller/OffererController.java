@@ -1,0 +1,68 @@
+package com.sms.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sms.beans.Offerings;
+import com.sms.beans.Tender;
+import com.sms.service.OffererService;
+
+@Controller
+@RequestMapping("/offerer")
+public class OffererController {
+
+	@Autowired
+	private OffererService offererService;
+	
+	
+	
+	
+	
+	
+	@GetMapping(path="/getActiveTenders", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Tender> getActiveTenders(){
+		return offererService.getActiveTenders();
+	}
+	
+	
+	@GetMapping(path="/getMyAllOfferings/{offererEmail}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Offerings> getMyAllOfferings(@PathVariable("offererEmail") String offererEmail){
+		return offererService.getMyAllOfferings(offererEmail);
+	}
+	
+	
+	
+	@PostMapping(path="/createNewOfferings/{tenderID}/{offererEmail}", consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String createNewOfferer(@RequestBody Offerings offerings, @PathVariable("tenderID") Integer tenderID, @PathVariable("offererEmail") String offererEmail){
+		 
+		return offererService.createNewOfferings(offerings, tenderID, offererEmail);
+	}
+	
+	@DeleteMapping(path="/deleteOfferings/{offeringID}")
+	@ResponseBody
+	public void deleteOffering(@PathVariable("offeringID") Integer offeringID){
+		offererService.deleteOffering(offeringID);
+	}
+	
+	
+	@PutMapping(path="/changeOfferings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String changeOfferings(@RequestBody Offerings offering){
+		return offererService.changeOfferings(offering);
+	}
+	
+}
