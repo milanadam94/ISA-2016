@@ -57,19 +57,19 @@
 			</ul>
 		</nav>
 		<div ng-show="viewProfile" class="row" ng-controller="profileController">
-			<div class="row">
+			<div class="form">
 				<div class="col-md-4">
 					<img src="../Images/hotel-waiter.jpg" class="img-rounded" alt="Cinque Terre" width="350" height="250">
 				</div>
 				<div class="col-md-8">
-					<label>Ime: {{ waiter.user.name }} </label>
-					<label>Prezime: {{ waiter.user.lastname }} </label>
-					<label>Email: {{ waiter.user.email }} </label>
-					<label>Datum rođenja: {{ waiter.birthday }} </label>
-					<label>Konfekcijski broj: {{ waiter.suitSize }} </label>
-					<label>Veličina obuće: {{ waiter.shoeSize }} </label>
+					<label>Ime: <font size="4" color="blue">{{ waiter.user.name }} </font></label><br>
+					<label>Prezime: <font size="4" color="blue">{{ waiter.user.lastName }} </font></label><br>
+					<label>Email: <font size="4" color="blue">{{ waiter.user.email }} </font></label><br>
+					<label>Datum rođenja: <font size="4" color="blue">{{ waiter.birthday }} </font></label><br>
+					<label>Konfekcijski broj: <font size="4" color="blue">{{ waiter.suitSize }} </font></label><br>
+					<label>Veličina obuće: <font size="4" color="blue">{{ waiter.shoeSize }} </font></label><br>
 					<div class="form-group">
-						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#profileModal" ng-click="updateProfile()"> Izmenite profil </button>
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#profileModal" ng-click="resetNewWaiter()"> Izmenite profil </button>
 					</div>					
 	  			</div>
 	  		</div>
@@ -85,27 +85,27 @@
 			      	<div class="modal-body">
 			      		<div class="form-group">
 							<label class="control-label" for="ime">Ime:</label>
-							<input type="text" class="form-control" id="ime" ng-model="editWaiter.user.name" required>
+							<input type="text" class="form-control" id="ime" ng-model="editWaiter.user.name">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="prezime">Prezime:</label>
-							<input type="text" class="form-control" id="prz" ng-model="editWaiter.user.lastName" required>
+							<input type="text" class="form-control" id="prz" ng-model="editWaiter.user.lastName">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="email">Email:</label>
-							<input type="email" class="form-control" id="email" ng-model="editWaiter.user.email" required>
+							<input type="email" class="form-control" id="email" ng-model="editWaiter.user.email">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="datum">Datum rođenja:</label>
-							<input type="text" class="form-control" id="datum" ng-model="editWaiter.birthday" required>
+							<input type="text" class="form-control" id="datum" ng-model="editWaiter.birthday">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="broj">Konfekcijski broj:</label>
-							<input type="text" class="form-control" id="broj" ng-model="editWaiter.suitSize" required>
+							<input type="text" class="form-control" id="broj" ng-model="editWaiter.suitSize">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="obuca">Veličina obuće:</label>
-							<input type="text" class="form-control" id="obuca" ng-model="editWaiter.shoeSize" required>
+							<input type="text" class="form-control" id="obuca" ng-model="editWaiter.shoeSize">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="staraLozinka">Vaša lozinka:</label>
@@ -113,15 +113,16 @@
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="novaLozinka">Vaša nova lozinka:</label>
-							<input type="password" class="form-control" id="movaLozinka" ng-model="newPassword" required>
+							<input type="password" class="form-control" id="movaLozinka" ng-model="newPassword">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="potvrdaLozinke">Potvda nove lozinke:</label>
-							<input type="password" class="form-control" id="potvrdaLozinke" ng-model="confirmPassword" required>
+							<input type="password" class="form-control" id="potvrdaLozinke" ng-model="confirmPassword">
 						</div>
+						<div class="form-group text-danger" ng-if="errorMessage">{{ errorMessage }}</div>
 			      	</div>
 			      	<div class="modal-footer">
-			      		<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateProfile()">Izađi</button>
+			      		<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="resetNewWaiter()">Izađi</button>
 			        	<button type="submit" class="btn btn-primary pull-left" ng-click="editProfile()" > Izmeni </button>
 			      	</div>
 				</div>

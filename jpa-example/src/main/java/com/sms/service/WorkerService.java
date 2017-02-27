@@ -4,7 +4,7 @@ import com.sms.beans.Waiter;
 
 public interface WorkerService {
 
-	public Waiter getWaiter(Integer id);
+	public Waiter getWaiterByUserId(Integer userId);
 	
-	public void updateWaiterProfile(Waiter waiter);
+	public String updateWaiterProfile(Waiter waiter);
 }
