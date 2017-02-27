@@ -11,6 +11,7 @@ import com.sms.beans.GuestOrder;
 import com.sms.beans.Menu;
 import com.sms.beans.SysUser;
 import com.sms.beans.Waiter;
+import com.sms.dao.GuestOrderDao;
 import com.sms.dao.MenuDao;
 import com.sms.dao.UserDao;
 import com.sms.dao.WaiterDao;
@@ -27,6 +28,9 @@ public class WorkerServiceImpl implements WorkerService	{
 	
 	@Autowired
 	private MenuDao menuDao;
+	
+	@Autowired
+	private GuestOrderDao guestOrderDao;
 	
 	private GuestOrder order = new GuestOrder();
 	
@@ -63,14 +67,28 @@ public class WorkerServiceImpl implements WorkerService	{
 
 	@Override
 	public void addOrderDrink(Drink drink) {
-		System.out.println(drink.getQuantity()+" "+drink.getName());
+		//System.out.println(drink.getQuantity()+" "+drink.getName());
+		//System.out.println(drink.getPrepared());
+		drink.setPrepared(false);
 		order.getDrinks().add(drink);
 	}
 
 	@Override
 	public void addOrderFood(Food food) {
-		System.out.println(food.getQuantity()+" "+food.getName());
+		//System.out.println(food.getQuantity()+" "+food.getName());
+		//System.out.println(food.getPrepared());
+		food.setPrepared(false);
 		order.getFoods().add(food);
+	}
+
+	@Override
+	public void saveGuestOrder(Integer userId) {
+
+		Waiter waiter = waiterDao.findByUserId(userId);
+		order.setWaiter(waiter);
+		order.setPrepared(false);
+		guestOrderDao.save(order);
+		order = new GuestOrder();
 	}
 
 	

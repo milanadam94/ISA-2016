@@ -43,8 +43,11 @@ public class Food implements Serializable{
 	
 	@Column(name = "quantity")
 	private Integer quantity;
+	
+	@Column(name = "prepared")
+	private Boolean prepared;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany
 	private List<FoodRecension> foodRecensions;
 
 	public Food() {
@@ -65,12 +68,13 @@ public class Food implements Serializable{
 		this.grade = 0;
 	}
 	
-	public Food(String name, String description, Integer price, Integer grade, Integer quantity){
+	public Food(String name, String description, Integer price, Integer grade, Integer quantity, Boolean prepared){
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.grade = grade;
 		this.quantity = quantity;
+		this.prepared = prepared;
 	}
 	
 	public Integer getId() {
@@ -87,6 +91,14 @@ public class Food implements Serializable{
 
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
+	}
+	
+	public Boolean getPrepared() {
+		return prepared;
+	}
+
+	public void setPrepared(Boolean prepared) {
+		this.prepared = prepared;
 	}
 	
 	public String getName() {

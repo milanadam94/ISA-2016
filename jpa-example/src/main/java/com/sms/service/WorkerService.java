@@ -19,4 +19,6 @@ public interface WorkerService {
 	public void addOrderDrink(Drink drink);
 	
 	public void addOrderFood(Food food);
+	
+	public void saveGuestOrder(Integer userId);
 }

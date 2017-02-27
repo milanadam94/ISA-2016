@@ -170,13 +170,34 @@
 				</div>      
 			</div>
 			<label><font color="blue" size="3">Porudzbina za sto:</font></label>
+			<!-- select tables izabrati indeks stola koji ce se poslati u bazu -->
 			<div class="form-group">	
 				<button type="submit" class="btn btn-primary" ng-click="gotovaPorudzbina()">Dodaj porudzbinu</button>
 			</div>
 		</div>
 		
 		<div ng-show="viewOrders">
-			
+			<div class="row">
+				<div class="col-md-8">
+				<label><font color="blue" size="3">Porudzbine:</font></label>
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>Redni broj</th><th>Sto</th><th>Pripremljena</th><th>&nbsp;</th><th>&nbsp;</th>
+				      </tr>
+				     </thead>
+				     <tbody>
+				     	<tr ng-repeat="order in guestOrders | orderBy:'id'">
+				     		<td> {{ order.id }} </td>
+				     		<td> <label>Sto</label></td>
+				     		<td> {{ order.prepared }} </td>
+				     		<td> <button type="submit" id="{{order.id}}" class="btn btn-danger" ng-click="deleteOrder(order)">Obrisi</button></td>
+				     		<td> <button type="submit" id="{{drink.id}}" class="btn btn-success" ng-click="makeBill()">Naplati</button></td>
+				     	</tr>
+				     </tbody>
+				 </table>
+				 </div>
+			</div>
 			<div class="form-group">	
 				<button type="submit" class="btn btn-primary" ng-click="novaPorudzbina()">Nova porudzbinu</button>
 			</div>

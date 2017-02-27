@@ -63,4 +63,11 @@ public class WorkerControllerImpl{
 	public void addOrderFood(@RequestBody Food food){
 		workerService.addOrderFood(food);
 	}
+	
+	@PostMapping(path = "/waiter/saveGuestOrder/{userId}")
+	@ResponseBody
+	public void addGuestOrder(@PathVariable(value="userId") Integer userId){
+		workerService.saveGuestOrder(userId);
+	}
+	
 }

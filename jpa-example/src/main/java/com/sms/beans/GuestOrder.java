@@ -9,13 +9,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -26,21 +25,25 @@ public class GuestOrder implements Serializable {
 
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private Integer id;
 
 	@Column(name = "prepared")
 	private Boolean prepared;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	public List<Food> foods;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	public List<Drink> drinks;
+
+	@ManyToOne
+	public Waiter waiter;
 
 	public GuestOrder() {
 		this.drinks = new ArrayList<Drink>();
 		this.foods = new ArrayList<Food>();
+		this.prepared = false;
 	}
 
 	public GuestOrder(Boolean prepared, List<Food> foods, List<Drink> drinks) {
@@ -81,4 +84,11 @@ public class GuestOrder implements Serializable {
 		this.id = id;
 	}
 
+	public Waiter getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(Waiter waiter) {
+		this.waiter = waiter;
+	}
 }

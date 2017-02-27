@@ -39,6 +39,8 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 		$scope.viewProfile = false;
 		$scope.makeOrder = false;
 		$scope.viewOrders = true;
+		
+		waiterService.saveGuestOrder();
 	}
 	$scope.novaPorudzbina = function() {
 		$scope.viewProfile = false;
@@ -68,7 +70,7 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 		waiterService.addOrderDrink(drink);
 	}
 	$scope.addFood = function(food) {
-		waiterService.addOrderDrink(food);
+		waiterService.addOrderFood(food);
 	}
 }]);
 
@@ -199,6 +201,10 @@ waiter.service('waiterService', ['$window', '$http', function($window, $http){
 		  }, function error(response) {
 			  alert(response)
 		  });
+	}
+	
+	this.saveGuestOrder = function() {
+		return $http.post("/worker/waiter/saveGuestOrder/3");
 	}
 }]);
 	
