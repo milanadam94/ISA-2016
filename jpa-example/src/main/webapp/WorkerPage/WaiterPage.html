@@ -50,7 +50,7 @@
 				<li><a href="#" ng-click="getProfile()">Profil</a></li>
 				<li><a href="#" ng-click="getTables()">Raspored stolova</a></li>
 				<li><a href="#" ng-click="getCalendar()">Kalendar</a></li>
-				<li><a href="#" ng-click="getOrders()">Porudzbine</a></li>
+				<li><a href="#" ng-click="getOrders(); getFoods(); getDrinks()">Porudzbine</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 			      <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
@@ -126,6 +126,59 @@
 			        	<button type="submit" class="btn btn-primary pull-left" ng-click="editProfile()" > Izmeni </button>
 			      	</div>
 				</div>
+			</div>
+		</div>
+		
+		<div ng-show="makeOrder">
+			<div class="row">
+				<div class="col-md-8">
+				<label><font color="blue" size="3">Odaberite hranu:</font></label>
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>Naziv</th><th>Opis</th><th>Cena</th><th>Koliko</th><th>&nbsp;</th>
+				      </tr>
+				     </thead>
+				     <tbody>
+				     	<tr ng-repeat="food in foods | orderBy:'name'">
+				     		<td> {{ food.name }} </td>
+				     		<td> {{ food.description }} </td>
+				     		<td> {{ food.price }} </td>
+				     		<td> <input type="number" min="0" max="5" class="form-group" ng-model="food.quantity" ng-value="food.quantity"></td>
+				     		<td> <button type="submit" id="{{food.id}}" class="btn btn-success" ng-click="addFood(food)">Dodaj</button></td>
+				     </tbody>
+				</table>
+				</div>  
+				
+				<div class="col-md-8">
+				<label><font color="blue" size="3">Odaberite pice:</font></label>
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>Naziv</th><th>Opis</th><th>Cena</th><th>Koliko</th><th>&nbsp;</th>
+				      </tr>
+				     </thead>
+				     <tbody>
+				     	<tr ng-repeat="drink in drinks | orderBy:'name'">
+				     		<td> {{ drink.name }} </td>
+				     		<td> {{ drink.description }} </td>
+				     		<td> {{ drink.price }} </td>
+				     		<td> <input type="number" min="0" max="5" class="form-group" ng-model="drink.quantity" ng-value="drink.quantity"></td>
+				     		<td> <button type="submit" id="{{drink.id}}" class="btn btn-success" ng-click="addDrink(drink)">Dodaj</button></td>
+				     </tbody>
+				</table>
+				</div>      
+			</div>
+			<label><font color="blue" size="3">Porudzbina za sto:</font></label>
+			<div class="form-group">	
+				<button type="submit" class="btn btn-primary" ng-click="gotovaPorudzbina()">Dodaj porudzbinu</button>
+			</div>
+		</div>
+		
+		<div ng-show="viewOrders">
+			
+			<div class="form-group">	
+				<button type="submit" class="btn btn-primary" ng-click="novaPorudzbina()">Nova porudzbinu</button>
 			</div>
 		</div>
 	</div>

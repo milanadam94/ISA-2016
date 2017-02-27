@@ -17,9 +17,14 @@ var waiter = angular.module('waiter', []).run(['$rootScope', '$http', '$window',
 waiter.controller('waiterController', [ '$scope', 'waiterService', function($scope, waiterService){
 	
 	$scope.viewProfile = false;
-
+	$scope.makeOrder = false;
+	$scope.viewOrders = false;
+	
 	$scope.getProfile = function(){
+		
 		$scope.viewProfile = true;
+		$scope.makeOrder = false;
+		$scope.viewOrders = false;
 		waiterService.getWaiter().then(
 				function(response){
 					$scope.waiter = response.data;
@@ -30,7 +35,41 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 		)
 	}
 	
-		
+	$scope.gotovaPorudzbina = function() {
+		$scope.viewProfile = false;
+		$scope.makeOrder = false;
+		$scope.viewOrders = true;
+	}
+	$scope.novaPorudzbina = function() {
+		$scope.viewProfile = false;
+		$scope.makeOrder = true;
+		$scope.viewOrders = false;
+	}
+	$scope.getOrders = function() {
+		$scope.viewProfile = false;
+		$scope.makeOrder = true;
+		$scope.viewOrders = false;
+	}
+	$scope.getDrinks = function() {
+		waiterService.getDrinks().then(
+				function(response){
+					$scope.drinks = response.data;
+				}
+		)
+	}
+	$scope.getFoods = function() {
+		waiterService.getFoods().then(
+				function(response){
+					$scope.foods = response.data;
+				}
+		)
+	}
+	$scope.addDrink = function(drink) {
+		waiterService.addOrderDrink(drink);
+	}
+	$scope.addFood = function(food) {
+		waiterService.addOrderDrink(food);
+	}
 }]);
 
 waiter.controller('profileController', [ '$scope', 'waiterService', function($scope, waiterService){
@@ -82,7 +121,7 @@ waiter.controller('profileController', [ '$scope', 'waiterService', function($sc
 waiter.service('waiterService', ['$window', '$http', function($window, $http){
 	
 	this.getWaiter = function() {
-		return $http.get("../worker/waiter/2")
+		return $http.get("../worker/waiter/3")
 	}
 
 	this.editProfile = function(waiter) {
@@ -121,5 +160,45 @@ waiter.service('waiterService', ['$window', '$http', function($window, $http){
 			return false;		
 	}
 	
+	this.getFoods = function() {
+		return $http.get("../worker/waiter/getFoods/3")
+	}
+	this.getDrinks = function() {
+		return $http.get("../worker/waiter/getDrinks/3")
+	}
+	this.addOrderDrink = function(drink) {
+		return $http({
+			  method: 'POST',
+			  data : drink,
+		      url : "../worker/waiter/addOrderDrink",
+		}).then(function success(response) {
+			if(response.data == "Error free") {
+				return "";
+			}
+			else {
+				return response.data;
+			}
+			
+		  }, function error(response) {
+			  alert(response)
+		  });
+	}
+	this.addOrderFood = function(food) {
+		return $http({
+			  method: 'POST',
+			  data : food,
+		      url : "../worker/waiter/addOrderFood",
+		}).then(function success(response) {
+			if(response.data == "Error free") {
+				return "";
+			}
+			else {
+				return response.data;
+			}
+			
+		  }, function error(response) {
+			  alert(response)
+		  });
+	}
 }]);
 	
