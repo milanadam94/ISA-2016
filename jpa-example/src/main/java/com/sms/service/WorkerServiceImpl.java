@@ -17,17 +17,17 @@ public class WorkerServiceImpl implements WorkerService	{
 	@Autowired
 	private WaiterDao waiterDao;
 	
-	//@Autowired
-	//private ActiveUserDao activeUserDao;
-	
-	public Waiter getWaiter(String email) {
-		SysUser newUser = userDao.findByEmail(email);
-		System.out.println(newUser.getPassword());//ovde mi izbaci null
-		Waiter waiter = waiterDao.findByUser(newUser);
-		System.out.println(waiter.getBirthday());
-		Waiter newWaiter = new Waiter(newUser.getEmail(), newUser.getPassword(), waiter.getSuitSize(), waiter.getShoeSize(), 
-				waiter.getBirthday(), newUser);
-		return newWaiter;
+	public Waiter getWaiter(Integer id) {
+		SysUser newUser = userDao.findById(id);
+		Waiter waiter = waiterDao.findByUserId(newUser.getId());
+		
+		return waiter;
+	}
+
+	@Override
+	public void updateWaiterProfile(Waiter waiter) {
+		waiterDao.delete(waiter);
+		waiterDao.save(waiter);
 	}
 
 }

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Kuvar</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<!-- TOASTR -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
+
+<!-- ANGULAR SCRIPT -->
+<script src="CookPage.js"></script>
+<style>
+	.navbar {
+		background-color: lightblue
+	}
+	.form-inline .form-group input {
+		width:200px;
+	}
+	.control-label {
+		width:300px;
+	}
+</style>
+</head>
+<body ng-app="cook" ng-controller="cookController">
+	<nav id="myNavbar" class="navbar">
+		<div class="navbar-header">
+			<a href="" class="navbar-brand" >Kuvar</a>
+		</div>
+		<ul class="nav navbar-nav">
+			<li><a href="#" ng-click="getProfile()">Profil</a></li>
+			<li><a href="#" ng-click="getCalendar()">Kalendar</a></li>
+			<li><a href="#" ng-click="getOrders()">Porudzbine</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+		      <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
+		</ul>
+	</nav>
+	<div>
+		<div id="profile" ng-show="viewProfile" class="container-fluid">
+			<img src="../Images/cook.jpg" class="img-rounded" alt="Cinque Terre" width="350" height="250">
+			<form class="form-inline">
+				<div class="form-group">
+					<br />
+					<label class="control-label" for="ime">Ime:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="ime" ng-model="cook.user.name" required>
+					</div>
+				</div>
+				<br />
+				<div class="form-group">
+					<label class="control-label" for="prezime">Prezime:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="prz" ng-model="cook.user.lastName" required>
+					</div>
+				</div>
+				<br />
+				<div class="form-group">
+					<label class="control-label" for="email">Email:</label>
+					<div class="col-sm-10">
+						<input type="email" class="form-control" id="email" ng-model="cook.user.email" required>
+					</div>
+				</div>
+				<br />
+				<div class="form-group">
+					<label class="control-label" for="datum">Datum rodjenja:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="datum" ng-model="cook.birthday" required>
+					</div>
+				</div>
+				<br />
+				<div class="form-group">
+					<label class="control-label" for="broj">Konfekcijski broj:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="broj" ng-model="cook.suitSize" required>
+					</div>
+				</div>
+				<br />
+				<div class="form-group">
+					<label class="control-label" for="obuca">Velicina obuce:</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="obuca" ng-model="cook.shoeSize" required>
+					</div>
+				</div>
+				<br /><br />
+				<div class="form-group"> 
+    				<div class="col-sm-offset-2 col-sm-10">
+      					<button type="submit" class="btn btn-primary" ng-click="updateProfile()">Izmeni</button>
+    				</div>
+  				</div>
+  			</form>
+		</div>
+	</div>
+</body>
+</html>

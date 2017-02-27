@@ -24,7 +24,7 @@
 
 <!-- ANGULAR SCRIPT -->
 <script src="WaiterPage.js"></script>
-<style>
+<style type="text/css">
 	.navbar {
 		background-color: lightblue
 	}
@@ -34,78 +34,99 @@
 	.control-label {
 		width:300px;
 	}
+	.modal-body {
+    min-height:400px; 
+    overflow-y: false;
+}
 </style>
 </head>
-<body ng-app="waiter" ng-controller="waiterContoller">
-	<nav id="myNavbar" class="navbar">
-		<div class="navbar-header">
-			<a href="" class="navbar-brand" >Konobar</a>
+<body ng-app="waiter">
+	<div ng-controller="waiterController">
+		<nav id="myNavbar" class="navbar">
+			<div class="navbar-header">
+				<a href="../WorkerPage/WaiterPage.html" class="navbar-brand" >Konobar</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li><a href="#" ng-click="getProfile()">Profil</a></li>
+				<li><a href="#" ng-click="getTables()">Raspored stolova</a></li>
+				<li><a href="#" ng-click="getCalendar()">Kalendar</a></li>
+				<li><a href="#" ng-click="getOrders()">Porudzbine</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+			      <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
+			</ul>
+		</nav>
+		<div ng-show="viewProfile" class="row" ng-controller="profileController">
+			<div class="row">
+				<div class="col-md-4">
+					<img src="../Images/hotel-waiter.jpg" class="img-rounded" alt="Cinque Terre" width="350" height="250">
+				</div>
+				<div class="col-md-8">
+					<label>Ime: {{ waiter.user.name }} </label>
+					<label>Prezime: {{ waiter.user.lastname }} </label>
+					<label>Email: {{ waiter.user.email }} </label>
+					<label>Datum rođenja: {{ waiter.birthday }} </label>
+					<label>Konfekcijski broj: {{ waiter.suitSize }} </label>
+					<label>Veličina obuće: {{ waiter.shoeSize }} </label>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#profileModal" ng-click="updateProfile()"> Izmenite profil </button>
+					</div>					
+	  			</div>
+	  		</div>
 		</div>
-		<ul class="nav navbar-nav">
-			<li><a href="#" ng-click="getProfile()">Profil</a></li>
-			<li><a href="#" ng-click="getTables()">Raspored stolova</a></li>
-			<li><a href="#" ng-click="getTables()">Kalendar</a></li>
-			<li><a href="#" ng-click="getTables()">Porudzbine</a></li>
-		</ul>
-		<ul class="nav navbar-nav navbar-right">
-		      <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
-		</ul>
-	</nav>
-	<div>
-		<div id="profile" ng-show="viewProfile" class="container-fluid">
-			<img src="../Images/hotel-waiter.jpg" class="img-rounded" alt="Cinque Terre" width="350" height="250">
-			<form class="form-inline">
-				<div class="form-group">
-					<br />
-					<label class="control-label" for="ime">Ime:</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="ime" ng-model="waiter.user.name">
-					</div>
+		
+		<div id="profileModal" ng-controller="profileController" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+			        	<button type="button" class="close" data-dismiss="modal">&times;</button>
+			        	<h4 class="modal-title">Izmena profila</h4>
+			      	</div>
+			      	<div class="modal-body">
+			      		<div class="form-group">
+							<label class="control-label" for="ime">Ime:</label>
+							<input type="text" class="form-control" id="ime" ng-model="editWaiter.user.name" required>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="prezime">Prezime:</label>
+							<input type="text" class="form-control" id="prz" ng-model="editWaiter.user.lastName" required>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="email">Email:</label>
+							<input type="email" class="form-control" id="email" ng-model="editWaiter.user.email" required>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="datum">Datum rođenja:</label>
+							<input type="text" class="form-control" id="datum" ng-model="editWaiter.birthday" required>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="broj">Konfekcijski broj:</label>
+							<input type="text" class="form-control" id="broj" ng-model="editWaiter.suitSize" required>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="obuca">Veličina obuće:</label>
+							<input type="text" class="form-control" id="obuca" ng-model="editWaiter.shoeSize" required>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="staraLozinka">Vaša lozinka:</label>
+							<input type="password" class="form-control" id="staraLozinka" ng-model="oldPassword" required>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="novaLozinka">Vaša nova lozinka:</label>
+							<input type="password" class="form-control" id="movaLozinka" ng-model="newPassword" required>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="potvrdaLozinke">Potvda nove lozinke:</label>
+							<input type="password" class="form-control" id="potvrdaLozinke" ng-model="confirmPassword" required>
+						</div>
+			      	</div>
+			      	<div class="modal-footer">
+			      		<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateProfile()">Izađi</button>
+			        	<button type="submit" class="btn btn-primary pull-left" ng-click="editProfile()" > Izmeni </button>
+			      	</div>
 				</div>
-				<br />
-				<div class="form-group">
-					<label class="control-label" for="prezime">Prezime:</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="prz" ng-model="waiter.lastName">
-					</div>
-				</div>
-				<br />
-				<div class="form-group">
-					<label class="control-label" for="email">Email:</label>
-					<div class="col-sm-10">
-						<input type="email" class="form-control" id="email" ng-model="waiter.email">
-					</div>
-				</div>
-				<br />
-				<div class="form-group">
-					<label class="control-label" for="datum">Datum rodjenja:</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="datum" ng-model="waiter.birthday">
-					</div>
-				</div>
-				<br />
-				<div class="form-group">
-					<label class="control-label" for="broj">Konfekcijski broj:</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="broj" ng-model="waiter.suitsize" ng-view="waiter.suitsize">
-					</div>
-				</div>
-				<br />
-				<div class="form-group">
-					<label class="control-label" for="obuca">Velicina obuce:</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="obuca" ng-model="waiter.shoesize">
-					</div>
-				</div>
-				<br /><br />
-				<div class="form-group"> 
-    				<div class="col-sm-offset-2 col-sm-10">
-      					<button type="submit" class="btn btn-primary" ng-click="updateProfile()">Izmeni</button>
-    				</div>
-  				</div>
-  			</form>
+			</div>
 		</div>
 	</div>
-	
 </body>
 </html>
