@@ -7,21 +7,25 @@ package com.sms.beans;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "Guest")
 public class Guest implements Serializable {
 
 	private static final long serialVersionUID = -5598139396395552585L;
+
+	@Transient
+	private List<Guest> friends;
 
 	@Id
 	@Column(name = "id")
@@ -32,10 +36,7 @@ public class Guest implements Serializable {
 	private SysUser user;
 
 	@ManyToMany
-	private List<Guest> friends;
-	
-	@ManyToMany(fetch = FetchType.LAZY)
-	private List<Guest> friendRequests;
+	private Set<Guest> friendRequests;
 
 	@Column(name = "address")
 	private String address;
@@ -63,26 +64,20 @@ public class Guest implements Serializable {
 		this.visits = visits;
 	}
 
-	public Guest(Integer id, SysUser user, List<Guest> friends, String address, String city, Integer visits) {
-		super();
-		this.id = id;
-		this.user = user;
-		this.friends = friends;
-		this.address = address;
-		this.city = city;
-		this.visits = visits;
-	}
-
 	public void addFriend(Guest friend) {
 		this.friends.add(friend);
 	}
 
-	public List<Guest> getFriends() {
-		return friends;
+	public void removeFriend(Guest friend) {
+		this.friends.remove(friend);
 	}
 
-	public void setFriends(List<Guest> friends) {
-		this.friends = friends;
+	public void addFriendRequest(Guest request) {
+		this.friendRequests.add(request);
+	}
+
+	public void removeFriendRequest(Guest request) {
+		this.friendRequests.remove(request);
 	}
 
 	public Integer getId() {
@@ -123,6 +118,22 @@ public class Guest implements Serializable {
 
 	public void setVisits(Integer visits) {
 		this.visits = visits;
+	}
+
+	public Set<Guest> getFriendRequests() {
+		return friendRequests;
+	}
+
+	public void setFriendRequests(Set<Guest> friendRequests) {
+		this.friendRequests = friendRequests;
+	}
+
+	public List<Guest> getFriends() {
+		return friends;
+	}
+
+	public void setFriends(List<Guest> friends) {
+		this.friends = friends;
 	}
 
 }
