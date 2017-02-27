@@ -7,6 +7,7 @@ import com.sms.beans.SysUser;
 import com.sms.beans.Waiter;
 import com.sms.dao.UserDao;
 import com.sms.dao.WaiterDao;
+import com.sms.utilities.Message;
 
 @Service
 public class WorkerServiceImpl implements WorkerService	{
@@ -17,17 +18,21 @@ public class WorkerServiceImpl implements WorkerService	{
 	@Autowired
 	private WaiterDao waiterDao;
 	
-	public Waiter getWaiter(Integer id) {
-		SysUser newUser = userDao.findById(id);
+	public Waiter getWaiterByUserId(Integer userId) {
+		
+		SysUser newUser = userDao.findById(userId);
 		Waiter waiter = waiterDao.findByUserId(newUser.getId());
 		
 		return waiter;
 	}
 
 	@Override
-	public void updateWaiterProfile(Waiter waiter) {
-		waiterDao.delete(waiter);
+	public String  updateWaiterProfile(Waiter waiter) {
+
 		waiterDao.save(waiter);
+		userDao.save(waiter.getUser());
+		
+		return Message.ERRORFREE;
 	}
 
 }
