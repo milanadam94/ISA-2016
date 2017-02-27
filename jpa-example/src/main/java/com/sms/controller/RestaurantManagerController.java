@@ -1,5 +1,7 @@
 package com.sms.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.Menu;
+import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
 import com.sms.beans.SysUser;
@@ -152,5 +155,31 @@ public class RestaurantManagerController {
 		
 		return restManagerService.registarWorker(user,managerID);
 	}
+	
+	
+	
+	@GetMapping(path="/getAllMyTenders/{managerID}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Tender> getAllMyTenders(@PathVariable("managerID") String managerEmail){
+		return restManagerService.getAllMyTenders(managerEmail);
+	}
+	
+	@GetMapping(path="getOfferingsForTender/{tenderID}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Offerings> getOfferingsForTender(@PathVariable("tenderID") Integer tenderID){
+		return restManagerService.getOfferingsForTender(tenderID);
+	}
+	
+	
+	@PostMapping(path="chooseOffering/{offeringID}", produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String chooseOffering(@PathVariable("offeringID") Integer offeringID){
+		return restManagerService.chooseOffering(offeringID);
+	}
+	
+	
+	
+	
+	
 	
 }

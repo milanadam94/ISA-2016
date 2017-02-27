@@ -1,0 +1,50 @@
+package com.sms.service;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.sms.beans.Offerings;
+import com.sms.beans.Tender;
+import com.sms.dao.TenderDao;
+
+@Service
+public class OffererServiceImpl implements OffererService {
+
+
+	@Autowired
+	private TenderDao tenderDao;
+
+	@Autowired
+	private OfferingsDao offeringsDao;
+	
+	
+	@Override
+	public List<Tender> getActiveTenders() {
+		// TODO Auto-generated method stub
+		
+		return  tenderDao.findActiveTenders();
+	}
+
+	
+	@Override
+	public String createNewOfferings(Offerings offerings, Integer tenderID, Integer offererID) {
+		// TODO Auto-generated method stub
+		
+		
+		
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+}

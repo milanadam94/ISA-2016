@@ -1,0 +1,57 @@
+
+insert into Sys_User(id, email, password, user_type) values('1', '1', '1', 'RESTAURANTMANAGER')
+
+insert into Sys_User(id, email, password, user_type) values(null, 'admin', 'admin', 'SYSTEMMANAGER')
+
+insert into Sys_User(id, email, password, user_type) values(null, 'gost', 'gost', 'GUEST')
+
+insert into Sys_User(id, email, last_name, name, password, user_type) values(null, 'adam94@gmail.com', 'Adamovic','Milan','adam','WAITER')
+
+insert into Restaurant(id, name, description, category) values(null, 'Banjalucki', 'rostilj', 'domaca kuhinja')
+insert into Restaurant(id, name, description, category) values(null, 'Burek ispoda saca', 'dobar burek', 'domaca kuhinja')
+insert into Restaurant(id, name, description, category) values(null, 'Stapic', 'kinezi', 'kineski')
+
+insert into Sys_User(id, email, last_name, name, password, user_type) values(null, 'adam1994@gmail.com', 'Adamovic','Milan','adam','RESTAURANTMANAGER')
+insert into Restaurant_Manager(id, user_id) values('4', '4')
+
+insert into Restaurant_Manager(id, restaurant_id, user_id) values ('1','1','1')
+insert into Menu(id,restaurant_id) values ('1','1')
+insert into Active_User(id,email,user_type,user_id) values ('1','1','RESTAURANTMANAGER','1')
+insert into Drink(id, description, grade, name, price) values('1', 'tamno pivo', '4', 'Lav', '125')
+insert into Drink(id, description, grade, name, price) values('2', 'bezalkoholno pivo', '4', 'Jelen', '120')
+insert into Drink(id, description, grade, name, price) values('3', 'domaca', '5', 'Rakija', '80')
+insert into Drink(id, description, grade, name, price) values('4', 'svetlo belo vino', '5', 'Vino', '150')
+
+insert into Food(id, description, grade, name, price) values('1', 'gurmanska, ljuta', '5', 'Pljeskavica', '200')
+insert into Food(id, description, grade, name, price) values('2', 'specijalitet', '5', 'Karadjordjeva', '250')
+
+
+
+insert into Sys_User(id, email, last_name, name, password, user_type) values('6', '2', 'Adamovic','Milan','adam','OFFERER')
+insert into Active_User(id,email,user_type,user_id) values ('2','2','OFFERER','6')
+insert into Offerer(id,user_id) values('1','6')
+
+insert into Tender(id, description, end_date, start_date, restaurant_id) values ('1','To je taj bre', '2018-02-21','2015-02-02','1')
+insert into Tender(id, description, end_date, start_date, restaurant_id) values ('1','To je taj bre', '2017-01-21','2016-06-06','2')
+insert into Tender(id, description, end_date, start_date, restaurant_id) values ('1','To je taj bre', '2019-11-21','2017-01-02','1')
+insert into Tender(id, description, end_date, start_date, restaurant_id) values ('1','To je taj bre', '2020-02-21','2015-06-02','2')
+insert into Tender(id, description, end_date, start_date, restaurant_id) values ('1','To je taj bre', '2018-03-21','2014-01-02','3')
+
+
+
+insert into offerings (id, delivery_date) values('2','2017-02-28');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

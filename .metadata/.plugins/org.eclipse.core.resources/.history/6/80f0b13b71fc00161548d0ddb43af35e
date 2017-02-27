@@ -1,0 +1,13 @@
+package com.sms.dao;
+
+import org.springframework.data.repository.Repository;
+
+import com.sms.beans.Offerer;
+
+public interface OfferingsDao extends Repository<Offerer, Long>{
+	
+	public Offerer findById(Integer id);
+	
+	public Offerer save(Offerer user);
+
+}

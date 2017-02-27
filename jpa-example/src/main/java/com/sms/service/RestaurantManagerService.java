@@ -1,8 +1,11 @@
 package com.sms.service;
 
+import java.util.List;
+
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.Menu;
+import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
 import com.sms.beans.SysUser;
@@ -33,4 +36,10 @@ public interface RestaurantManagerService {
 	public String registarOfferer(SysUser user);
 	
 	public String createTender(Tender newTender, String userEmail);
+
+	public List<Tender> getAllMyTenders(String managerEmail);
+
+	public List<Offerings> getOfferingsForTender(Integer tenderID);
+
+	public String chooseOffering(Integer offeringID);
 }

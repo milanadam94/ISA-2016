@@ -1,0 +1,40 @@
+package com.sms.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.sms.beans.Tender;
+import com.sms.dao.TenderDao;
+
+@Service
+public class OffererServiceImpl implements OffererService {
+
+
+	@Autowired
+	private TenderDao tenderDao;
+
+	
+	
+	
+	@Override
+	public List<Tender> getActiveTenders() {
+		// TODO Auto-generated method stub
+		System.out.println("usao u service");
+		
+		List<Tender> tenders = tenderDao.findActiveTenders();
+		
+		System.out.println(tenders);
+		
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+}

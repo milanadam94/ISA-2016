@@ -1,0 +1,22 @@
+package com.sms.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.sms.dao.TenderDao;
+
+@Service
+public class OffererServiceImpl implements OffererService {
+
+
+	@Autowired
+	private TenderDao tenderDao;
+	
+	
+	
+	
+	
+	
+	
+	
+}

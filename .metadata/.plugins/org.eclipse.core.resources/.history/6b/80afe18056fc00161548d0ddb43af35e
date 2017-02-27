@@ -1,0 +1,7 @@
+package com.sms.service;
+
+public interface OffererService {
+
+	public List<Tender> getActiveTenders();
+	
+}

@@ -1,0 +1,64 @@
+package com.sms.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.sms.beans.ActiveUser;
+import com.sms.beans.Offerer;
+import com.sms.beans.Offerings;
+import com.sms.beans.Tender;
+import com.sms.beans.UserType;
+import com.sms.dao.ActiveUserDao;
+import com.sms.dao.OfferingsDao;
+import com.sms.dao.TenderDao;
+
+@Service
+public class OffererServiceImpl implements OffererService {
+
+
+	@Autowired
+	private TenderDao tenderDao;
+
+	@Autowired
+	private OfferingsDao offeringsDao;
+	
+	@Autowired
+	private ActiveUserDao activeUserDao;
+	
+	@Override
+	public List<Tender> getActiveTenders() {
+		// TODO Auto-generated method stub
+		
+		return  tenderDao.findActiveTenders();
+	}
+
+	@Override
+	public Offerer getOfferer(Integer offererID) {
+		// TODO Auto-generated method stub
+		ActiveUser activeUser = activeUserDao.findById(offererID);
+		if(activeUser == null || !activeUser.getUserType().equals(UserType.RESTAURANTMANAGER)){
+			return null;
+		}
+				
+		return restaurantManagerDao.findByUserId(activeUser.getUser().getId());
+	}
+	
+	@Override
+	public String createNewOfferings(Offerings offerings, Integer tenderID, Integer offererID) {
+		// TODO Auto-generated method stub
+		
+		
+		
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+}

@@ -9,8 +9,8 @@ import com.sms.beans.SysUser;
 
 public interface OffererDao extends Repository<Offerer, Long>{
 	
-	public Offerer findById(Integer id);
+	public Offerer findByUserId(Integer id);
 	
 	public Offerer save(Offerer user);
-
+	
 }

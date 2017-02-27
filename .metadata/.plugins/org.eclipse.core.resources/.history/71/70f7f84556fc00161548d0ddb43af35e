@@ -1,0 +1,7 @@
+package com.sms.service;
+
+
+@Service
+public class OffererServiceImpl implements OffererService {
+
+}

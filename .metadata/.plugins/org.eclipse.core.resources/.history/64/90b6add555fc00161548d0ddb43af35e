@@ -1,0 +1,9 @@
+package com.sms.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/offerer")
+public class OffererController {
+
+}
