@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Registracija menadzera restorana</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<!-- TOASTR -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></link>
+
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
+<!-- ANGULAR SCRIPT -->
+<script src="RegistrationRestManager.js"></script>
+
+</head>
+<body ng-app="restManager">
+	<div ng-controller="restManagerContoller" class="container-fluid">
+		<div class="jumbotron text-center">
+  			<h1>Registracija menadzera restorana</h1> 
+		</div>
+		<form class="form-horizontal">
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="email">Email:</label>
+    			<div class="col-sm-10">
+      				<input type="email" class="form-control" id="email" ng-click="validateEmail()" ng-model="restManager.email" placeholder="Unesite email">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="pwd">Lozinka:</label>
+    			<div class="col-sm-10"> 
+      				<input type="password" class="form-control" id="pwd" ng-model="restManager.password" placeholder="Unesite lozinku">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="pwd2">Potvrda lozinke:</label>
+    			<div class="col-sm-10"> 
+      				<input type="password" class="form-control" id="pwd2" ng-model="passwordConfirm" placeholder="Potvrdite lozinku">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="ime">Ime:</label>
+    			<div class="col-sm-10"> 
+      				<input type="text" class="form-control" id="ime" ng-model="restManager.name" placeholder="Unesite ime">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="prezime">Prezime:</label>
+    			<div class="col-sm-10"> 
+      				<input type="text" class="form-control" id="prezime" ng-model="restManager.lastName" placeholder="Unesite prezime">
+    			</div>
+  			</div>
+  			
+  			
+			<div class="form-group" >
+				<label class="control-label col-sm-2" for="prezime">Restoran:</label>
+				<div class="col-sm-10">
+					<select class="form-group">
+						<option ng-option="restaurants.name" id="i.id">{{i.name}}</option>
+					</select>
+				</div>
+			</div>
+			
+  			<br/><br/>
+  			
+  			<div class="form-group text-danger" ng-if="errorMessage">{{ errorMessage }}</div>
+  			<div class="form-group"> 
+    			<div class="col-sm-offset-2 col-sm-10">
+      				<button type="submit" class="btn btn-primary" ng-click="registerManager()">Registracija</button>
+    			</div>
+  			</div>
+  		</form>
+	</div>
+</body>
+</html>

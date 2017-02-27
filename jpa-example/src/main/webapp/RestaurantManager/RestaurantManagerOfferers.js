@@ -131,6 +131,7 @@ restManager.controller('restManagerOfferersController', [ '$scope', 'registarSer
 		tenderService.chooseOffering(offeringsID).then(
 				function(response){
 					alert(response.data);
+					location.reload();
 				}
 		);
 	}

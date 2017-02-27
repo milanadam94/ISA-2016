@@ -11,6 +11,7 @@ import com.sms.beans.RestaurantManager;
 import com.sms.beans.SysUser;
 import com.sms.beans.UserType;
 import com.sms.dao.MenuDao;
+import com.sms.dao.RestaurantDao;
 import com.sms.dao.RestaurantManagerDao;
 import com.sms.dao.RestaurantsDao;
 import com.sms.dao.SystemManagerDao;
@@ -34,13 +35,16 @@ public class SystemManagerServiceImpl implements SystemManagerService{
 	@Autowired
 	private RestaurantsDao restDao;
 	
+	@Autowired
+	private RestaurantDao restoranDao;
+	
 	//@Autowired
 	//private MailSender mailSender;
 	
 	
 	//fali mi i za login,kao sto je u UserServiceImpl
 	
-	public String registarRestManager(SysUser user) {
+	public String registarRestManager(SysUser user, Integer restoranID) {
 		
 		if(user.getEmail() == null || user.getEmail().equals(""))
 			return Message.EMAILERROR;
@@ -51,10 +55,18 @@ public class SystemManagerServiceImpl implements SystemManagerService{
 		else if(user.getLastName() == null || user.getLastName().equals(""))
 			return Message.LASTNAMEERROR;
 		
+		
 		SysUser sysUser = sysManagerDao.findByEmail(user.getEmail());
 		
 		if(sysUser != null)
 			return Message.REGISTRATIONERROR;
+		
+		Restaurant restoran = restoranDao.findById(restoranID);
+		
+		if(restoran == null){
+			return Message.REQUESTERROR;
+		}
+		
 		
 		/*SysUserActivation sysUserActivation = sysUserActDao.findByEmail(user.getEmail());
 		if(sysUserActivation != null)
@@ -72,6 +84,7 @@ public class SystemManagerServiceImpl implements SystemManagerService{
 		
 		SysUser newUser = new SysUser(user.getEmail(), user.getPassword(), user.getName(), user.getLastName(), UserType.RESTAURANTMANAGER);
 		RestaurantManager rest = new RestaurantManager(newUser);
+		rest.setRestaurant(restoran);
 		sysManagerDao.save(newUser);
 		restManagerDao.save(rest);
 		

@@ -7,7 +7,7 @@ import com.sms.beans.SysUser;
 
 public interface SystemManagerService {
 
-	public String registarRestManager(SysUser user);
+	public String registarRestManager(SysUser user, Integer restoranID);
 	
 	public String registarRestaurant(Restaurant restaurant);
 	
