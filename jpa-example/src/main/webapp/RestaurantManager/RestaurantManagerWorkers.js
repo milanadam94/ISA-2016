@@ -21,31 +21,54 @@ var restManager = angular.module('restManager', []).config(['$qProvider', '$http
 
 
 
-restManager.controller('restManagerWorkersController', [ '$scope', 'registarService', function($scope, registarService){
+restManager.controller('restManagerWorkersController', [ '$scope', 'registarService', 'workerService', function($scope, registarService, workerService){
 
-	setShows = function(registrovanjeShow, periodicniShow, reonUSmeniShow){
+	setShows = function(registrovanjeShow, periodicniShow, reonUSmeniShow, spisakRadnikaShow){
 		$scope.registrovanjeShow = registrovanjeShow;
 		$scope.periodicniShow = periodicniShow;
 		$scope.reonUSmeniShow = reonUSmeniShow;
+		$scope.spisakRadnikaShow = spisakRadnikaShow;
 	}
-	setShows(false,false,false);
+	setShows(false,false,false,false);
 	
 	$scope.error = false;
 	$scope.errorMessage = "";
 	
 	
 	$scope.registracija = function(){
-		setShows(true,false,false);
+		setShows(true,false,false,false);
 	}
 	
 	$scope.periodicniNivo = function(){
-		setShows(false,true,false);
+		setShows(false,true,false,false);
 	}
 	
 	$scope.reonUSmeni = function(){
-		setShows(false,false,true);
+		setShows(false,false,true,false);
 	}
 	
+	$scope.slisakRadnika = function(){
+		setShows(false,false,false,true);
+		
+		workerService.getCooks().then(
+				function(response){
+					$scope.cooks = response.data;
+				}
+		);
+		
+		workerService.getBartenders().then(
+				function(response){
+					$scope.bartenders = response.data;
+				}
+		);
+		
+		workerService.getWaiters().then(
+				function(response){
+					$scope.waiters = response.data;
+				}
+		);
+		
+	}
 	
 	$scope.newWorker = {
 			email : "",
@@ -113,9 +136,36 @@ restManager.service('registarService',['$window', '$http', function($window, $ht
 
 }]);
 
+restManager.service('workerService',['$window', '$http', function($window, $http){
 
+	this.getCooks = function (){
+		
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getCooks/1" //========================================== dodati user email
+		})
+		
+	}
+	
+	this.getBartenders = function(){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getBartenders/1" //========================================== dodati user email
+		})
+		
+	}
+	
+	this.getWaiters = function(){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getWaiters/1" //========================================== dodati user email
+		})
+		
+	}
+	
+	
 
-
+}]);
 
 
 

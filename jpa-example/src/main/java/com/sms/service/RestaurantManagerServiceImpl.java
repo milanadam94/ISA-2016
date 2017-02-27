@@ -494,6 +494,42 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		
 		return Message.ERRORFREE;
 	}
+
+	@Override
+	public List<Cook> getCooks(String managerEmail) {
+		// TODO Auto-generated method stub
+		RestaurantManager manager = getRestaurantManager(managerEmail);
+		
+		if(manager == null){
+			return null;
+		}
+		
+		return  cookDao.findByRestaurant(manager.getRestaurant());
+	}
+
+	@Override
+	public List<Bartender> getBartenders(String managerEmail) {
+		// TODO Auto-generated method stub
+		RestaurantManager manager = getRestaurantManager(managerEmail);
+		
+		if(manager == null){
+			return null;
+		}
+		
+		return  bartenderDao.findByRestaurant(manager.getRestaurant());
+	}
+
+	@Override
+	public List<Waiter> getWaiters(String managerEmail) {
+		// TODO Auto-generated method stub
+		RestaurantManager manager = getRestaurantManager(managerEmail);
+		
+		if(manager == null){
+			return null;
+		}
+		
+		return  waiterDao.findByRestaurant(manager.getRestaurant());
+	}
 	
 	
 	

@@ -2,6 +2,8 @@ package com.sms.service;
 
 import java.util.List;
 
+import com.sms.beans.Bartender;
+import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.Menu;
@@ -11,6 +13,7 @@ import com.sms.beans.RestaurantManager;
 import com.sms.beans.Segment;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
+import com.sms.beans.Waiter;
 
 public interface RestaurantManagerService {
 
@@ -45,4 +48,10 @@ public interface RestaurantManagerService {
 	public String chooseOffering(Integer offeringID);
 
 	public String addSegment(Segment newSegment, Integer restoranID);
+
+	public List<Cook> getCooks(String managerEmail);
+
+	public List<Bartender> getBartenders(String managerEmail);
+
+	public List<Waiter> getWaiters(String managerEmail);
 }
