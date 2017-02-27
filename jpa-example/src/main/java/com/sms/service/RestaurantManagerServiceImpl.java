@@ -20,6 +20,7 @@ import com.sms.beans.Offerer;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.Segment;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.beans.UserType;
@@ -34,6 +35,7 @@ import com.sms.dao.OffererDao;
 import com.sms.dao.OfferingsDao;
 import com.sms.dao.RestaurantDao;
 import com.sms.dao.RestaurantManagerDao;
+import com.sms.dao.SegmentDao;
 import com.sms.dao.TenderDao;
 import com.sms.dao.UserDao;
 import com.sms.dao.WaiterDao;
@@ -81,6 +83,8 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	@Autowired
 	private TenderDao tenderDao;
 	
+	@Autowired
+	private SegmentDao segmentDao;
 	
 	@Autowired
 	private MailSender mailSender;
@@ -464,6 +468,31 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 			System.out.println(e.toString());
 		}
 		
+	}
+
+	@Override
+	public String addSegment(Segment newSegment, Integer restoranID) {
+		// TODO Auto-generated method stub
+		Restaurant restoran = restourantDao.findById(restoranID);
+		
+		if(restoran == null){
+			return Message.REQUESTERROR;
+		}
+		
+		newSegment.setRestaurant(restoran);
+		
+		if(newSegment.getName() == null || newSegment.getName().equals("")){
+			return Message.REQUESTERROR;
+		}
+		
+		if(segmentDao.findByNameAndRestaurant(newSegment.getName(), restoran) != null){
+			return Message.REQUESTERROR;
+		}
+		
+		
+		segmentDao.save(newSegment);
+		
+		return Message.ERRORFREE;
 	}
 	
 	

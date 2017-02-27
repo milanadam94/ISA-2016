@@ -2,8 +2,6 @@ angular.element(document).ready(function () {
     console.log('page loading completed');
 });
 var restManager = angular.module('restManager', []).config(['$qProvider', '$httpProvider', function ($qProvider, $httpProvider)  {
-    $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
-    $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';
     $qProvider.errorOnUnhandledRejections(false);
     
 }]).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
@@ -97,7 +95,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 			
 		})
 		
-		if(selectedFood.name == "" || selectedFood.price < 0){
+		if(selectedFood.name == "" || selectedFood.price < 0 || $scope.restaurant == null){
 			alert("Ime ne sme biti prazno. Cena ne sme biti manja od 0");
 			return;
 		}
@@ -109,7 +107,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	
 	$scope.addFood = function(){
 		
-		if($scope.newFood.name == "" || $scope.newFood.price < 0){
+		if($scope.newFood.name == "" || $scope.newFood.price < 0 || $scope.restaurant == null){
 			alert("Ime ne sme biti prazno i cena ne sme biti manja od 0!");
 			return;
 		}
@@ -172,7 +170,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	
 	$scope.addDrink = function(){
 		
-		if($scope.newDrink.name == "" || $scope.newDrink.price < 0){
+		if($scope.newDrink.name == "" || $scope.newDrink.price < 0 || $scope.restaurant == null){
 			alert("Ime ne sme biti prazno i cena ne sme biti manja od 0!");
 			return;
 		}
@@ -202,7 +200,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 			
 		})
 		
-		if(selectedDrink.name == "" || selectedDrink.price < 0){
+		if(selectedDrink.name == "" || selectedDrink.price < 0 || $scope.restaurant == null){
 			alert("Ime ne sme biti prazno. Cena ne sme biti manja od 0");
 			return;
 		}
@@ -228,17 +226,47 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	}
 	
 	
+	// ===============================================================
+	
+	$scope.newSegment = {
+			name: "",
+			smoking: false
+	}
+	
 	$scope.getKonf = function(){
 		
+		
 	}
 	
 	
-	$scope.addKonf = function(){
+	$scope.addKonfig = function(){
+		
+		if($scope.newSegment.name == "" || $scope.restaurant == null){
+			alert("Neispravan unos ili restoran nije pronadjen")
+			return;
+		}
+		
+		konfService.addSegment($scope.newSegment, $scope.restaurant.id).then(
+				function(response){
+					alert(response.data);
+					
+					$scope.newSegment.name = "";
+					$scope.smoking = false;
+				}
+		);
+		
 		
 	}
 	
 	
 	
+	
+	$scope.konfig = function(){
+		setShows(false,false,false,true);
+		
+		
+		
+	}
 	
 
 	$scope.saveRestaurantInfo = function() {
@@ -375,6 +403,16 @@ restManager.service('drinkService', ['$window', '$http', function($window, $http
 }]);
 
 restManager.service('konfService', ['$window', '$http', function($window, $http){
+	
+	this.addSegment = function(newSegment, restoranID){
+		return $http({
+			method: 'POST',
+			data: newSegment,
+			url: "../restManager/addSegment/"+restoranID
+		});
+		
+	}
+	
 	this.getKonf;
 	this.saveChanges;
 	this.addKonf;

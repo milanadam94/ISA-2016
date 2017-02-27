@@ -1,0 +1,40 @@
+/***********************************************************************
+ * Module:  Segment.java
+ * Author:  Sasa
+ * Purpose: Defines the Class Segment
+ ***********************************************************************/
+package com.sms.beans;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="segment")
+public class Segment implements Serializable{
+
+	
+	private static final long serialVersionUID = 413088280920443435L;
+	
+	private ArrayList<GuestTable> tables;
+
+	public Segment() {
+		super();
+	}
+
+	public Segment(ArrayList<GuestTable> tables) {
+		super();
+		this.tables = tables;
+	}
+
+	public ArrayList<GuestTable> getTables() {
+		return tables;
+	}
+
+	public void setTables(ArrayList<GuestTable> tables) {
+		this.tables = tables;
+	}
+	
+}

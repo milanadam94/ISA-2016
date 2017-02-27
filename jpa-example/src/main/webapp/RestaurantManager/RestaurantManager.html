@@ -40,7 +40,7 @@
 				<li><a ng-click="getRestaurant()">Profil Restorana</a>
 				<li><a ng-click="getFoods()">Jelovnik</a>
 				<li><a ng-click="getDrinks()">Karta Pica</a>
-				<li><a ng-click="">Konfiguracija Sedenja</a>
+				<li><a ng-click="konfig()">Konfiguracija Sedenja</a>
 			</ul>
 		</div>
 		<div id="profilDiv" ng-show="profilShow">
@@ -111,6 +111,11 @@
 		</div>
 		
 		<div id="konfiguracijaDiv" ng-show="konfiguracijaShow">
+			
+			<label>Naziv Segmenta: <input type="text" ng-model="newSegment.name" palceholder="Unesite naziv segmenta"></label><br/>
+			<label>Dozvoljeno Pusenje: <input type="checkbox"  ng-model="newSegment.smoking"></label><br/>
+		
+			<button type="submit" class="btn btn-success" ng-click="addKonfig()">Dodaj Segment</button>
 		
 		</div>
 	</div>

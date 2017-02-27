@@ -19,6 +19,7 @@ import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.Segment;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.service.RestaurantManagerService;
@@ -178,7 +179,11 @@ public class RestaurantManagerController {
 	}
 	
 	
-	
+	@PostMapping(path="/addSegment/{restoranID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String addSegment(@PathVariable("restoranID") Integer restoranID, @RequestBody Segment newSegment){
+		return restManagerService.addSegment(newSegment,restoranID);
+	}
 	
 	
 	

@@ -8,6 +8,7 @@ import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.Segment;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 
@@ -42,4 +43,6 @@ public interface RestaurantManagerService {
 	public List<Offerings> getOfferingsForTender(Integer tenderID);
 
 	public String chooseOffering(Integer offeringID);
+
+	public String addSegment(Segment newSegment, Integer restoranID);
 }
