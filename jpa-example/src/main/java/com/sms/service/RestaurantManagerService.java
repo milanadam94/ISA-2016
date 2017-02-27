@@ -35,7 +35,7 @@ public interface RestaurantManagerService {
 	
 	public void changeDrink(Drink newDrink, Integer menuID);
 	
-	public String registarWorker(SysUser user, String managerID);
+	public String registarWorker(SysUser user, String managerID, String cookType);
 	
 	public String registarOfferer(SysUser user);
 	

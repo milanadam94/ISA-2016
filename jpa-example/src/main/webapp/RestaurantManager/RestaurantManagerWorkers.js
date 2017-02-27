@@ -34,6 +34,7 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 	$scope.error = false;
 	$scope.errorMessage = "";
 	
+	$scope.cookType = "";
 	
 	$scope.registracija = function(){
 		setShows(true,false,false,false);
@@ -81,19 +82,21 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 	
 	
 	$scope.registerWorker = function(){
+		
 		if($scope.newWorker.email == "" || 
 				$scope.newWorker.pasword == "" || 
 				$scope.newWorker.name == "" || 
 				$scope.newWorker.lastName == "" || 
 				$scope.newWorker.userType == "" ||
-				$scope.newWorker.password != $scope.passwordConfirm){
+				$scope.newWorker.password != $scope.passwordConfirm ||
+				($scope.newWorker.userType == "COOK" && $scope.cookType == "")){
 			
 			$scope.error = true;
 			$scope.errorMessage = "Neispravan unos!";			
 			return;
 		}
-		
-		registarService.registarWorker($scope.newWorker);
+		$scope.error = false;
+		registarService.registarWorker($scope.newWorker,$scope.cookType);
 	}
 	
 	
@@ -111,12 +114,12 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 
 restManager.service('registarService',['$window', '$http', function($window, $http){
 
-	this.registarWorker = function(newWorker){
+	this.registarWorker = function(newWorker, cookType){
 		
 		$http({
 			  method: 'POST',
 			  data : newWorker,
-		      url : "../restManager/registarWorker/1" //========================================== dodati user email
+		      url : "../restManager/registarWorker/1/" + cookType //========================================== dodati user email
 		}).then(function success(response){	
 				if(response.data == "Error free"){
 					alert("Uspesno registrovan radnik");	

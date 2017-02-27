@@ -15,6 +15,7 @@ import com.sms.beans.Bartender;
 import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
+import com.sms.beans.FoodType;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerer;
 import com.sms.beans.Offerings;
@@ -309,7 +310,7 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	
 	
 	@Override
-	public String registarWorker(SysUser user, String managerID) {
+	public String registarWorker(SysUser user, String managerID, String cookType) {
 		// TODO Auto-generated method stub
 		
 		if(user.getEmail() == null || user.getEmail().equals(""))
@@ -346,6 +347,21 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		case "COOK":
 			userDao.save(newUser);
 			Cook cook = new Cook(newUser, manager.getRestaurant());
+			
+			switch (cookType) {
+			case "SALAD":
+				cook.setCookType(FoodType.SALAD);
+				break;
+			case "FRIEDMEAL":
+				cook.setCookType(FoodType.FRIEDMEAL);
+				break;
+			case "COOKEDMEAL":
+				cook.setCookType(FoodType.COOKEDMEAL);
+				break;
+			default:
+				return null;
+			}
+			
 			cookDao.save(cook);
 			break;
 			

@@ -153,11 +153,11 @@ public class RestaurantManagerController {
 	}
 	
 	
-	@PostMapping(path = "/registarWorker/{managerID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@PostMapping(path = "/registarWorker/{managerID}/{cookType}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
-	public String registarWorker(@RequestBody SysUser user, @PathVariable("managerID") String managerID){
+	public String registarWorker(@RequestBody SysUser user, @PathVariable("managerID") String managerID, @PathVariable("cookType") String cookType){
 		
-		return restManagerService.registarWorker(user,managerID);
+		return restManagerService.registarWorker(user,managerID,cookType);
 	}
 	
 	
