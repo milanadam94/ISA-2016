@@ -8,6 +8,7 @@ package com.sms.beans;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,10 +35,10 @@ public class GuestOrder implements Serializable {
 	@Column(name = "prepared")
 	private Boolean prepared;
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	public List<FoodOrder> foodOrders;
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	public List<DrinkOrder> drinkOrders;
 
 	@ManyToOne

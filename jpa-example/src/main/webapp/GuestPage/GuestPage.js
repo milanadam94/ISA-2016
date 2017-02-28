@@ -84,14 +84,14 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 		var drinkOrders = [];
 		var foodOrders = [];
 		$scope.menu.drinks.forEach(function(drink) {
-			var val = angular.element('drink' + drink.id).val();
+			var val = angular.element('#drink' + drink.id).val();
 			if(val > 0) {
 				var drinkOrder = {"drink" : drink, "quantity" : val};
 				drinkOrders.push(drinkOrder);
 			}
 		});
 		$scope.menu.foods.forEach(function(food) {
-			var val = angular.element('food' + food.id).val();
+			var val = angular.element('#food' + food.id).val();
 			console.log(val)
 			if(val > 0) {
 				var foodOrder = {"food" : food, "quantity" : val};
