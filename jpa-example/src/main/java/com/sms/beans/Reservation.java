@@ -6,11 +6,13 @@
 package com.sms.beans;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -21,6 +23,10 @@ public class Reservation implements Serializable {
 
 	private static final long serialVersionUID = -1768759508918044208L;
 
+	@Id
+	@Column(name = "id")
+	@GeneratedValue
+	private Integer id;
 
 	@Column(name = "reservation_date_time")
 	private Date reservationDateTime;
@@ -35,18 +41,35 @@ public class Reservation implements Serializable {
 	private Restaurant restaurant;
 
 	@OneToMany
-	private ArrayList<GuestTable> tables;
+	private Set<GuestTable> tables;
 
 	public Reservation() {
+
 	}
 
 	public Reservation(Date reservationDateTime, Integer duration, Guest guest, Restaurant restaurant,
-			ArrayList<GuestTable> tables) {
+			Set<GuestTable> tables) {
 		super();
 		this.reservationDateTime = reservationDateTime;
 		this.duration = duration;
 		this.guest = guest;
 		this.restaurant = restaurant;
+		this.tables = tables;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Set<GuestTable> getTables() {
+		return tables;
+	}
+
+	public void setTables(Set<GuestTable> tables) {
 		this.tables = tables;
 	}
 
@@ -80,14 +103,6 @@ public class Reservation implements Serializable {
 
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
-	}
-
-	public ArrayList<GuestTable> getTables() {
-		return tables;
-	}
-
-	public void setTables(ArrayList<GuestTable> tables) {
-		this.tables = tables;
 	}
 
 }
