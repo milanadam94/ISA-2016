@@ -23,8 +23,13 @@
 
 <!-- TOASTR -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
-
-
+<style>
+.canvas {
+	border : 2px solid;
+	width: 500px;
+	height: 250px;
+}
+</style>
 </head>
 <body ng-app="restManager" ng-controller="restManagerController">
 	<nav id="myNavbar" class="navbar">
@@ -178,7 +183,58 @@
 			</div>
 			
 			</form>
+			
+			
+			<br/><br/>
+			
+			<!-- CANVASSS ============ -->
+					
+				
+		<canvas id="canvas" class="canvas" ng-click="draw($event)">
+			Vas browser ne podrzava graficki prikaz!
+		</canvas>
+					 	
+		<br/><br/>
+		<div ng-show="newTableShow">
+			
+			<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Oznaka: </label> <div class="col-sm-5"><input type = "text" class="form-control" ng-model="newTable.tag" placeholder="Unesite oznaku stola"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Opis:</label> <div class="col-sm-5"><input type = "text" class="form-control" ng-model="newTable.description"  placeholder="Unesite opis stola"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label  class="control-label col-sm-2">Broj Mesta: </label><div class="col-sm-5"><input type = "number" class="form-control" min=0 max="20" class="form-control" id="cenaNovogPica" ng-model="newTabel.seatCount"  placeholder="Unesite broj mesta"></div> <br/> 
+			</div>
+			
+			<label  class="control-label col-sm-2" >Region:</label>
+					<div class="col-sm-5">
+					<select class="form-group" ng-model="myNewSegment">
+						<option ng-repeat="i in segments" value="{{i.id}}">{{i.name}}</option>
+					</select>
+					</div>
+			
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="addTable()" >Dodaj Sto</button></div>
+			</div>
+				
+			</form>
+				
+			
+				
+			</div>
+			
+			
 		</div>
+		
+		<div ng-show="deleteTableButtonShow" class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-danger" ng-click="deleteTable()" >Ukloni Sto</button></div>
+		</div>
+		
 	</div>
 </body>
 

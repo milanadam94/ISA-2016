@@ -6,6 +6,7 @@ import com.sms.beans.Bartender;
 import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
+import com.sms.beans.GuestTable;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
@@ -66,4 +67,10 @@ public interface RestaurantManagerService {
 	public SysUser getUser(Integer userID);
 
 	public List<Schedule> loadAllMySegments(Integer workerID);
+
+	public String addTable(GuestTable newTable,Integer segmentID, String menagerEmail);
+
+	public List<GuestTable> getAllTables(String managerID);
+
+	public void deleteTable(GuestTable table);
 }

@@ -1,5 +1,7 @@
 package com.sms.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,9 +18,11 @@ import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.FoodType;
+import com.sms.beans.GuestTable;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerer;
 import com.sms.beans.Offerings;
+import com.sms.beans.Reservation;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
 import com.sms.beans.Schedule;
@@ -34,9 +38,11 @@ import com.sms.dao.BartenderDao;
 import com.sms.dao.CookDao;
 import com.sms.dao.DrinkDao;
 import com.sms.dao.FoodDao;
+import com.sms.dao.GuestTableDao;
 import com.sms.dao.MenuDao;
 import com.sms.dao.OffererDao;
 import com.sms.dao.OfferingsDao;
+import com.sms.dao.ReservationDao;
 import com.sms.dao.RestaurantDao;
 import com.sms.dao.RestaurantManagerDao;
 import com.sms.dao.ScheduleDao;
@@ -97,6 +103,12 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	
 	@Autowired
 	private ScheduleDao scheduleDao;
+	
+	@Autowired
+	private GuestTableDao guestTableDao;
+	
+	@Autowired
+	private ReservationDao reservationDao;
 	
 	@Autowired
 	private WorkerScheduleDao workerScheduleDao;
@@ -660,6 +672,116 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		}
 		
 		return schedule;
+	}
+
+	@Override
+	public String addTable(GuestTable newTable,Integer segmentID, String menagerEmail) {
+		// TODO Auto-generated method stub
+		
+		Restaurant restaurant = getRestaurant(menagerEmail);
+		
+		if(restaurant == null){
+			return Message.USERNOTFOUNDERROR;
+		}
+		
+		Segment segment = segmentDao.findById(segmentID);
+		
+		
+		if(segment == null){
+			return Message.REQUESTERROR;
+		}
+		
+		if(newTable.getTag().equals("") || newTable.getTag().length() > 2){
+			return Message.REQUESTERROR;
+		}
+
+		List<GuestTable> tables = guestTableDao.findByRestaurantId(restaurant.getId());
+		
+		for(GuestTable tabl : tables){
+			if((tabl.getxCoord().equals(newTable.getxCoord()) && tabl.getyCoord().equals(newTable.getyCoord())) || tabl.getTag().equals(newTable.getTag())){
+				return "Takav sto vec postoji";
+			}
+		}
+			
+		newTable.setRestaurant(restaurant);
+		newTable.setSegment(segment);
+		guestTableDao.save(newTable);
+		
+		return Message.ERRORFREE;
+	}
+
+	@Override
+	public List<GuestTable> getAllTables(String managerID) {
+		// TODO Auto-generated method stub
+		return guestTableDao.findAll();
+	}
+
+	@Override
+	public void deleteTable(GuestTable table) {
+		// TODO Auto-generated method stub
+		
+		List<GuestTable> tables = guestTableDao.findAll();
+		boolean flag = false;
+		
+		for(GuestTable tab : tables){
+			if(tab.getxCoord().equals(table.getxCoord()) && tab.getyCoord().equals(table.getyCoord())){
+				
+				List<Reservation> reservations = reservationDao.findByRestaurantId(tab.getRestaurant().getId());
+				
+				
+				for(Reservation res : reservations){
+					
+					for(GuestTable gt : res.getTables()){
+						
+						if(gt.getId() == tab.getId()){
+							
+							Date today = new Date();
+							
+							
+							SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+							Date date = null;
+							try
+					        {
+					            date = simpleDateFormat.parse(res.getReservationDateTime().split("T")[0]);
+
+					            System.out.println("date : "+simpleDateFormat.format(date));
+					        }
+					        catch (ParseException ex)
+					        {
+					            System.out.println("Exception "+ex);
+					        }
+					        
+							
+							System.out.println("today: " + today);
+							
+							
+							if(date.before(today)){
+								System.out.println("USO");
+								flag = true;
+								res.getTables().remove(gt);
+								reservationDao.save(res);
+							}
+							
+							//res.getTables().remove(gt);
+						}
+						
+					}		
+					
+					
+					
+				}
+				
+				if(!flag){
+					
+					guestTableDao.delete(tab);
+				}
+				
+				
+				break;
+			}
+		}
+		
+		
 	}
 	
 	
