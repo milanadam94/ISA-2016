@@ -67,6 +67,8 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 	$scope.reservationDuration = undefined;
 	$scope.tablesReservedThen = [];
 	$scope.reserved = []
+	$scope.menu = undefined;
+	$scope.prepared = false;
 	
 	$scope.hideCanvas = function() {
 		$scope.showCanvas = false;
@@ -78,13 +80,39 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 			toastr.warning("Potrebno je izabrati barem jedan sto.");
 			return;
 		}
+		console.log($scope.prepared)
+		var drinkOrders = [];
+		var foodOrders = [];
+		$scope.menu.drinks.forEach(function(drink) {
+			var val = angular.element('drink' + drink.id).val();
+			if(val > 0) {
+				var drinkOrder = {"drink" : drink, "quantity" : val};
+				drinkOrders.push(drinkOrder);
+			}
+		});
+		$scope.menu.foods.forEach(function(food) {
+			var val = angular.element('food' + food.id).val();
+			console.log(val)
+			if(val > 0) {
+				var foodOrder = {"food" : food, "quantity" : val};
+				foodOrders.push(foodOrder);
+			}
+		});
+		console.log(drinkOrders)
+		console.log(foodOrders)
+		if(drinkOrders.length != 0 || foodOrders.length != 0) {
+			var guestOrder = {"prepared" : $scope.prepared, "foodOrders" : foodOrders, "drinkOrders" : drinkOrders, "restaurant" : $scope.$parent.selectedRestaurant}
+			restaurantsService.order(guestOrder).then(function(data){
+				console.log(data)
+			})
+		}
 		d = new Date($scope.reservationDateTime);
 		date = d.toISOString();
 		restaurantsService.reserveTables($scope.$parent.selectedRestaurant, $scope.$parent.guest, date, $scope.reservationDuration, $scope.reserved).then(function(data){
 			console.log(data)
 		})
 		toastr.options.timeOut = 2500;
-		toastr.info("Vasa rezervacija se nalazi unutar taba 'Rezervacije', pozovite svoje prijatelje da vam se pridruze.")
+		toastr.info("Vasa rezervacija se nalazi unutar taba 'Rezervacije'. Unutar taba mozete pozvati prijatelje da vas se pridruze.")
 		$scope.$parent.showRestaurants = true;
 		$scope.$parent.showReservations = false;
 		$scope.showCanvas = false;
@@ -198,6 +226,11 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 		else {
 			$scope.$parent.showRestaurants = false;
 			$scope.$parent.showReservations = true;
+			
+			restaurantsService.getRestaurantMenu($scope.$parent.selectedRestaurant).then(function(data) {
+				$scope.menu = data;
+				console.log(data)
+			});
 			
 			restaurantsService.loadRestaurantTables($scope.$parent.selectedRestaurant.id).then(function(data) {
 				$scope.$parent.restaurantTables = data;
@@ -762,6 +795,30 @@ app.service('guestService', [ '$http', '$window', function($http, $window) {
 
 app.service('restaurantsService', [ '$http', '$window',
 		function($http, $window) {
+	
+			this.getRestaurantMenu = function(restaurant) {
+				return $http({
+					method : 'POST',
+					url : "../restaurant/getRestaurantMenu",
+					data: restaurant
+				}).then(function success(response) {
+					return response.data;
+				}, function error(response) {
+					alert(response)
+				});
+			}
+			
+			this.order = function(order) {
+				return $http({
+					method : 'POST',
+					url : "../restaurant/order",
+					data: order
+				}).then(function success(response) {
+					return response.data;
+				}, function error(response) {
+					alert(response)
+				});
+			}
 
 			this.loadRestaurants = function() {
 				return $http({

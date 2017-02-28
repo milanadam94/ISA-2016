@@ -44,6 +44,12 @@
 	min-height: 400px;
 }
 
+.small-panel {
+	max-height: 150px;
+	overflow-y: scroll;
+	min-height: 150px;
+}
+
 .canvas {
 	border : 2px solid;
 	width: 500px;
@@ -154,28 +160,62 @@ input[type="number"] {
 							<input type="number" min="1" max="10" class="form-control" ng-model="reservationDuration" ng-change="hideCanvas()">
 					</div> 
 				</div>
-				<button type="button" class="btn btn-primary" ng-click="drawCanvas()">Prikazi rezervacije za izabrani datum i vreme</button>
+				<button type="button" class="btn btn-primary" ng-click="drawCanvas()">Prikazi restoran</button>
 				<hr size="60">
 				<div ng-show="showCanvas">
 					 <div class="row">
-					 	<div class="col-md-6">
+					 	<div class="col-md-5">
 							<canvas id="canvas" class="canvas" ng-click="draw($event)">
 								Vas browser ne podrzava graficki prikaz!
 							</canvas>
-					 			<button type="button" class="btn btn-primary" ng-click="drawCanvas()">Obrisi izabrano</button>
+					 		<div class="form-group row">
+					 			<div class="col-md-6">
+					 				<button type="button" class="btn btn-danger pull-right" ng-click="drawCanvas()">Obrisi izabrano</button>
+					 			</div>
+					 			<div class="col-md-6">
+					 				<button type="button" class="btn btn-primary" ng-click="reserveTables()">Rezervisi stolove</button>
+					 			</div>
+					 		</div>
 						</div>
-					 	<div class="col-md-6">
+					 	<div class="col-md-3">
 							<h4>Izabrani stolovi:</h4>
 							<ul>
 								<li ng-repeat="table in reserved">
-									<h4>Sto: {{table.tag}}</h4>
-									<h4>Segment: {{table.segment.name}}</h4>
+									<h5>Sto: {{table.tag}}</h5>
+									<h5>Segment: {{table.segment.name}}</h5>
 									<hr size="5">
 								</li>
 							</ul>
-							<div class="form-group">
-					 			<button type="button" class="btn btn-primary" ng-click="reserveTables()">Rezervisi stolove</button>
-					 		</div>
+						</div>
+						<div class="col-md-4">
+<!-- PORUCI HRANU -->
+							<h5>Porucite hranu i pice:</h5>
+								<div class="panel panel-primary small-panel">
+						  			<div class="panel-heading">Hrana</div>
+						  				<div class="panel-body" >
+											<ul class="list-group">
+												<li style="height: 60px" class="list-group-item" ng-repeat="food in menu.foods">
+													{{food.name}}
+													<input id="{{'food'+food.id}}" type="number" min="0" max="5" class="form-control pull-right">
+												</li>
+											</ul>
+										</div>
+									</div>
+									<div class="panel panel-primary small-panel">
+						  			<div class="panel-heading">Pice</div>
+						  				<div class="panel-body" >
+											<ul class="list-group">
+												<li style="height: 60px" class="list-group-item" ng-repeat="drink in menu.drinks" >
+													{{drink.name}}
+													<input id="{{'drink'+drink.id}}" type="number" min="0" max="5" class="form-control pull-right">
+												</li>
+											</ul>
+										</div>
+									</div>
+									<hr size="5"/>
+									<div class="checkbox">
+									  <label><input type="checkbox" ng-model="prepared">Da bude pripremljeno?</label>
+									</div>
 						</div>
 					</div>
 				</div>

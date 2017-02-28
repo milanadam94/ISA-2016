@@ -43,6 +43,9 @@ public class GuestOrder implements Serializable {
 	@ManyToOne
 	public Waiter waiter;
 
+	@ManyToOne
+	public Restaurant restaurant;
+
 	public GuestOrder() {
 
 	}
@@ -52,6 +55,14 @@ public class GuestOrder implements Serializable {
 		this.foodOrders = foodOrders;
 		this.drinkOrders = drinkOrders;
 		this.waiter = waiter;
+	}
+
+	public GuestOrder(Boolean prepared, List<FoodOrder> foodOrders, List<DrinkOrder> drinkOrders,
+			Restaurant restaurant) {
+		this.prepared = prepared;
+		this.foodOrders = foodOrders;
+		this.drinkOrders = drinkOrders;
+		this.restaurant = restaurant;
 	}
 
 	public Boolean getPrepared() {
@@ -92,6 +103,14 @@ public class GuestOrder implements Serializable {
 
 	public void setDrinkOrders(List<DrinkOrder> drinkOrders) {
 		this.drinkOrders = drinkOrders;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
 	}
 
 }

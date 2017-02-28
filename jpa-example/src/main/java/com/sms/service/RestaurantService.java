@@ -2,7 +2,9 @@ package com.sms.service;
 
 import java.util.List;
 
+import com.sms.beans.GuestOrder;
 import com.sms.beans.GuestTable;
+import com.sms.beans.Menu;
 import com.sms.beans.Reservation;
 import com.sms.beans.Restaurant;
 
@@ -19,4 +21,8 @@ public interface RestaurantService {
 	public List<GuestTable> loadRestaurantTables(Integer restaurantId);
 
 	public String reserveTables(Reservation reservation);
+
+	public Menu getRestaurantMenu(Restaurant restaurant);
+
+	public String order(GuestOrder order);
 }

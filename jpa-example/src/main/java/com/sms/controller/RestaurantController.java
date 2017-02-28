@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sms.beans.GuestOrder;
 import com.sms.beans.GuestTable;
+import com.sms.beans.Menu;
 import com.sms.beans.Reservation;
 import com.sms.beans.Restaurant;
 import com.sms.service.RestaurantService;
@@ -36,10 +38,22 @@ public class RestaurantController {
 		return restaurantService.loadRestaurantReservations(restaurantId);
 	}
 	
+	@PostMapping(path = "/getRestaurantMenu", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Menu getRestaurantMenu(@RequestBody Restaurant restaurant) {
+		return restaurantService.getRestaurantMenu(restaurant);
+	}
+	
 	@PostMapping(path = "/reserveTables", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public String reserveTables(@RequestBody Reservation reservation) {
 		return restaurantService.reserveTables(reservation);
+	}
+	
+	@PostMapping(path = "/order", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public String order(@RequestBody GuestOrder order) {
+		return restaurantService.order(order);
 	}
 	
 	@PostMapping(path = "/loadRestaurantTables/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)
