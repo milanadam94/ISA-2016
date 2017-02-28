@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sms.beans.Guest;
+import com.sms.beans.Invite;
+import com.sms.beans.Reservation;
 import com.sms.service.GuestService;
 
 @Controller
@@ -26,6 +28,18 @@ public class GuestController {
 	public Guest loadGuest(@PathVariable(value="userId") Integer userId) {
 		
 		return guestService.getGuestByUserId(userId);
+	}
+	
+	@PostMapping(path = "/loadGuestReservations/{userId}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Reservation> loadGuestReservations(@PathVariable(value="userId") Integer userId) {
+		return guestService.loadGuestReservations(userId);
+	}
+	
+	@PostMapping(path = "/loadGuestInvites/{userId}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Invite> loadGuestInvites(@PathVariable(value="userId") Integer userId) {
+		return guestService.loadGuestInvites(userId);
 	}
 	
 	@PostMapping(path = "/searchGuests/{guestId}", produces=MediaType.APPLICATION_JSON_VALUE)
@@ -70,4 +84,17 @@ public class GuestController {
 		return guestService.editProfile(guest);
 	}
 	
+	@PostMapping(path = "/inviteFriend", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public String inviteFriend(@RequestBody Invite invite) {
+		
+		return guestService.inviteFriend(invite);
+	}
+	
+	@PostMapping(path = "/cancelReservation", produces=MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public String removeFriend(Reservation reservation) {
+		
+		return guestService.cancelReservation(reservation);
+	}
 }

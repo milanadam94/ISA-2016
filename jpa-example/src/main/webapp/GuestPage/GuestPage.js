@@ -98,6 +98,37 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 			toastr.warning("Izaberite datum, vreme i trajanje rezervacije.");
 			return;
 		}
+		
+		var selectedDate = new Date($scope.reservationDateTime);
+		var now = new Date();
+		
+    	var hours = selectedDate.getHours();
+    	if(hours == 0)
+    		hours = 24;
+    	var selectedMinutes = selectedDate.getMinutes() + hours * 60;
+    	hours = now.getHours();
+    	if(hours == 0)
+    		hours = 24;
+    	var nowMinutes = now.getMinutes() + hours * 60;
+    	
+    	if(selectedDate.getDate() == now.getDate() && selectedDate.getMonth() == now.getMonth() && selectedDate.getFullYear() == now.getFullYear()) {
+    		if(selectedMinutes - nowMinutes < 30) {
+    			toastr.options.timeOut = 1500;
+    			toastr.error("Rezervacije se moze izvrsiti najkasnije 30 minuta ranije, a najvise mesec dana unapred.");
+    			return;
+    		}
+    	}
+    	//else if(selectedDate.getDate() > )
+    	if(Math.round((selectedDate-now)/(1000*60*60*24)) > 30 || Math.round((selectedDate-now)/(1000*60*60*24)) < 0) {
+    		toastr.options.timeOut = 1500;
+			toastr.error("Rezervacije se moze izvrsiti najkasnije 30 minuta ranije, a najvise mesec dana unapred.");
+			return;
+    	}
+    	
+    	var duration = $scope.reservationDuration;
+    	
+    	
+		
 		$scope.reserved = [];
 		$scope.tablesReservedThen = [];
 		var canvas = document.getElementById('canvas');
@@ -120,12 +151,6 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
  			    context.fillText(table.tag, x + 8, y + 22);
 		  });
     	
-    	var selectedDate = new Date($scope.reservationDateTime);
-    	var hours = selectedDate.getHours();
-    	if(hours == 0)
-    		hours = 24;
-    	var selectedMinutes = selectedDate.getMinutes() + hours * 60;
-    	var duration = $scope.reservationDuration;
     	$scope.restaurantReservations.forEach(function(reservation) {
     			var resDate = new Date(reservation.reservationDateTime);
     			hours = resDate.getHours();
@@ -388,6 +413,80 @@ app.controller('profileController', [ '$scope', 'guestService', function($scope,
 
 } ]);
 
+angular.module('app').filter('invited', function() {
+	  return function (friend, invites) {
+		  invites.forEach(function(invite) {
+			  if(invite.friend.id == friend.id) {
+				 return false;
+			  }
+		  });
+		  
+		  return true;
+		 
+	  };
+	});
+
+app.controller('reservationsController', [ '$scope', 'guestService', function($scope, guestService) {
+	
+	$scope.reservationId = null;
+	$scope.reservation = null;
+	
+	$scope.cancelReservation = function() {
+		if($scope.reservationId == null) {
+			toastr.options.timeOut = 1500;
+			toastr.warning("Potrebno je izabrati rezervaciju.");
+			return;
+		}
+		
+		var resDate = new Date($scope.reservation.reservationDateTime);
+		var now = new Date();
+		if(resDate.getDate() == now.getDate() && resDate.getMonth() == now.getMonth() && resDate.getFullYear() == now.getFullYear()) {
+
+			var hours = resDate.getHours();
+			if(hours == 0)
+				hours = 24;
+			var resMinutes = resDate.getMinutes() + hours * 60;
+			hours = now.getHours();
+			if(hours == 0)
+				hours = 24;
+			var nowMinutes = now.getMinutes() + hours * 60;
+			if(nowMinutes - resMinutes < 30) {
+				toastr.options.timeOut = 1500;
+				toastr.error("Ne mozete otkazati rezervaciju. Moze se otkazati najkasnije 30 minuta pre zakazanog termina");
+				return;
+			}
+			
+		}
+		
+		
+		guestService.cancelReservation($scope.reservation);
+		$scope.$parent.guestReservations.pop($scope.reservation);
+	}
+	
+	$scope.selectReservation = function (reservation) {
+		$scope.reservation = reservation;
+		if($scope.reservationId == reservation.id)
+			$scope.reservationId = null;
+		else
+			$scope.reservationId = reservation.id;
+	};
+	
+	$scope.openFriends = function() {
+		if($scope.reservationId == null) {
+			angular.element('#inviteFriendsModal').modal('hide');
+			toastr.options.timeOut = 1500;
+			toastr.warning("Izaberite rezervaciju.");
+		}
+	}
+	
+	$scope.inviteFriend = function(friend) {
+		guestService.inviteFriend(friend).then(function(data) {
+			console.log(data);
+		});
+	}
+
+} ]);
+
 app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestService', 
 		function($scope, restaurantsService, guestService) {
 			
@@ -395,7 +494,9 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 			$scope.showFriends = false;
 			$scope.showProfile = false;
 			$scope.showReservations = false;
+			$scope.showGuestReservations = false;
 			$scope.selectedRestaurant = null;
+			$scope.invites = []
 			
 			$scope.loadRestaurants = function() {
 				restaurantsService.loadRestaurants().then(function(data) {
@@ -408,6 +509,7 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				$scope.showFriends = false;
 				$scope.showProfile = false;
 				$scope.showReservations = false;
+				$scope.showGuestReservations = false;
 			}
 
 			$scope.loadUserFriends = function() {
@@ -418,13 +520,30 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				$scope.showFriends = true;
 				$scope.showProfile = false;
 				$scope.showReservations = false;
-
+				$scope.showGuestReservations = false;
 			}
 			
 			$scope.userLogout = function() {
 				guestService.logout();
 			}
 
+			$scope.loadGuestReservations = function() {
+				guestService.loadGuestReservations().then(function(data) {
+					$scope.guestReservations = data;
+				});
+				guestService.loadGuest().then(function(data) {
+					$scope.guest = data;
+				});
+				guestService.loadGuestInvites().then(function(data) {
+					$scope.invites = data;
+				});
+				$scope.showRestaurants = false;
+				$scope.showFriends = false;
+				$scope.showProfile = false;
+				$scope.showReservations = false;
+				$scope.showGuestReservations = true;
+			}
+			
 			$scope.loadUserProfile = function() {
 				guestService.loadGuest().then(function(data) {
 					$scope.guest = data;
@@ -434,67 +553,61 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				$scope.showFriends = false;
 				$scope.showProfile = true;
 				$scope.showReservations = false;
+				$scope.showGuestReservations = false;
 			}
 
 		} ]);
 
-app.service('restaurantsService', [ '$http', '$window',
-		function($http, $window) {
-
-			this.loadRestaurants = function() {
-				return $http({
-					method : 'GET',
-					url : "../restaurant/loadRestaurants"
-				}).then(function success(response) {
-					return response.data;
-				}, function error(response) {
-					alert(response)
-				});
-			}
-			
-			this.loadRestaurantReservations = function(restaurantId) {
-				return $http({
-					method : 'POST',
-					url : "../restaurant/loadRestaurantReservations/" + restaurantId
-				}).then(function success(response) {
-					return response.data;
-				}, function error(response) {
-					alert(response)
-				});
-			}
-			
-			this.loadRestaurantTables = function(restaurantId) {
-				return $http({
-					method : 'POST',
-					url : "../restaurant/loadRestaurantTables/" + restaurantId
-				}).then(function success(response) {
-					return response.data;
-				}, function error(response) {
-					alert(response)
-				});
-			}
-			
-			this.reserveTables = function(selectedRestaurant, guest, reservationDateTime, reservationDuration, reserved) {
-				var reservation = {
-						"restaurant" : selectedRestaurant,
-						"guest" : guest,
-						"tables" : reserved,
-						"reservationDateTime" : reservationDateTime,
-						"duration" : reservationDuration
-					}
-				return $http({
-					method : 'POST',
-					url : "../restaurant/reserveTables",
-				    data : reservation
-				}).then(function success(response) {
-					return response.data;
-				}, function error(response) {
-					alert(response)
-				});
-			}
-} ]);
-
 app.service('guestService', [ '$http', '$window', function($http, $window) {
+	
+	this.inviteFriend = function(guest, friend, reservation) {
+		var invite = {"guest" : guest, "friend" : friend, "reservation" : reservation}
+		return $http({
+			method : 'POST',
+			url : "../guest/inviteFriend",
+			data : invite
+		}).then(function success(response) {
+			return response.data;
+		}, function error(response) {
+			alert(response)
+		});    
+	}
+	
+	this.cancelReservation = function(reservation) {
+		return $http({
+			method : 'POST',
+			url : "../guest/cancelReservation",
+			data : reservation
+		}).then(function success(response) {
+			return response.data;
+		}, function error(response) {
+			alert(response)
+		});            
+	}
+	
+	this.loadGuestReservations = function() {
+		user = JSON.parse($.cookie("user"));
+		return $http({
+			method : 'POST',
+			url : "../guest/loadGuestReservations/" + user.id
+		}).then(function success(response) {
+			return response.data;
+		}, function error(response) {
+			alert(response)
+		});                                                                                                                                   
+	}
+	
+	this.loadGuestInvites = function() {
+		user = JSON.parse($.cookie("user"));
+		return $http({
+			method : 'POST',
+			url : "../guest/loadGuestInvites/" + user.id
+		}).then(function success(response) {
+			return response.data;
+		}, function error(response) {
+			alert(response)
+		});                                                                                                                                   
+	}
 	
 	this.addFriend = function(guest, friend) {
 		$http({
@@ -637,3 +750,61 @@ app.service('guestService', [ '$http', '$window', function($http, $window) {
 	 }
 	 
 } ]);
+
+app.service('restaurantsService', [ '$http', '$window',
+		function($http, $window) {
+
+			this.loadRestaurants = function() {
+				return $http({
+					method : 'GET',
+					url : "../restaurant/loadRestaurants"
+				}).then(function success(response) {
+					return response.data;
+				}, function error(response) {
+					alert(response)
+				});
+			}
+			
+			this.loadRestaurantReservations = function(restaurantId) {
+				return $http({
+					method : 'POST',
+					url : "../restaurant/loadRestaurantReservations/" + restaurantId
+				}).then(function success(response) {
+					return response.data;
+				}, function error(response) {
+					alert(response)
+				});
+			}
+			
+			this.loadRestaurantTables = function(restaurantId) {
+				return $http({
+					method : 'POST',
+					url : "../restaurant/loadRestaurantTables/" + restaurantId
+				}).then(function success(response) {
+					return response.data;
+				}, function error(response) {
+					alert(response)
+				});
+			}
+			
+			this.reserveTables = function(selectedRestaurant, guest, reservationDateTime, reservationDuration, reserved) {
+				var reservation = {
+						"restaurant" : selectedRestaurant,
+						"guest" : guest,
+						"tables" : reserved,
+						"reservationDateTime" : reservationDateTime,
+						"duration" : reservationDuration
+					}
+				return $http({
+					method : 'POST',
+					url : "../restaurant/reserveTables",
+				    data : reservation
+				}).then(function success(response) {
+					return response.data;
+				}, function error(response) {
+					alert(response)
+				});
+			}
+} ]);
+
+

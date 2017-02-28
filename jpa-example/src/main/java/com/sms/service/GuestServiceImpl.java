@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.sms.beans.Friendship;
 import com.sms.beans.Guest;
+import com.sms.beans.Invite;
+import com.sms.beans.Reservation;
 import com.sms.dao.FriendshipDao;
 import com.sms.dao.GuestDao;
+import com.sms.dao.InviteDao;
+import com.sms.dao.ReservationDao;
 import com.sms.dao.UserDao;
 import com.sms.utilities.Message;
 
@@ -25,6 +29,12 @@ public class GuestServiceImpl implements GuestService {
 	
 	@Autowired
 	private FriendshipDao friendshipDao;
+	
+	@Autowired
+	private ReservationDao reservationDao;
+	
+	@Autowired
+	private InviteDao inviteDao;
 	
 	@Override
 	public Guest getGuestByUserId(Integer userId) {
@@ -158,6 +168,48 @@ public class GuestServiceImpl implements GuestService {
 		guestDao.save(guest);
 		
 		return Message.ERRORFREE;
+	}
+
+	@Override
+	public List<Reservation> loadGuestReservations(Integer userId) {
+		if(userId == null)
+			return new ArrayList<Reservation>();
+		Guest guest = guestDao.findByUserId(userId);
+		
+		return reservationDao.findByGuest(guest);
+	}
+
+	@Override
+	public String cancelReservation(Reservation reservation) {
+		if(reservation == null || reservation.getId() == null)
+			return Message.REQUESTERROR;
+		
+		reservationDao.delete(reservation);
+		
+		return Message.ERRORFREE;
+	}
+
+	@Override
+	public List<Invite> loadGuestInvites(Integer userId) {
+		if(userId == null)
+			return new ArrayList<Invite>();
+		
+		Guest guest = guestDao.findByUserId(userId);
+		
+		return inviteDao.findByGuest(guest);
+	}
+
+	@Override
+	public String inviteFriend(Invite invite) {
+		
+		if(invite.getGuest() == null || invite.getGuest().getId() == null || invite.getFriend() == null || invite.getFriend().getId() == null
+			|| invite.getReservation() == null || invite.getReservation().getId() == null)
+			return Message.REQUESTERROR;
+		
+		inviteDao.save(invite);
+		
+		return Message.ERRORFREE;
+		
 	}
 
 }
