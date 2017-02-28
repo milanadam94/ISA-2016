@@ -10,13 +10,12 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "drink")
-public class Drink implements Serializable{
+public class Drink implements Serializable {
 
 	private static final long serialVersionUID = 4275943328698609662L;
 
@@ -24,25 +23,19 @@ public class Drink implements Serializable{
 	@Column(name = "id")
 	@GeneratedValue
 	private Integer id;
-	
+
 	@Column(name = "name")
 	private String name;
-	
+
 	@Column(name = "description")
 	private String description;
-	
+
 	@Column(name = "price")
 	private Integer price;
-	
+
 	@Column(name = "grade")
 	private Integer grade;
 
-	@Column(name = "quantity")
-	private Integer quantity;
-
-	@Column(name = "prepared")
-	private Boolean prepared;
-	
 	public Drink() {
 	}
 
@@ -52,32 +45,14 @@ public class Drink implements Serializable{
 		this.price = price;
 		this.grade = grade;
 	}
-	
+
 	public Drink(String name, String description, Integer price, Integer grade, Integer quantity, Boolean prepared) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.grade = grade;
-		this.quantity = quantity;
-		this.prepared = prepared;
 	}
 
-	public Integer getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
-	}
-	
-	public Boolean getPrepared() {
-		return prepared;
-	}
-
-	public void setPrepared(Boolean prepared) {
-		this.prepared = prepared;
-	}
-	
 	public String getName() {
 		return name;
 	}

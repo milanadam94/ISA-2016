@@ -8,44 +8,36 @@ package com.sms.beans;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "food")
-public class Food implements Serializable{
-	
+public class Food implements Serializable {
+
 	private static final long serialVersionUID = -2727346146111461837L;
 
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@Column(name = "name")
 	private String name;
 
 	@Column(name = "description")
 	private String description;
-	
+
 	@Column(name = "price")
 	private Integer price;
 
 	@Column(name = "grade")
 	private Integer grade;
-	
-	@Column(name = "quantity")
-	private Integer quantity;
-	
-	@Column(name = "prepared")
-	private Boolean prepared;
 
 	@OneToMany
 	private List<FoodRecension> foodRecensions;
@@ -61,22 +53,20 @@ public class Food implements Serializable{
 		this.foodRecensions = foodRecensions;
 	}
 
-	public Food(String name, String description, Integer price){
+	public Food(String name, String description, Integer price) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.grade = 0;
 	}
-	
-	public Food(String name, String description, Integer price, Integer grade, Integer quantity, Boolean prepared){
+
+	public Food(String name, String description, Integer price, Integer grade) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.grade = grade;
-		this.quantity = quantity;
-		this.prepared = prepared;
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -85,22 +75,6 @@ public class Food implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
-	}
-	
-	public Boolean getPrepared() {
-		return prepared;
-	}
-
-	public void setPrepared(Boolean prepared) {
-		this.prepared = prepared;
-	}
-	
 	public String getName() {
 		return name;
 	}
@@ -140,9 +114,5 @@ public class Food implements Serializable{
 	public void setFoodRecensions(List<FoodRecension> foodRecensions) {
 		this.foodRecensions = foodRecensions;
 	}
-	
-	
-	
 
-	
 }

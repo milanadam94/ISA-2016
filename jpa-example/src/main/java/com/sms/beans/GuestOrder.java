@@ -6,7 +6,6 @@
 package com.sms.beans;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -17,6 +16,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * @author ANDREA
+ *
+ */
 @Entity
 @Table(name = "guest_order")
 public class GuestOrder implements Serializable {
@@ -32,24 +35,23 @@ public class GuestOrder implements Serializable {
 	private Boolean prepared;
 
 	@ManyToMany
-	public List<Food> foods;
+	public List<FoodOrder> foodOrders;
 
 	@ManyToMany
-	public List<Drink> drinks;
+	public List<DrinkOrder> drinkOrders;
 
 	@ManyToOne
 	public Waiter waiter;
 
 	public GuestOrder() {
-		this.drinks = new ArrayList<Drink>();
-		this.foods = new ArrayList<Food>();
-		this.prepared = false;
+
 	}
 
-	public GuestOrder(Boolean prepared, List<Food> foods, List<Drink> drinks) {
+	public GuestOrder(Boolean prepared, List<FoodOrder> foodOrders, List<DrinkOrder> drinkOrders, Waiter waiter) {
 		this.prepared = prepared;
-		this.foods = foods;
-		this.drinks = drinks;
+		this.foodOrders = foodOrders;
+		this.drinkOrders = drinkOrders;
+		this.waiter = waiter;
 	}
 
 	public Boolean getPrepared() {
@@ -58,22 +60,6 @@ public class GuestOrder implements Serializable {
 
 	public void setPrepared(Boolean prepared) {
 		this.prepared = prepared;
-	}
-
-	public List<Food> getFoods() {
-		return foods;
-	}
-
-	public void setFoods(List<Food> foods) {
-		this.foods = foods;
-	}
-
-	public List<Drink> getDrinks() {
-		return drinks;
-	}
-
-	public void setDrinks(List<Drink> drinks) {
-		this.drinks = drinks;
 	}
 
 	public Integer getId() {
@@ -91,4 +77,21 @@ public class GuestOrder implements Serializable {
 	public void setWaiter(Waiter waiter) {
 		this.waiter = waiter;
 	}
+
+	public List<FoodOrder> getFoodOrders() {
+		return foodOrders;
+	}
+
+	public void setFoodOrders(List<FoodOrder> foodOrders) {
+		this.foodOrders = foodOrders;
+	}
+
+	public List<DrinkOrder> getDrinkOrders() {
+		return drinkOrders;
+	}
+
+	public void setDrinkOrders(List<DrinkOrder> drinkOrders) {
+		this.drinkOrders = drinkOrders;
+	}
+
 }

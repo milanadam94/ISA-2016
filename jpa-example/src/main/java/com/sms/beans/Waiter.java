@@ -49,6 +49,8 @@ public class Waiter implements Serializable {
 	public Waiter() {
 	
 	}
+	
+	
 
 	public Waiter(SysUser user){
 		this.user = user;

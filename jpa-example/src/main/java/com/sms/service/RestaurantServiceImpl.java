@@ -53,12 +53,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 	@Override
 	public String reserveTables(Reservation reservation) {
 		
-		System.out.println(reservation.getRestaurant());
-		System.out.println(reservation.getDuration());
-		System.out.println(reservation.getReservationDateTime());
-		System.out.println(reservation.getRestaurant());
-		System.out.println(reservation.getGuest());
-		System.out.println(reservation.getTables());
 		if(reservation.getRestaurant() == null || reservation.getDuration() == null || reservation.getReservationDateTime() == null 
 				|| reservation.getGuest() == null || reservation.getTables() == null || reservation.getTables().isEmpty())
 			return Message.REQUESTERROR;

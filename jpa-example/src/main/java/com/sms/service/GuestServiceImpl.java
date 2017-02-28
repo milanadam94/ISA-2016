@@ -206,6 +206,7 @@ public class GuestServiceImpl implements GuestService {
 			|| invite.getReservation() == null || invite.getReservation().getId() == null)
 			return Message.REQUESTERROR;
 		
+		
 		inviteDao.save(invite);
 		
 		return Message.ERRORFREE;
