@@ -6,15 +6,14 @@
 package com.sms.beans;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -29,7 +28,7 @@ public class Reservation implements Serializable {
 	private Integer id;
 
 	@Column(name = "reservation_date_time")
-	private Date reservationDateTime;
+	private String reservationDateTime;
 
 	@Column(name = "duration")
 	private Integer duration;
@@ -40,16 +39,15 @@ public class Reservation implements Serializable {
 	@ManyToOne
 	private Restaurant restaurant;
 
-	@OneToMany
+	@ManyToMany
 	private Set<GuestTable> tables;
 
 	public Reservation() {
 
 	}
 
-	public Reservation(Date reservationDateTime, Integer duration, Guest guest, Restaurant restaurant,
+	public Reservation(String reservationDateTime, Integer duration, Guest guest, Restaurant restaurant,
 			Set<GuestTable> tables) {
-		super();
 		this.reservationDateTime = reservationDateTime;
 		this.duration = duration;
 		this.guest = guest;
@@ -73,11 +71,11 @@ public class Reservation implements Serializable {
 		this.tables = tables;
 	}
 
-	public Date getReservationDateTime() {
+	public String getReservationDateTime() {
 		return reservationDateTime;
 	}
 
-	public void setReservationDateTime(Date reservationDateTime) {
+	public void setReservationDateTime(String reservationDateTime) {
 		this.reservationDateTime = reservationDateTime;
 	}
 

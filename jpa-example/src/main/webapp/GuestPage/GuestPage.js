@@ -62,7 +62,127 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 	$scope.sortReverse = false;
 	$scope.selectedCategory = "";
 	$scope.idSelected = null;
-	$scope.reservationDateTime;
+	$scope.reservationDateTime = undefined;
+	$scope.showCanvas = false;
+	$scope.reservationDuration = undefined;
+	$scope.tablesReservedThen = [];
+	$scope.reserved = []
+	
+	$scope.hideCanvas = function() {
+		$scope.showCanvas = false;
+	}
+	
+	$scope.reserveTables = function() {
+		if($scope.reserved.length == 0) {
+			toastr.options.timeOut = 1500;
+			toastr.warning("Potrebno je izabrati barem jedan sto.");
+			return;
+		}
+		d = new Date($scope.reservationDateTime);
+		date = d.toISOString();
+		restaurantsService.reserveTables($scope.$parent.selectedRestaurant, $scope.$parent.guest, date, $scope.reservationDuration, $scope.reserved).then(function(data){
+			console.log(data)
+		})
+		toastr.options.timeOut = 2500;
+		toastr.info("Vasa rezervacija se nalazi unutar taba 'Rezervacije', pozovite svoje prijatelje da vam se pridruze.")
+		$scope.$parent.showRestaurants = true;
+		$scope.$parent.showReservations = false;
+		$scope.showCanvas = false;
+	}
+	
+	$scope.drawCanvas = function() {
+		
+		if($scope.reservationDateTime == undefined || $scope.reservationDateTime == null 
+				|| $scope.reservationDuration == undefined || $scope.reservationDuration == null) {
+			toastr.options.timeOut = 1500;
+			toastr.warning("Izaberite datum, vreme i trajanje rezervacije.");
+			return;
+		}
+		$scope.reserved = [];
+		$scope.tablesReservedThen = [];
+		var canvas = document.getElementById('canvas');
+    	var context = canvas.getContext('2d');
+    	context.clearRect(0, 0, canvas.width, canvas.height);
+    	for(var j = 0; j < 5; j++)
+    	{
+	    	for(var i=0; i < 10; i++)
+	    	{
+	    		context.rect(i*30 ,j*30 ,30,30);
+	            context.stroke();
+	    	}
+    	}
+    	$scope.restaurantTables.forEach(function(table) {
+    			x = parseFloat(table.xCoord)*30 - 30;
+ 		    	y = parseFloat(table.yCoord)*30 - 30;
+ 		    	 context.globalAlpha = 1.0;
+ 		    	context.fillStyle="#000000";
+ 		    	context.font="20px Arial";
+ 			    context.fillText(table.tag, x + 8, y + 22);
+		  });
+    	
+    	var selectedDate = new Date($scope.reservationDateTime);
+    	var hours = selectedDate.getHours();
+    	if(hours == 0)
+    		hours = 24;
+    	var selectedMinutes = selectedDate.getMinutes() + hours * 60;
+    	var duration = $scope.reservationDuration;
+    	$scope.restaurantReservations.forEach(function(reservation) {
+    			var resDate = new Date(reservation.reservationDateTime);
+    			hours = resDate.getHours();
+    			if(hours == 0)
+    				hours = 24;
+    			var resMinutes = resDate.getMinutes() + hours * 60;
+    			var resDuration = reservation.duration;
+    			var check = true;
+    			if(resDate.getDate() == selectedDate.getDate() && resDate.getMonth() == selectedDate.getMonth() && resDate.getFullYear() == selectedDate.getFullYear()) {
+    				for(var i = 0; i <= duration; i ++){
+    					console.log(selectedMinutes + i*60)
+    					console.log(resMinutes + resDuration * 60)
+    					console.log(selectedMinutes + i*60)
+    					console.log(resMinutes)
+    					if((selectedMinutes + i*60) <= (resMinutes + resDuration * 60) && (selectedMinutes + i*60) >= resMinutes) {
+    						check = false;
+    						break;
+    					}
+    				}
+    			}
+    			if(!check) {
+    				reservation.tables.forEach(function(table) {
+    					$scope.tablesReservedThen.push(table);
+    					x = parseFloat(table.xCoord)*30 - 30;
+    	 		    	y = parseFloat(table.yCoord)*30 - 30;
+    					context.globalAlpha = 0.2;
+					    context.fillStyle="#FF0000";
+					    context.fillRect(x,y,30,30);
+					    context.globalAlpha = 1.0;
+    				})
+    			}
+    	})
+    	
+    	$scope.showCanvas = true;
+	}
+	
+	$scope.goToReservations = function() {
+		toastr.options.timeOut = 1500;
+		$scope.showCanvas = false;
+		$scope.reservationDateTime = undefined;
+		$scope.$parent.reservationDuration = null;
+		if($scope.idSelected == null) {
+			toastr.warning('Morate izabrati restoran.');
+		}
+		else {
+			$scope.$parent.showRestaurants = false;
+			$scope.$parent.showReservations = true;
+			
+			restaurantsService.loadRestaurantTables($scope.$parent.selectedRestaurant.id).then(function(data) {
+				$scope.$parent.restaurantTables = data;
+			});
+			restaurantsService.loadRestaurantReservations($scope.$parent.selectedRestaurant.id).then(function(data) {
+				$scope.$parent.restaurantReservations = data;
+			});
+		}
+			
+	}
 	
 	$scope.draw = function(event) {
 	    	var canvas = document.getElementById('canvas');
@@ -77,73 +197,37 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 		    x = (event.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
 		    y = (event.clientY - rect.top) * scaleY     // been adjusted to be relative to element
 		    //  context.clearRect(0, 0, canvas.width, canvas.height);
-		    context.font="10px Arial";
-		    context.fillText("egss!",x,y);
-		    context.globalAlpha = 0.2;
-		    context.fillStyle="#FF0000";
-		    context.fillRect(0,0,30,30);
-		    context.globalAlpha = 1.0;
 		    
-		    startX = x/30.0 + 1;
+		   
+		    xIndex = x/30.0 + 1;
+		    yIndex = y/30.0 + 1;
+		    xIndex = Math.floor(xIndex);
+		    yIndex = Math.floor(yIndex);
+		    
+		    $scope.tablesReservedThen.forEach(function(table) {
+				if(table.xCoord == xIndex && table.yCoord == yIndex) {
+					return;
+				}
+			})
+			
+			startX = x/30.0 + 1;
 		    startY = y/30.0 + 1;
-		    startX = Math.floor(startX);
-		    startY = Math.floor(startY);
-		    var index;
-		    if(startY == 1)
-		    	index = startX+0;
-		    else if(startY == 2)
-		    	index = startX+10;
-		    else if(startY == 3)
-		    	index = startX+20;
-		    else if(startY == 4)
-		    	index = startX+30;
-		    else if(startY == 5)
-		    	index = startX+40;
-		    
-		    xx = startX*30 - 30;
-		    yy = startY*30 - 30;
-		    console.log(xx)
-		    console.log(yy)
-		      
-		    context.beginPath();
-		    
+		    startX = Math.floor(startX)*30 -30;
+		    startY = Math.floor(startY)*30 -30;
+			
+			$scope.restaurantTables.forEach(function(table) {
+				if(table.xCoord == xIndex && table.yCoord == yIndex && $scope.reserved.indexOf(table) == -1) {
+					context.globalAlpha = 0.3;
+					context.fillStyle="#7d9e7d";
+					context.fillRect(startX, startY, 30, 30);
+					$scope.reserved.push(table);
+				}
+			})
+			
 	     
 	        console.log("x: " + x + " y: " + y);
 	  }
 	
-	
-	$scope.doo = function() {
-		if($scope.reservationDateTime == null || $scope.reservationDateTime == undefined)
-		{
-			
-		}
-		else {
-			
-		}
-		var d = new Date($scope.reservationDateTime);
-	}
-	
-	$scope.goToReservations = function() {
-		toastr.options.timeOut = 10;
-		if($scope.idSelected == null) {
-			toastr.warning('Morate izabrati restoran.');
-		}
-		else {
-			$scope.$parent.showRestaurants = false;
-			$scope.$parent.showReservations = true;
-			var canvas = document.getElementById('canvas');
-	    	var context = canvas.getContext('2d');
-	    	for(var j = 0; j < 5; j++)
-	    	{
-		    	for(var i=0; i < 10; i++)
-		    	{
-		    		context.rect(i*30 ,j*30 ,30,30);
-		            context.stroke();
-		    	}
-	    	}
-		}
-			
-	}
 	
 	$scope.selectRestaurant = function (restaurant) {
 		$scope.$parent.selectedRestaurant = restaurant;
@@ -317,6 +401,9 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				restaurantsService.loadRestaurants().then(function(data) {
 					$scope.restaurants = data;
 				});
+				guestService.loadGuest().then(function(data) {
+					$scope.guest = data;
+				});
 				$scope.showRestaurants = true;
 				$scope.showFriends = false;
 				$scope.showProfile = false;
@@ -358,6 +445,47 @@ app.service('restaurantsService', [ '$http', '$window',
 				return $http({
 					method : 'GET',
 					url : "../restaurant/loadRestaurants"
+				}).then(function success(response) {
+					return response.data;
+				}, function error(response) {
+					alert(response)
+				});
+			}
+			
+			this.loadRestaurantReservations = function(restaurantId) {
+				return $http({
+					method : 'POST',
+					url : "../restaurant/loadRestaurantReservations/" + restaurantId
+				}).then(function success(response) {
+					return response.data;
+				}, function error(response) {
+					alert(response)
+				});
+			}
+			
+			this.loadRestaurantTables = function(restaurantId) {
+				return $http({
+					method : 'POST',
+					url : "../restaurant/loadRestaurantTables/" + restaurantId
+				}).then(function success(response) {
+					return response.data;
+				}, function error(response) {
+					alert(response)
+				});
+			}
+			
+			this.reserveTables = function(selectedRestaurant, guest, reservationDateTime, reservationDuration, reserved) {
+				var reservation = {
+						"restaurant" : selectedRestaurant,
+						"guest" : guest,
+						"tables" : reserved,
+						"reservationDateTime" : reservationDateTime,
+						"duration" : reservationDuration
+					}
+				return $http({
+					method : 'POST',
+					url : "../restaurant/reserveTables",
+				    data : reservation
 				}).then(function success(response) {
 					return response.data;
 				}, function error(response) {

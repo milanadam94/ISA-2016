@@ -55,7 +55,7 @@
 }
 
 input[type="number"] {
-   width:50px;
+   width:70px;
 }
 
 
@@ -83,80 +83,99 @@ input[type="number"] {
 		    </ul>
 		    </div>
 		</nav>
-		<div ng-show="showRestaurants" ng-controller="restaurantsController">
-			
-			<div class="row">
-				<div class="col-md-4">
-				  <div class="form-group">
-				  <label for="cat">Filtraj po kategoriji:</label>
-					  <select class="form-control" id="cat" ng-options="restaurant.category as restaurant.category for restaurant in $parent.restaurants | unique:'category'" ng-model="selectedCategory">
-					  	<option value=""></option>
-					  </select>
+		<div ng-controller="restaurantsController">
+			<div ng-show="showRestaurants" >
+				
+				<div class="row">
+					<div class="col-md-4">
+					  <div class="form-group">
+					  <label for="cat">Filtraj po kategoriji:</label>
+						  <select class="form-control" id="cat" ng-options="restaurant.category as restaurant.category for restaurant in $parent.restaurants | unique:'category'" ng-model="selectedCategory">
+						  	<option value=""></option>
+						  </select>
+						</div>
+					</div>
+					<div class="col-md-8">
+						<label></label>
+						<div class="form-group">	
+							<button type="submit" class="btn btn-primary" ng-click="goToReservations()" > Rezervisi mesto </button>
+						</div>
 					</div>
 				</div>
-				<div class="col-md-8">
-					<label></label>
-					<div class="form-group">	
-						<button type="submit" class="btn btn-primary" ng-click="goToReservations()" > Rezervisi mesto </button>
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>
+				        	<a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+					        Naziv 
+					        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
+					        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
+	        			</th>
+	        			<th>
+				        	<a href="#" ng-click="sortType = 'category'; sortReverse = !sortReverse">
+					        Kategorija 
+					        <span ng-show="sortType == 'category' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
+					        <span ng-show="sortType == 'category' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
+	        			</th>
+	        			<th>
+				        	<a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+					        Udaljenost 
+					        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
+					        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
+	        			</th>
+				        <th>Ocena</th>
+				        <th>Ocena prijatelja</th>
+				        <th>Rezervacija</th>
+				      </tr>
+				    </thead>
+				    <tbody>
+				      <tr style="cursor: pointer" ng-repeat="restaurant in restaurants | orderBy:sortType:sortReverse" ng-if="restaurant.category == selectedCategory || selectedCategory == null || selectedCategory ==''" ng-click="selectRestaurant(restaurant)" data-ng-class="{selected: restaurant.id == idSelected}">
+				        <td>{{restaurant.name}}</td>
+				        <td>{{restaurant.category}}</td>
+				        <td>{{restaurant.name}}</td>
+				        <td>{{restaurant.name}}</td>
+				        <td>{{restaurant.name}}</td>
+				        <td>{{restaurant.name}}</td>
+				      </tr>
+				    </tbody>
+				</table>
+			</div>
+			<div ng-show="showReservations">
+				<h4><b>Restoran:</b> {{selectedRestaurant.name}}</h4>
+				<div class="form-group">	
+					<h4><b>Datum i vreme rezervacije:</b> &nbsp;<input type="datetime-local" ng-model="reservationDateTime" ng-change="hideCanvas()"></input></h4>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-2">	
+						<h4> <b>Trajanje u satima:</b>	</h4>
+					</div>
+					<div class="col-md-1">
+							<input type="number" min="1" max="10" class="form-control" ng-model="reservationDuration" ng-change="hideCanvas()">
+					</div> 
+				</div>
+				<button type="button" class="btn btn-primary" ng-click="drawCanvas()">Prikazi rezervacije za izabrani datum i vreme</button>
+				<hr size="60">
+				<div ng-show="showCanvas">
+					 <div class="row">
+					 	<div class="col-md-6">
+							<canvas id="canvas" class="canvas" ng-click="draw($event)">
+								Vas browser ne podrzava graficki prikaz!
+							</canvas>
+					 			<button type="button" class="btn btn-primary" ng-click="drawCanvas()">Obrisi izabrano</button>
+						</div>
+					 	<div class="col-md-6">
+							<h4>Izabrani stolovi:</h4>
+							<ul>
+								<li ng-repeat="table in reserved">
+									{{table.tag}}
+								</li>
+							</ul>
+							<div class="form-group">
+					 			<button type="button" class="btn btn-primary" ng-click="reserveTables()">Rezervisi stolove</button>
+					 		</div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<table class="table table-bordered table-striped">
-			    <thead>
-			      <tr>
-			        <th>
-			        	<a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-				        Naziv 
-				        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
-				        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
-        			</th>
-        			<th>
-			        	<a href="#" ng-click="sortType = 'category'; sortReverse = !sortReverse">
-				        Kategorija 
-				        <span ng-show="sortType == 'category' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
-				        <span ng-show="sortType == 'category' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
-        			</th>
-        			<th>
-			        	<a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-				        Udaljenost 
-				        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
-				        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
-        			</th>
-			        <th>Ocena</th>
-			        <th>Ocena prijatelja</th>
-			        <th>Rezervacija</th>
-			      </tr>
-			    </thead>
-			    <tbody>
-			      <tr style="cursor: pointer" ng-repeat="restaurant in restaurants | orderBy:sortType:sortReverse" ng-if="restaurant.category == selectedCategory || selectedCategory == null || selectedCategory ==''" ng-click="selectRestaurant(restaurant)" data-ng-class="{selected: restaurant.id == idSelected}">
-			        <td>{{restaurant.name}}</td>
-			        <td>{{restaurant.category}}</td>
-			        <td>{{restaurant.name}}</td>
-			        <td>{{restaurant.name}}</td>
-			        <td>{{restaurant.name}}</td>
-			        <td>{{restaurant.name}}</td>
-			      </tr>
-			    </tbody>
-			</table>
-		</div>
-		<div ng-show="showReservations" ng-controller="restaurantsController">
-			<h4><b>Restoran:</b> {{selectedRestaurant.name}}</h4>
-			<div class="form-group">	
-				<h4><b>Datum i vreme rezervacije:</b> &nbsp;<input type="datetime-local" ng-model="reservationDateTime"></input></h4>
-			</div>
-			<div class="row">
-				<div class="form-group col-md-2">	
-					<h4> <b>Trajanje u satima:</b>	</h4>
-				</div>
-				<div class="col-md-1">
-						<input type="number" min="1" max="10" class="form-control" ng-model="reservationDuration">
-				</div> 
-			</div>
-			<button type="button" class="btn btn-primary" ng-click="doo()">Prihvati zahtev</button>
-			<div ng-controller="restaurantsController">
-				<canvas id="canvas" class="canvas" ng-click="draw($event)">
-					Vas browser ne podrzava graficki prikaz!
-				</canvas>
 			</div>
 		</div>
 		
@@ -208,7 +227,8 @@ input[type="number"] {
 			</div>
 		</div>
 		</div>
-		<div ng-show="showProfile" ng-controller="profileController">
+		<div ng-show="showProfile">
+			<div ng-controller="profileController">
 			<div class="row">
 				<div class="col-md-4">
 					<img src="../Images/user.png" class="img-rounded" alt="Cinque Terre" width="200" height="200">
@@ -227,6 +247,56 @@ input[type="number"] {
 				</div>
 	
 			</div>
+			</div>
+			<hr size="100">
+			<div ng-controller="friendsController">
+			<div class="form-group">	
+				<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addFriendsModal"> Pronadji prijatelje </button>
+			</div>
+			<div class="row">
+				<div class="col-md-8">
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>
+				        	<a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+					        Ime i prezime 
+					        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
+					        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
+	        			</th>
+				        <th>Poseta</th>
+				      </tr>
+				    </thead>
+				    <tbody>
+				      <tr ng-repeat="friend in guest.friends | orderBy:sortType:sortReverse track by $index">
+				        <td>{{friend.user.name + " " + friend.user.lastName}}</td>
+				        <td>{{friend.visits}}</td>
+				      </tr>
+				    </tbody>
+				</table>
+				</div>
+					
+				<div class="panel panel-primary fixed-panel col-md-4">
+					  <div class="panel-heading">Zahtevi za prijateljstvo</div>
+					  <div class="panel-body" >
+					  	 <div ng-repeat="friendRequest in guest.friendRequests track by friendRequest.id">
+						  	 	<div class="row">
+						  	 		<div class="col-md-2">
+											<img src="../Images/user.png" class="img-rounded" alt="Cinque Terre" width="50" height="50">
+									</div>
+									<div class="col-md-10">
+										<p class="small">Ime i prezime: {{friendRequest.user.name + " " + friendRequest.user.lastName}}</p>
+										<p class="small">Mesto: {{friendRequest.city}}</p>
+										<button type="button" class="btn btn-primary" ng-click="acceptRequest(friendRequest)">Prihvati zahtev</button>
+										<button type="button" class="btn btn-danger pull-right" ng-click="declineRequest(friendRequest)">Odbi zahtev</button>
+									</div>
+								</div>
+								<hr size="10">
+				  		</div>
+					  </div>
+			</div>
+		</div>
+		</div>
 		</div>
 		
 		

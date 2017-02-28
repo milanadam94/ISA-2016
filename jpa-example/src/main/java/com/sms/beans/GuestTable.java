@@ -26,48 +26,56 @@ public class GuestTable implements Serializable {
 	@GeneratedValue
 	private Integer id;
 
-	@Column(name = "seat_count")
+	@Column(name = "seat_count", nullable = false)
 	private Integer seatCount;
+
+	@Column(name = "tag", nullable = false, unique = true)
+	private String tag;
 
 	@Column(name = "description")
 	private String description;
-	
-	@Column(name = "xCoord")
+
+	@Column(name = "x_coord", nullable = false)
 	private Double xCoord;
-	
-	@Column(name = "yCoord")
+
+	@Column(name = "y_coord", nullable = false)
 	private Double yCoord;
 
-	//@ManyToOne
-	//private Segment segment;
+	@ManyToOne
+	private Segment segment;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	private Restaurant restaurant;
 
 	public GuestTable() {
 	}
 
-	public GuestTable(Integer seatCount) {
+	public GuestTable(Integer seatCount, String tag, Double xCoord, Double yCoord, Segment segment,
+			Restaurant restaurant) {
 		this.seatCount = seatCount;
-	}
-
-	public GuestTable(Integer seatCount, String description) {
-		this.seatCount = seatCount;
-		this.description = description;
-	}
-
-	public GuestTable(Integer seatCount, Restaurant restaurant) {
-		this.seatCount = seatCount;
-		this.restaurant = restaurant;
-	}
-
-	public GuestTable(Integer seatCount, String description, Restaurant restaurant) {
-		this.seatCount = seatCount;
-		this.description = description;
+		this.tag = tag;
+		this.xCoord = xCoord;
+		this.yCoord = yCoord;
+		this.segment = segment;
 		this.restaurant = restaurant;
 	}
 
 	
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	public Segment getSegment() {
+		return segment;
+	}
+
+	public void setSegment(Segment segment) {
+		this.segment = segment;
+	}
 
 	public Restaurant getRestaurant() {
 		return restaurant;
@@ -116,7 +124,5 @@ public class GuestTable implements Serializable {
 	public void setyCoord(Double yCoord) {
 		this.yCoord = yCoord;
 	}
-	
-	
 
 }
