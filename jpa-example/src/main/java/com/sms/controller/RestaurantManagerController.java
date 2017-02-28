@@ -21,10 +21,12 @@ import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.Schedule;
 import com.sms.beans.Segment;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.beans.Waiter;
+import com.sms.beans.WorkerSchedule;
 import com.sms.service.RestaurantManagerService;
 import com.sms.service.RestaurantService;
 import com.sms.utilities.Message;
@@ -209,5 +211,53 @@ public class RestaurantManagerController {
 		
 		return restManagerService.getWaiters(managerEmail);	
 	}
+	
+	@GetMapping(path="/getSchedules/{workerID}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<WorkerSchedule> getSchedules(@PathVariable("workerID") Integer workerID){
+		
+		return restManagerService.getSchedules(workerID);
+	}
+	
+	
+	@GetMapping(path="/loadAllSegments/{managerID}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Segment> loadAllSegments(@PathVariable("managerID") String managerEmail){
+		return restManagerService.loadAllSegments(managerEmail);		
+	}
+	
+	
+	@PostMapping(path="/addSchedule/{newShift}/{workerID}/{newSegment}", produces=MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public String addSchedule(@RequestBody Schedule schedule, @PathVariable("newShift") String newShift,@PathVariable("workerID") Integer workerID ,@PathVariable("newSegment") Integer segmentID){
+		
+		return restManagerService.addSchedule(schedule, newShift, workerID, segmentID);
+	}
+	
+	
+	
+	@GetMapping(path="/getUser/{userID}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public SysUser getUser(@PathVariable("userID") Integer userID){
+		return restManagerService.getUser(userID);
+	}
+	
+	
+	@GetMapping(path="/loadAllMySegments/{workerID}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Schedule> loadAllMySegments(@PathVariable("workerID") Integer workerID){
+		return restManagerService.loadAllMySegments(workerID);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

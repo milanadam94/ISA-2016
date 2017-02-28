@@ -21,11 +21,14 @@ import com.sms.beans.Offerer;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.Schedule;
 import com.sms.beans.Segment;
+import com.sms.beans.ShiftType;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.beans.UserType;
 import com.sms.beans.Waiter;
+import com.sms.beans.WorkerSchedule;
 import com.sms.dao.ActiveUserDao;
 import com.sms.dao.BartenderDao;
 import com.sms.dao.CookDao;
@@ -36,10 +39,12 @@ import com.sms.dao.OffererDao;
 import com.sms.dao.OfferingsDao;
 import com.sms.dao.RestaurantDao;
 import com.sms.dao.RestaurantManagerDao;
+import com.sms.dao.ScheduleDao;
 import com.sms.dao.SegmentDao;
 import com.sms.dao.TenderDao;
 import com.sms.dao.UserDao;
 import com.sms.dao.WaiterDao;
+import com.sms.dao.WorkerScheduleDao;
 import com.sms.utilities.Message;
 
 @Service
@@ -90,6 +95,11 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	@Autowired
 	private MailSender mailSender;
 	
+	@Autowired
+	private ScheduleDao scheduleDao;
+	
+	@Autowired
+	private WorkerScheduleDao workerScheduleDao;
 	
 	@Override
 	public Restaurant getRestaurant(String restManagerID) {
@@ -545,6 +555,111 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		}
 		
 		return  waiterDao.findByRestaurant(manager.getRestaurant());
+	}
+
+	@Override
+	public List<WorkerSchedule> getSchedules(Integer workerID) {
+		// TODO Auto-generated method stub
+		
+		SysUser user = userDao.findById(workerID);
+		
+		if(user == null){
+			return null;
+		}
+		
+		if(!user.getUserType().toString().equals("COOK") && !user.getUserType().toString().equals("BARTENDER") && !user.getUserType().toString().equals("WAITER")){
+			return null;			
+		}
+		
+		return workerScheduleDao.findByWorker(user);
+	
+	}
+
+	@Override
+	public List<Segment> loadAllSegments(String managerEmail) {
+		// TODO Auto-generated method stub
+		
+		RestaurantManager manager = getRestaurantManager(managerEmail);
+		
+		if(manager == null){
+			return null;
+		}
+		
+		return segmentDao.findByRestaurant(manager.getRestaurant());
+	}
+
+	
+	@Override
+	public String addSchedule(Schedule schedule, String newShift, Integer workerID, Integer newSegment) {
+		// TODO Auto-generated method stub
+		
+		SysUser worker = userDao.findById(workerID);
+		
+		if(worker == null){
+			return Message.USERNOTFOUNDERROR;
+		}
+
+		if (worker.getUserType().toString().equals("WAITER")) {
+
+			Segment segment = segmentDao.findById(newSegment);
+
+			if (segment == null) {
+				return Message.REQUESTERROR;
+			}
+
+			schedule.setSegment(segment);
+		}
+
+		switch (newShift) {
+		case "FIRST":
+			schedule.setShift(ShiftType.FIRST);
+			break;
+		case "SECOUND":
+			schedule.setShift(ShiftType.SECOUND);
+			break;
+		case "THRID":
+			schedule.setShift(ShiftType.THIRD);
+			break;
+		default:
+			return Message.REQUESTERROR;
+		}
+		
+		WorkerSchedule workerSchedule = new WorkerSchedule(schedule, worker);
+		scheduleDao.save(schedule);
+		workerScheduleDao.save(workerSchedule);
+		
+		return Message.ERRORFREE;
+	}
+
+	@Override
+	public SysUser getUser(Integer userID) {
+		// TODO Auto-generated method stub
+		return userDao.findById(userID);
+	}
+
+	@Override
+	public List<Schedule> loadAllMySegments(Integer workerID) {
+		// TODO Auto-generated method stub
+		
+		SysUser user = userDao.findById(workerID);
+		
+		if(user == null){
+			return null;
+		}
+			
+		List<WorkerSchedule> workerSchedule = workerScheduleDao.findByWorker(user);
+		
+		if(workerSchedule == null){
+			return null;
+		}
+		
+		List<Schedule> schedule = new ArrayList<Schedule>();
+		
+		for(WorkerSchedule ws : workerSchedule){
+			schedule.add(ws.getSchedule());
+		}
+		
+		return schedule;
 	}
 	
 	

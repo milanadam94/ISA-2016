@@ -1,0 +1,95 @@
+/***********************************************************************
+ * Module:  Schedule.java
+ * Author:  Sasa
+ * Purpose: Defines the Class Schedule
+ ***********************************************************************/
+package com.sms.beans;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+public class Schedule {
+
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
+	private Date startDate;
+	
+	private Date endDate;
+	
+	private String shift;
+	
+	@ManyToOne
+	private Segment segment;
+
+	public Schedule() {
+		super();
+	}
+	
+	
+
+	public Schedule(Date startDate, Date endDate, String shift, Segment segment) {
+		super();
+		this.startDate = startDate;
+		this.setEndDate(endDate);
+		this.shift = shift;
+		this.segment = segment;
+	}
+
+
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getShift() {
+		return shift;
+	}
+
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
+
+	public Segment getSegment() {
+		return segment;
+	}
+
+	public void setSegment(Segment segment) {
+		this.segment = segment;
+	}
+
+
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	
+	
+	
+	
+}

@@ -1,0 +1,28 @@
+/***********************************************************************
+ * Module:  Schedule.java
+ * Author:  Sasa
+ * Purpose: Defines the Class Schedule
+ ***********************************************************************/
+package com.sms.beans;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+public class Schedule {
+	
+	private Integer id;
+	
+	private Date startDate;
+	private Date endDate;
+	private String shift;
+	private Segment segment;
+
+	public Schedule() {
+		super();
+	}
+
+	
+	
+	
+	
+}

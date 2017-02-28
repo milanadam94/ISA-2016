@@ -1,0 +1,9 @@
+package com.sms.beans;
+
+public class WorkerSchedule {
+
+	private Schedule schedule;
+	
+	private 
+	
+}

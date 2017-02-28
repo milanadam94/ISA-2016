@@ -1,0 +1,45 @@
+package com.sms.beans;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="worker_schedule")
+public class WorkerSchedule {
+
+	@ManyToOne
+	private Schedule schedule;
+	
+	@ManyToOne
+	private SysUser worker;
+
+	
+	public WorkerSchedule(){
+		
+	}
+	
+	public WorkerSchedule(Schedule schedule, SysUser worker) {
+		super();
+		this.schedule = schedule;
+		this.worker = worker;
+	}
+
+	public Schedule getSchedule() {
+		return schedule;
+	}
+
+	public void setSchedule(Schedule schedule) {
+		this.schedule = schedule;
+	}
+
+	public SysUser getWorker() {
+		return worker;
+	}
+
+	public void setWorker(SysUser worker) {
+		this.worker = worker;
+	}
+	
+	
+	
+}

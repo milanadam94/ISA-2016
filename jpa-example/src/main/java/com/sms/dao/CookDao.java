@@ -8,6 +8,7 @@ import org.springframework.data.repository.Repository;
 
 import com.sms.beans.Cook;
 import com.sms.beans.Restaurant;
+import com.sms.beans.SysUser;
 
 public interface CookDao extends Repository<Cook, Long>{
 	
@@ -18,5 +19,7 @@ public interface CookDao extends Repository<Cook, Long>{
 	public Cook findById(Integer id);
 	
 	public Cook save(Cook cook);
+	
+	public Cook findByUser(SysUser user);
 
 }

@@ -38,8 +38,6 @@
 			<ul class="nav nav-tabs">
 				<li><a ng-click="registracija()">Registrovanje Radnika</a>
 				<li><a ng-click="slisakRadnika()">Spisak Radnika</a>
-				<li><a ng-click="periodicniNivo()">Raspored Na Periodicnom Nivou</a>
-				<li><a ng-click="reonUSmeni()">Raspored Reona U Smeni</a>
 			</ul>
 		</div>
 		
@@ -123,11 +121,13 @@
 					<th>Ime</th>
 					<th>Prezime</th>
 					<th>Email</th>
+					<th>Raspored Rada</th>
 				</tr>
 				<tr ng-repeat="i in cooks | orderBy:'name'">
 					<td>{{i.user.name}}</td>
 				 	<td>{{i.user.lastName}}</td>
 					<td>{{i.user.email}}</td>
+					<td><button type="submit" class="btn btn-info" ng-click="checkSchedule( i.user.id )">Pregled</button></td>
 				</tr>
 			</table>
 		
@@ -137,11 +137,13 @@
 					<th>Ime</th>
 					<th>Prezime</th>
 					<th>Email</th>
+					<th>Raspored Rada</th>
 				</tr>
 				<tr ng-repeat="i in waiters | orderBy:'name'">
 					<td>{{i.user.name}}</td>
 				 	<td>{{i.user.lastName}}</td>
 					<td>{{i.user.email}}</td>
+					<td><button type="submit" class="btn btn-info" ng-click="checkSchedule( i.user.id )">Pregled</button></td>
 				</tr>
 			</table>
 			
@@ -151,11 +153,13 @@
 					<th>Ime</th>
 					<th>Prezime</th>
 					<th>Email</th>
+					<th>Raspored Rada</th>
 				</tr>
 				<tr ng-repeat="i in bartenders | orderBy:'name'">
 					<td>{{i.user.name}}</td>
 				 	<td>{{i.user.lastName}}</td>
 					<td>{{i.user.email}}</td>
+					<td><button type="submit" class="btn btn-info" ng-click="checkSchedule( i.user.id )">Pregled</button></td>
 				</tr>
 			</table>
 		</div>
@@ -163,18 +167,71 @@
 		
 		<!--  PERIODICNI NIVO -->
 		<!--  ================================ -->
-		<div ng-show="periodicniShow">
+		<div ng-show="pregledRaspored">
 			
+			<label>{{fullWorker.name}} {{fullWorker.lastName}} ({{fullWorker.email}}) </label>
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Pocetak</th>
+					<th>Kraj</th>
+					<th>Smena</th>
+					<th ng-if="fullWorker.userType == 'WAITER'">Segment</th>
+					<th>Status</th>
+				</tr>
+				<tr ng-repeat="i in allMySegments | orderBy:'startDate' : true">
+				
+					<td> {{ i.startDate | date: 'yyyy/MM/dd' }} </td>
+				 	<td> {{ i.endDate | date: 'yyyy/MM/dd' }} </td>
+					<td> {{ i.shift }} </td>
+					<td ng-if="fullWorker.userType == 'WAITER'"> {{ $parent.i.segment.name }}</td>
+					<td ng-if="i.endDate < today"> <font color="red">ISTEKAO</font></td>
+					<td ng-if="i.endDate > today && i.startDate <= today"> <font color="green">U TOKU</font></td>
+					<td ng-if="i.endDate > today && i.startDate > today"> <font color="yellow">USKORO</font></td>
+				</tr>
+			</table>
+			
+			
+			
+			
+			<!--  DODAVANJE NOVOG  -->
+			
+			<form class="form-horizontal">
+				<div class="form-group">
+				<label class="control-label col-sm-2" >Pocetak: </label> <div class="col-sm-5"> <input type="date"  class="form-control" ng-model="newSchedule.startDate" > </input></div><br/><br/>
+				
+				<label class="control-label col-sm-2" >Kraj: </label> <div class="col-sm-5"><input type="date" class="form-control" ng-model="newSchedule.endDate"> </input>  </div><br/><br/>
+				
+				<label  class="control-label col-sm-2" >Smena:</label>
+					 <div class="col-sm-5">
+						<select class="form-control" ng-model="shiftType" >
+						<option>FIRST</option>
+						<option>SECOUND</option>
+						<option>THRID</option>
+						</select>
+					</div>
+				<br/><br/>
+				
+				
+				<div ng-if="fullWorker.userType == 'WAITER'">
+				<label  class="control-label col-sm-2" >Region:</label>
+					<div class="col-sm-5">
+					<select class="form-group" ng-model="$parent.newSegment">
+						<option ng-repeat="i in segments" value="{{i.id}}">{{i.name}}</option>
+					</select>
+					</div>
+				</div>
+				 <br/><br/>
+				<div class="form-group"> 
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-success" ng-click="addSchedule()">Dodaj Raspored</button>
+					</div>
+				</div>
+				</div>
+			</form>
 		
 		</div>
 		
 		
-		
-		<!--  PO SMENAMA -->
-		<!--  ================================ -->
-		<div  ng-show="reonUSmeniShow">
-	
-		</div>
 		
 		
 	</div>
