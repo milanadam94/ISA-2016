@@ -4,11 +4,10 @@
  * Purpose: Defines the Class Menu
  ***********************************************************************/
 package com.sms.beans;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,7 +19,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "menu")
-public class Menu implements Serializable{
+public class Menu implements Serializable {
 
 	private static final long serialVersionUID = -7186795119462828700L;
 
@@ -28,21 +27,20 @@ public class Menu implements Serializable{
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@OneToMany
 	private List<Food> foods;
-	
+
 	@OneToMany
 	private List<Drink> drinks;
-	
+
 	@ManyToOne
 	private Restaurant restaurant;
-	
+
 	public Menu() {
 	}
-	
+
 	public Menu(List<Food> foods, List<Drink> drinks) {
-		super();
 		this.foods = foods;
 		this.drinks = drinks;
 	}
@@ -78,8 +76,5 @@ public class Menu implements Serializable{
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
 	}
-	
-	
-	
 
 }

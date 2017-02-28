@@ -415,13 +415,14 @@ app.controller('profileController', [ '$scope', 'guestService', function($scope,
 
 angular.module('app').filter('invited', function() {
 	  return function (friend, invites) {
+		  check = true;
 		  invites.forEach(function(invite) {
 			  if(invite.friend.id == friend.id) {
-				 return false;
+				 check = false;
 			  }
 		  });
 		  
-		  return true;
+		  return check;
 		 
 	  };
 	});
@@ -473,15 +474,23 @@ app.controller('reservationsController', [ '$scope', 'guestService', function($s
 	
 	$scope.openFriends = function() {
 		if($scope.reservationId == null) {
-			angular.element('#inviteFriendsModal').modal('hide');
 			toastr.options.timeOut = 1500;
 			toastr.warning("Izaberite rezervaciju.");
+		}
+		else
+		{
+			
+			$('#myModal').modal({ show: false})
+			angular.element('#inviteFriendsModal').modal('show');
 		}
 	}
 	
 	$scope.inviteFriend = function(friend) {
-		guestService.inviteFriend(friend).then(function(data) {
+		guestService.inviteFriend($scope.$parent.guest, friend, $scope.reservation).then(function(data) {
 			console.log(data);
+			guestService.loadGuestInvites().then(function(data) {
+				$scope.$parent.invites = data;
+			});
 		});
 	}
 
@@ -561,7 +570,7 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 app.service('guestService', [ '$http', '$window', function($http, $window) {
 	
 	this.inviteFriend = function(guest, friend, reservation) {
-		var invite = {"guest" : guest, "friend" : friend, "reservation" : reservation}
+		var invite = {"guest" : guest, "friend" : friend, "reservation" : reservation, "accepted" : false}
 		return $http({
 			method : 'POST',
 			url : "../guest/inviteFriend",
