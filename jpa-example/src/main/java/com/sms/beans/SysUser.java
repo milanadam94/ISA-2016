@@ -42,6 +42,9 @@ public class SysUser implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private UserType userType;
 
+	@Column(name = "first_login")
+	private Boolean firstLogin;
+
 	public SysUser() {
 
 	}
@@ -75,6 +78,13 @@ public class SysUser implements Serializable {
 		this.id = id;
 	}
 
+	public Boolean getFirstLogin() {
+		return firstLogin;
+	}
+
+	public void setFirstLogin(Boolean firstLogin) {
+		this.firstLogin = firstLogin;
+	}
 	public String getName() {
 		return name;
 	}

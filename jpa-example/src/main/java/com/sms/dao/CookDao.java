@@ -22,4 +22,5 @@ public interface CookDao extends Repository<Cook, Long>{
 	
 	public Cook findByUser(SysUser user);
 
+	public Cook findByUserId(Integer userId);
 }

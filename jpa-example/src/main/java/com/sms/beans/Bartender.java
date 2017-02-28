@@ -2,7 +2,6 @@ package com.sms.beans;
 
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -24,11 +22,17 @@ public class Bartender implements Serializable{
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	private Integer id;
 	
+	@Column(name = "suitSize")
+	private String suitSize;
+	
+	@Column(name = "shoeSize")
+	private int shoeSize;
+
+	@Column(name = "birthday")
+	private String birthday;
+	
 	@ManyToOne
 	private SysUser user;
-	
-	@OneToMany
-	private List<GuestOrder> orders;
 	
 	@ManyToOne
 	private Restaurant restaurant;
@@ -46,6 +50,13 @@ public class Bartender implements Serializable{
 		this.restaurant = restourant;
 	}
 	
+	public Bartender(String suitSize, int shoeSize, String birthday, SysUser user){
+		this.user = user;
+		this.suitSize = suitSize;
+		this.shoeSize = shoeSize;
+		this.birthday = birthday;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -54,14 +65,37 @@ public class Bartender implements Serializable{
 		this.id = id;
 	}
 	
-	public List<GuestOrder> getOrders() {
+	public String getSuitSize() {
+		return suitSize;
+	}
+
+	public void setSuitSize(String suitSize) {
+		this.suitSize = suitSize;
+	}
+
+	public int getShoeSize() {
+		return shoeSize;
+	}
+
+	public void setShoeSize(int shoeSize) {
+		this.shoeSize = shoeSize;
+	}
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
+	
+	/*public List<GuestOrder> getOrders() {
 		return orders;
 	}
 
 	public void setOrders(List<GuestOrder> orders) {
 		this.orders = orders;
-	}
-
+	}*/
 
 	public SysUser getUser() {
 		return user;
