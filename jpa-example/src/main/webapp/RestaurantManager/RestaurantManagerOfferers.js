@@ -8,7 +8,7 @@ var restManager = angular.module('restManager', []).config(['$qProvider', '$http
 	
 	//namestiti dole u funckcijama gde treba user.email kada se ovo namesti!
 	if (typeof $.cookie('user') !== 'undefined') {
-		$scope.user = JSON.parse($.cookie('user'));
+		user = JSON.parse($.cookie('user'));
 		
 		if(user.userType == "GUEST") {
 			$window.location.href = "/GuestPage/GuestPage.html";

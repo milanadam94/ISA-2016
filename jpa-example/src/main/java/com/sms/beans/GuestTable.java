@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -59,6 +60,12 @@ public class GuestTable implements Serializable {
 		this.restaurant = restaurant;
 	}
 
+	public GuestTable(Integer seatCount, String tag, Double xCoord, Double yCoord) {
+		this.seatCount = seatCount;
+		this.tag = tag;
+		this.xCoord = xCoord;
+		this.yCoord = yCoord;
+	}
 	
 	public String getTag() {
 		return tag;

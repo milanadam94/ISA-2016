@@ -8,7 +8,7 @@ var restManager = angular.module('restManager', []).config(['$qProvider', '$http
 	
 	//namestiti dole u funckcijama gde treba user.email kada se ovo namesti!
 	if (typeof $.cookie('user') !== 'undefined') {
-		$scope.user = JSON.parse($.cookie('user'));
+		user = JSON.parse($.cookie('user'));
 		
 		if(user.userType == "GUEST") {
 			$window.location.href = "/GuestPage/GuestPage.html";
@@ -22,7 +22,7 @@ var restManager = angular.module('restManager', []).config(['$qProvider', '$http
 
 
 
-restManager.controller('restManagerController', [ '$scope', 'konfService', 'drinkService', 'restaurantInfoService', 'foodService', function($scope, konfService, drinkService, restaurantInfoService, foodService ){
+restManager.controller('restManagerController', [ '$scope', 'konfService', 'drinkService', 'restaurantInfoService', 'foodService','canvasService', function($scope, konfService, drinkService, restaurantInfoService, foodService, canvasService ){
 
 	$scope.newFood = {
 			name: "",
@@ -233,6 +233,15 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 			smoking: false
 	}
 	
+	$scope.newTable = {
+			seatCount: 0,
+			tag: "",
+			description: "",
+			xCoord: 0,
+			yCoord: 0
+	}
+	
+	
 	$scope.getKonf = function(){
 		
 		
@@ -250,21 +259,25 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 				function(response){
 					alert(response.data);
 					
-					$scope.newSegment.name = "";
-					$scope.smoking = false;
+					location.reload();
 				}
 		);
 		
 		
 	}
 	
-	
+	restaurantInfoService.loadAllSegments().then(
+			function(response){
+				$scope.segments = response.data;
+			}
+			
+	);
 	
 	
 	$scope.konfig = function(){
 		setShows(false,false,false,true);
 		
-		
+		$scope.loadTables();
 		
 	}
 	
@@ -296,6 +309,136 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 		
 	}
 	
+	// KANVAS ====================================================
+	$scope.myNewSegment = "";
+	
+	
+	$scope.draw = function(event) {
+    	var canvas = document.getElementById('canvas');
+    	var context = canvas.getContext('2d');
+    	
+    	var rect = canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top; var rect = canvas.getBoundingClientRect(), 
+        scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for X
+        scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
+
+	    x = (event.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
+	    y = (event.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+	    //  context.clearRect(0, 0, canvas.width, canvas.height);
+	    
+	    xIndex = x/30.0 + 1;
+	    yIndex = y/30.0 + 1;
+	    xIndex = Math.floor(xIndex);
+	    yIndex = Math.floor(yIndex);
+	    
+		startX = x/30.0 + 1;
+	    startY = y/30.0 + 1;
+	    startX = Math.floor(startX)*30 -30;
+	    startY = Math.floor(startY)*30 -30;
+		
+	    $scope.newTable.xCoord = xIndex;
+	    $scope.newTable.yCoord = yIndex;
+	    
+	    
+	    $scope.newTableShow = true;
+	    $scope.deleteTableButtonShow = false;
+	    
+	    $scope.restaurantTables.forEach(function(table) {
+			if(table.xCoord == xIndex && table.yCoord == yIndex){
+				$scope.newTableShow = false;
+				$scope.deleteTableButtonShow = true;
+			}
+		});
+	    
+	    
+  }
+	
+	$scope.restaurantTables = [];
+
+	$scope.loadTables = function() {
+		
+		$scope.newTableShow = false;
+		var canvas = document.getElementById('canvas');
+    	var context = canvas.getContext('2d');
+    	context.clearRect(0, 0, canvas.width, canvas.height);
+    	
+    	for(var j = 0; j < 5; j++)
+    	{
+	    	for(var i=0; i < 10; i++)
+	    	{
+	    		context.rect(i*30 ,j*30 ,30,30);
+	            context.stroke();
+	    	}
+    	}
+    	
+    	
+    	canvasService.getAllTables().then(
+    			function(response){
+    				$scope.restaurantTables = response.data;
+    				$scope.restaurantTables.forEach(function(table) {
+    					x = parseFloat(table.xCoord)*30 - 30;
+    					y = parseFloat(table.yCoord)*30 - 30;
+    					context.globalAlpha = 1.0;
+    					context.fillStyle="#000000";
+    					context.font="20px Arial";
+    					context.fillText(table.tag, x + 8, y + 22);
+    				});
+    			}
+    	);
+    	
+    	
+    	
+    	
+	}
+	
+	
+	
+	$scope.addTable = function(){
+		
+		if($scope.newTable.seatCount < 0 || $scope.newTable.seatCount > 20 ||
+				$scope.newTable.tag == "" || $scope.myNewSegment == ""){
+			alert("Los unos!");
+			return;			
+		}
+		
+		if($scope.newTable.tag.length > 2){
+			alert("Oznaka moze imati maksimalno 2 karaktera!");
+			return;
+		}
+		
+		
+		canvasService.addTable($scope.newTable, $scope.myNewSegment).then(
+				function(response){
+					alert(response.data);
+					location.reload();
+				}
+		);
+		
+	}
+	
+	
+	$scope.deleteTable = function(){
+		flag = false;
+		
+		$scope.restaurantTables.forEach(function(table) {
+			if(table.xCoord == $scope.newTable.xCoord && table.yCoord == $scope.newTable.yCoord){
+				flag = true;
+			}
+		});
+		
+		if(!flag){
+			alert("Niste selektovali sto");
+			return;
+		}
+		
+		canvasService.deleteTable($scope.newTable);
+		
+		
+	}
+	
+	
+	
 }]);
 
 
@@ -306,6 +449,16 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 
 
 restManager.service('restaurantInfoService',['$window', '$http', function($window, $http){
+	
+	this.loadAllSegments = function(){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/loadAllSegments/1" //========================================== dodati user Email
+		});
+		
+	}
+	
+	
 	this.getRestaurant = function(user){
 		return $http.get("../restManager/myRestaurant/1"); // ================================= OVDE NAMESTITI EMAIL USERA
 	}
@@ -420,6 +573,41 @@ restManager.service('konfService', ['$window', '$http', function($window, $http)
 }]);
 
 
+restManager.service('canvasService', ['$window', '$http', function($window, $http){
+	
+	this.addTable = function(newTable, segmentID){
+		return $http({
+			method: 'POST',
+			data: newTable,
+			url: "../restManager/addTable/"+segmentID+"/1" //==================================== staviti email restoran menagera
+		});
+	}
+	
+	this.getAllTables = function(){
+		return $http({
+			method: 'GET',
+			url: "../restManager/getAllTables/1" //==================================== staviti email restoran menagera
+		});
+	}
+	
+	
+	this.deleteTable = function (newTable){
+		$http({
+			method: 'POST',
+			data: newTable,
+			url: "../restManager/deleteTable"
+		}).then(
+				function success(){
+					location.reload();
+				},
+				function error(){
+					alert("Error!");
+				}
+		);
+	}
+	
+	
+}]);
 
 
 

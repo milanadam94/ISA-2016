@@ -17,6 +17,7 @@ import com.sms.beans.Bartender;
 import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
+import com.sms.beans.GuestTable;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
@@ -251,13 +252,25 @@ public class RestaurantManagerController {
 	
 	
 	
+	@PostMapping(path="/addTable/{segmentID}/{menagerEmail}" , produces=MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String addTable(@RequestBody GuestTable newTable,@PathVariable("segmentID") Integer segmentID, @PathVariable("menagerEmail") String menagerEmail){
+		return restManagerService.addTable(newTable,segmentID, menagerEmail);
+	}
 	
 	
+	@GetMapping(path="/getAllTables/{managerID}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<GuestTable> getAllTables(@PathVariable("managerID") String managerID){
+		return restManagerService.getAllTables(managerID);
+		
+	}
 	
-	
-	
-	
-	
+	@PostMapping(path="/deleteTable", consumes=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void deleteTable(@RequestBody GuestTable table){
+		restManagerService.deleteTable(table);
+	}
 	
 	
 }
