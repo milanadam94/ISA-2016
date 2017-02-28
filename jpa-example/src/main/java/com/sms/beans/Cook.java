@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -28,15 +30,23 @@ public class Cook implements Serializable {
 	@GeneratedValue
 	private Integer id;
 
+	@Column(name = "suitSize")
+	private String suitSize;
+	
+	@Column(name = "shoeSize")
+	private int shoeSize;
+
+	@Column(name = "birthday")
+	private String birthday;
+
 	@ManyToOne
 	private SysUser user;
-
-	@ManyToMany
-	private List<GuestOrder> orders;
 
 	@ManyToOne
 	private Restaurant restaurant;
 	
+	@Column(name = "cook_type", nullable = false)
+	@Enumerated(EnumType.STRING)
 	private FoodType cookType;
 	
 	public Cook() {
@@ -50,15 +60,15 @@ public class Cook implements Serializable {
 		this.user = user;
 		this.restaurant = restourant;
 	}
+
+	public Cook(String suitSize, int shoeSize, String birthday, SysUser user, FoodType cookType){
+		this.user = user;
+		this.suitSize = suitSize;
+		this.shoeSize = shoeSize;
+		this.birthday = birthday;
+		this.cookType = cookType;
+	}
 	
-	public List<GuestOrder> getOrders() {
-		return orders;
-	}
-
-	public void setOrders(List<GuestOrder> orders) {
-		this.orders = orders;
-	}
-
 	public Integer getId() {
 		return id;
 	}
@@ -67,6 +77,30 @@ public class Cook implements Serializable {
 		this.id = id;
 	}
 
+	public String getSuitSize() {
+		return suitSize;
+	}
+
+	public void setSuitSize(String suitSize) {
+		this.suitSize = suitSize;
+	}
+
+	public int getShoeSize() {
+		return shoeSize;
+	}
+
+	public void setShoeSize(int shoeSize) {
+		this.shoeSize = shoeSize;
+	}
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
+	
 	public SysUser getUser() {
 		return user;
 	}

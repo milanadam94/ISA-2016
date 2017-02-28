@@ -16,10 +16,26 @@ var waiter = angular.module('waiter', []).run(['$rootScope', '$http', '$window',
 
 waiter.controller('waiterController', [ '$scope', 'waiterService', function($scope, waiterService){
 	
-	$scope.viewProfile = false;
+	$scope.viewProfile = true;
 	$scope.makeOrder = false;
 	$scope.viewOrders = false;
+	$scope.firstLogin = false;
+	$scope.total = "";
+	$scope.orderFoods = [];
+	$scope.orderDrinks = [];
+	$scope.order = {
+			"foods" : $scope.orderFoods,
+			"drinks" : $scope.orderDrinks
+	};
 	
+	waiterService.getWaiter().then(
+			function(response){
+				$scope.waiter = response.data;
+				$scope.editWaiter = angular.copy($scope.waiter);
+				console.log($scope.waiter);
+			}
+		
+	)
 	$scope.getProfile = function(){
 		
 		$scope.viewProfile = true;
@@ -34,13 +50,61 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 			
 		)
 	}
+	waiterService.getFirstLogin().then(
+			function (response){
+				$scope.firstLogin = response.data;
+				console.log($scope.firstLogin);
+				if($scope.firstLogin){
+					$scope.firstLogin = false;
+					$scope.viewProfile = true;
+				}else{
+					$scope.firstLogin = true;
+					$scope.viewProfile = false;
+				}
+		
+			}
+	)
+	$scope.novaLozinka = function(){
+		var returnValue = waiterService.validatePasswords($scope.waiter, $scope.oldFirstPassword,$scope.newFirstPassword,$scope.confirmFirstPassword);
+		
+		if(returnValue){
+			$scope.greska = returnValue;
+		}else{
+			$scope.greska = "";
+			$scope.firstLogin = false;
+			$scope.viewProfile = true;
+			$scope.waiter.user.password = $scope.newFirstPassword;
+			waiterService.saveFirstLogin($scope.waiter).then(function(data){
+				if(data != "") {
+					$scope.errorMessage = data;
+				}else{
+					//$scope.$parent.cook = $scope.$parent.editCook;
+					//$.cookie.json = true;
+					//$.cookie("user", $scope.$parent.newGuest.user, {path    : '/', domain  : ''});
+					//angular.element('#profileModal').modal('hide');
+				}
+		    });
+		}
+	}
 	
 	$scope.gotovaPorudzbina = function() {
 		$scope.viewProfile = false;
+		$scope.makeOrder = true;
+		$scope.viewOrders = false;
+		//$scope.order.push($scope.orderDrinks);
+		//$scope.order.push($scope.orderFoods);
+		waiterService.saveGuestOrder($scope.order);
+		
+	}
+	$scope.porudzbine = function() {
+		$scope.viewProfile = false;
 		$scope.makeOrder = false;
 		$scope.viewOrders = true;
-		
-		waiterService.saveGuestOrder();
+		waiterService.getGuestOrders().then(
+				function(response){
+					$scope.guestOrders = response.data;
+				}
+		)
 	}
 	$scope.novaPorudzbina = function() {
 		$scope.viewProfile = false;
@@ -67,10 +131,24 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 		)
 	}
 	$scope.addDrink = function(drink) {
-		waiterService.addOrderDrink(drink);
+		$scope.orderDrinks.push(drink);
+		//waiterService.addOrderDrink(drink);
 	}
 	$scope.addFood = function(food) {
-		waiterService.addOrderFood(food);
+		$scope.orderFoods.push(food);
+		//waiterService.addOrderFood(food);
+	}
+	$scope.deleteOrder = function(order) {
+		$scope.guestOrders.pop(order);
+		waiterService.deleteOrder(order);
+	}
+	$scope.makeBill = function(orderId){
+		waiterService.getTotal(orderId).then(
+				function(response){
+					$scope.total = response.data;
+					console.log($scope.total);
+				}
+		)
 	}
 }]);
 
@@ -203,8 +281,68 @@ waiter.service('waiterService', ['$window', '$http', function($window, $http){
 		  });
 	}
 	
-	this.saveGuestOrder = function() {
-		return $http.post("/worker/waiter/saveGuestOrder/3");
+	this.saveGuestOrder = function(order) {
+		//return $http.post("/worker/waiter/saveGuestOrder/3");
+		return $http({
+			  method: 'POST',
+			  data : order,
+		      url : "../worker/waiter/saveGuestOrder/3",
+		}).then(function success(response) {
+			if(response.data == "Error free") {
+				return "";
+			}
+			else {
+				return response.data;
+			}
+			
+		  }, function error(response) {
+			  alert(response)
+		  });
+	}
+	this.getGuestOrders = function(order) {
+		return $http.get("../worker/waiter/getGuestOrders/3");
+	}
+	this.deleteOrder = function(order){
+		return $http({
+			  method: 'POST',
+			  data : order,
+		      url : "../worker/waiter/deleteGuestOrder",
+		}).then(function success(response) {
+			if(response.data == "Error free") {
+				return "";
+			}
+			else {
+				return response.data;
+			}
+			
+		  }, function error(response) {
+			  alert(response)
+		  });
+	}
+	this.getTotal = function(orderId){
+		return $http.get("../worker/waiter/getTotal/"+orderId);
+	}
+	
+	this.saveFirstLogin = function(waiter) {
+		 
+		 return $http({
+				  method: 'POST',
+				  data : waiter,
+			      url : "../worker/waiter/firstLogin",
+			}).then(function success(response) {
+				if(response.data == "Error free") {
+					return "";
+				}
+				else {
+					return response.data;
+				}
+				
+			  }, function error(response) {
+				  alert(response)
+			  });
+	 }
+	this.getFirstLogin = function() {
+		return $http.get("../worker/firstLogin/3")
 	}
 }]);
 	

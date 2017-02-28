@@ -15,6 +15,8 @@ public interface BartenderDao extends Repository<Bartender, Long>{
 	
 	public List<Bartender> findByRestaurant(Restaurant restaurant);
 	
+	public Bartender findByUserId(Integer userId);
+	
 	public Bartender findById(Integer id);
 	
 	public Bartender save(Bartender bartender);

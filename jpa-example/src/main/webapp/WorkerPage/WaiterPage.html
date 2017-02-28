@@ -163,7 +163,7 @@
 				     		<td> {{ drink.name }} </td>
 				     		<td> {{ drink.description }} </td>
 				     		<td> {{ drink.price }} </td>
-				     		<td> <input type="number" min="0" max="5" class="form-group" ng-model="drink.quantity" ng-value="drink.quantity"></td>
+				     		<td> <input type="number" min="0" max="5" class="form-group" ng-model="drink.quantity"></td>
 				     		<td> <button type="submit" id="{{drink.id}}" class="btn btn-success" ng-click="addDrink(drink)">Dodaj</button></td>
 				     </tbody>
 				</table>
@@ -174,6 +174,9 @@
 			<div class="form-group">	
 				<button type="submit" class="btn btn-primary" ng-click="gotovaPorudzbina()">Dodaj porudzbinu</button>
 			</div>
+			<div class="form-group">	
+				<button type="submit" class="btn btn-primary right" ng-click="porudzbine()">Porudzbine</button>
+			</div>
 		</div>
 		
 		<div ng-show="viewOrders">
@@ -183,16 +186,18 @@
 				<table class="table table-bordered table-striped">
 				    <thead>
 				      <tr>
-				        <th>Redni broj</th><th>Sto</th><th>Pripremljena</th><th>&nbsp;</th><th>&nbsp;</th>
+				        <th>Redni broj</th><th>Sto</th><th>Status</th><th>&nbsp;</th><th>&nbsp;</th>
 				      </tr>
 				     </thead>
 				     <tbody>
 				     	<tr ng-repeat="order in guestOrders | orderBy:'id'">
 				     		<td> {{ order.id }} </td>
 				     		<td> <label>Sto</label></td>
-				     		<td> {{ order.prepared }} </td>
+				     		<td ng-if="order.prepared == false" style="background:red" >Nije pripremljena</td>
+				     		<td ng-if="order.prepared == true" style="background: green">Pripremljena</td>
 				     		<td> <button type="submit" id="{{order.id}}" class="btn btn-danger" ng-click="deleteOrder(order)">Obrisi</button></td>
-				     		<td> <button type="submit" id="{{drink.id}}" class="btn btn-success" ng-click="makeBill()">Naplati</button></td>
+				     		<td ng-if="order.prepared == false"> <button type="submit" id="{{drink.id}}" class="btn btn-success" ng-click="makeBill(order.id)">Naplati</button></td>
+				     		<td ng-if="order.prepared == false">&nbsp;</td>
 				     	</tr>
 				     </tbody>
 				 </table>
@@ -200,6 +205,26 @@
 			</div>
 			<div class="form-group">	
 				<button type="submit" class="btn btn-primary" ng-click="novaPorudzbina()">Nova porudzbinu</button>
+			</div>
+		</div>
+		
+		<div ng-show="firstLogin" class="form-group" >
+			<label>Promenite vašu lozinku:</label>
+			<div class="form-group">
+				<label class="control-label" for="staraLozinka">Vaša lozinka:</label>
+				<input type="password" class="form-control" id="staraLozinka" ng-model="oldFirstPassword" required>
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="novaLozinka">Vaša nova lozinka:</label>
+				<input type="password" class="form-control" id="novaLozinka" ng-model="newFirstPassword">
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="potvrdaLozinke">Potvda nove lozinke:</label>
+				<input type="password" class="form-control" id="potvrdaLozinke" ng-model="confirmFirstPassword">
+			</div>
+			<div class="form-group text-danger" ng-if="greska">{{ greska }}</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary pull-left" ng-click="novaLozinka()">Izmeni</button>
 			</div>
 		</div>
 	</div>
