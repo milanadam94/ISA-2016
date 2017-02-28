@@ -44,10 +44,19 @@
 			</ul>
 		</div>
 		<div id="profilDiv" ng-show="profilShow">
-			<label>Naziv Restorana: <input type = "text" class="form-control" id="restaurantName" ng-model="restaurant.name" value="restaurant.name" placeholder="Izmenite ime restorana"></label> <br/>
-			<label>Vrsta: <input type = "text" class="form-control" id="restaurantDescription" ng-model="restaurant.description" value="restaurant.description" placeholder="Izmenite opis restorana"></label> <br/> </label>
-			<label>Kategorija:
-					 <div class="col-sm-10">
+		<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2" >Naziv Restorana: </label><div class="col-sm-5"><input type = "text" class="form-control" id="restaurantName" ng-model="restaurant.name" value="restaurant.name" placeholder="Izmenite ime restorana"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Vrsta: </label><div class="col-sm-5"><input type = "text" class="form-control" id="restaurantDescription" ng-model="restaurant.description" value="restaurant.description" placeholder="Izmenite opis restorana"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Kategorija: </label>
+					 <div class="col-sm-5">
 						<select class="form-control" id="kategorija" ng-model="restaurant.category" title="restaurant.category">
 						<option>domaca kuhinja</option>
 						<option>italijanski</option>
@@ -56,11 +65,22 @@
 						<option>vegan</option>
 						</select>
 					</div>
-			</label>
-			<br/><br/><br/>
-			<button type="submit" class="btn btn-success" ng-click="saveRestaurantInfo()">Sacuvaj Izmene</button>
-			<label id="errorLabel" ng-show="error" >{{errorMessage}}</label>
+			</div> <br/>
+			
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="saveRestaurantInfo()">Sacuvaj Izmene</button></div>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2" id="errorLabel" ng-show="error" >{{errorMessage}}</label>
+			</div>
+			
+		</form>
 		</div>
+		
+		
+		
+		
 		<div id="jelovnikDiv" ng-show="jelovnikShow" >
 			<table class="table">
 				<tr bgcolor="lightgrey">
@@ -80,10 +100,26 @@
 				</tr>
 			</table>
 			<br/><br/>
-			<label>Ime: <input type = "text" class="form-control" id="imeNovogJela" ng-model="newFood.name" placeholder="Unesite ime jela"></label> <br/>
-			<label>Opis: <input type = "text" class="form-control" id="opisNovogJela" ng-model="newFood.description"  placeholder="Unesite opis jela"></label> <br/> </label>
-			<label>Cena: <input type = "number" min=0 class="form-control" id="cenaNovogJela" ng-model="newFood.price"  placeholder="Unesite cenu jela"></label> <br/> </label>
-			<button type="submit" class="btn btn-success" ng-click="addFood()" >Dodaj Jelo</button>
+			<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Ime: </label><div class="col-sm-5"><input type = "text" class="form-control" id="imeNovogJela" ng-model="newFood.name" placeholder="Unesite ime jela"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Opis: </label><div class="col-sm-5"><input type = "text" class="form-control" id="opisNovogJela" ng-model="newFood.description"  placeholder="Unesite opis jela"></div> <br/> 
+			</div>
+			
+			
+			<div class="form-group">
+			<label  class="control-label col-sm-2">Cena: </label><div class="col-sm-5"><input type = "number" min=0 class="form-control" id="cenaNovogJela" ng-model="newFood.price"  placeholder="Unesite cenu jela"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="addFood()" >Dodaj Jelo</button></div>
+			</div>
+			
+			</form>
 		</div>
 		<div id="picaDiv" ng-show="picaShow">
 			<table class="table">
@@ -104,19 +140,44 @@
 				</tr>
 			</table>
 			<br/><br/>
-			<label>Ime: <input type = "text" class="form-control" id="imeNovogPica" ng-model="newDrink.name" placeholder="Unesite ime pica"></label> <br/>
-			<label>Opis: <input type = "text" class="form-control" id="opisNovogPica" ng-model="newDrink.description"  placeholder="Unesite opis pica"></label> <br/> </label>
-			<label>Cena: <input type = "number" min=0 class="form-control" id="cenaNovogPica" ng-model="newDtrink.price"  placeholder="Unesite cenu pica"></label> <br/> </label>
-			<button type="submit" class="btn btn-success" ng-click="addDrink()" >Dodaj Pice</button>
+			<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Ime: </label> <div class="col-sm-5"><input type = "text" class="form-control" id="imeNovogPica" ng-model="newDrink.name" placeholder="Unesite ime pica"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Opis:</label> <div class="col-sm-5"><input type = "text" class="form-control" id="opisNovogPica" ng-model="newDrink.description"  placeholder="Unesite opis pica"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label  class="control-label col-sm-2">Cena: </label><div class="col-sm-5"><input type = "number" class="form-control" min=0 class="form-control" id="cenaNovogPica" ng-model="newDtrink.price"  placeholder="Unesite cenu pica"></div> <br/> 
+			</div>
+			
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="addDrink()" >Dodaj Pice</button></div>
+			</div>
+			
+			</form>
 		</div>
+		
+		
+		<!--  DODAVANJE SEGMENTA -->
 		
 		<div id="konfiguracijaDiv" ng-show="konfiguracijaShow">
 			
-			<label>Naziv Segmenta: <input type="text" ng-model="newSegment.name" palceholder="Unesite naziv segmenta"></label><br/>
-			<label>Dozvoljeno Pusenje: <input type="checkbox"  ng-model="newSegment.smoking"></label><br/>
-		
-			<button type="submit" class="btn btn-success" ng-click="addKonfig()">Dodaj Segment</button>
-		
+			<form class="form-horizontal">
+			<div class="form-group">
+			<label class="control-label col-sm-2" >Naziv Segmenta: </label> <div class="col-sm-5">  <input type="text" class="form-control" ng-model="newSegment.name" palceholder="Unesite naziv segmenta"> </input></div><br/>
+			</div>
+			<div class="form-group">
+			<label class="control-label col-sm-2">Dozvoljeno Pusenje: </label><div class="col-sm-2"><input type="checkbox" class="form-control" ng-model="newSegment.smoking"></input> </div><br/><br/>
+			</div>
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="addKonfig()">Dodaj Segment</button></div>
+			</div>
+			
+			</form>
 		</div>
 	</div>
 </body>

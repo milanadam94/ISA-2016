@@ -1,5 +1,7 @@
 package com.sms.dao;
 
+import java.util.List;
+
 import org.springframework.data.repository.Repository;
 
 import com.sms.beans.Restaurant;
@@ -12,4 +14,6 @@ public interface SegmentDao  extends Repository<Segment, Long>{
 	public void save(Segment segment);
 
 	public Segment findByNameAndRestaurant(String name, Restaurant restaurant);
+	
+	public List<Segment> findByRestaurant(Restaurant restaurant);
 }

@@ -1,0 +1,12 @@
+package com.sms.dao;
+
+import org.springframework.data.repository.Repository;
+
+import com.sms.beans.Bartender;
+import com.sms.beans.Schedule;
+
+public interface ScheduleDao extends Repository<Schedule, Long>{
+
+	public Bartender findById(Integer id);
+	
+}

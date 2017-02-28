@@ -10,10 +10,12 @@ import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.Schedule;
 import com.sms.beans.Segment;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.beans.Waiter;
+import com.sms.beans.WorkerSchedule;
 
 public interface RestaurantManagerService {
 
@@ -54,4 +56,14 @@ public interface RestaurantManagerService {
 	public List<Bartender> getBartenders(String managerEmail);
 
 	public List<Waiter> getWaiters(String managerEmail);
+
+	public List<WorkerSchedule> getSchedules(Integer workerID);
+
+	public List<Segment> loadAllSegments(String managerEmail);
+
+	public String addSchedule(Schedule schedule, String newShift,Integer workerID, Integer newSegment);
+
+	public SysUser getUser(Integer userID);
+
+	public List<Schedule> loadAllMySegments(Integer workerID);
 }

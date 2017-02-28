@@ -27,7 +27,7 @@ public class Segment implements Serializable{
 	@GeneratedValue
 	private Integer id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne()
 	private Restaurant restaurant;
 	
 	private boolean smoking;

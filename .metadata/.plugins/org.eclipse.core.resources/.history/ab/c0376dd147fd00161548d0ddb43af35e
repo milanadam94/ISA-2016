@@ -1,0 +1,16 @@
+package com.sms.dao;
+
+import org.springframework.data.repository.Repository;
+
+import com.sms.beans.Food;
+import com.sms.beans.WorkerSchedule;
+
+public interface WorkerScheduleDao extends Repository<WorkerSchedule, Long>{
+	
+	public void delete(Food food);
+	
+	public void save(Food food);
+	
+	public Food findById(Integer id);
+}
+

@@ -23,11 +23,11 @@ var restManager = angular.module('restManager', []).config(['$qProvider', '$http
 
 restManager.controller('restManagerWorkersController', [ '$scope', 'registarService', 'workerService', function($scope, registarService, workerService){
 
-	setShows = function(registrovanjeShow, periodicniShow, reonUSmeniShow, spisakRadnikaShow){
+	setShows = function(registrovanjeShow, periodicniShow, spisakRadnikaShow, pregledRaspored){
 		$scope.registrovanjeShow = registrovanjeShow;
 		$scope.periodicniShow = periodicniShow;
-		$scope.reonUSmeniShow = reonUSmeniShow;
 		$scope.spisakRadnikaShow = spisakRadnikaShow;
+		$scope.pregledRaspored = pregledRaspored;
 	}
 	setShows(false,false,false,false);
 	
@@ -35,6 +35,8 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 	$scope.errorMessage = "";
 	
 	$scope.cookType = "";
+	$scope.today = new Date();
+	
 	
 	$scope.registracija = function(){
 		setShows(true,false,false,false);
@@ -43,13 +45,10 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 	$scope.periodicniNivo = function(){
 		setShows(false,true,false,false);
 	}
-	
-	$scope.reonUSmeni = function(){
-		setShows(false,false,true,false);
-	}
+
 	
 	$scope.slisakRadnika = function(){
-		setShows(false,false,false,true);
+		setShows(false,false,true,false);
 		
 		workerService.getCooks().then(
 				function(response){
@@ -69,6 +68,9 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 				}
 		);
 		
+		
+		
+		
 	}
 	
 	$scope.newWorker = {
@@ -78,6 +80,7 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 			lastName : "",
 			userType : ""			
 	}
+	
 	
 	
 	
@@ -100,8 +103,102 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 	}
 	
 	
+	// PREGLED RADA
+	$scope.checkSchedule = function(workerID){
+		$scope.pregledRaspored = true;
+		$scope.spisakRadnikaShow = false;
+		$scope.workerID = workerID;
+			
+		workerService.getSchedules(workerID).then(
+				
+			function(response){
+				$scope.myWorkerSchedule = response.data;
+			}
+		
+		);
+		
+		workerService.loadAllSegments().then(
+				function(response){
+					$scope.segments = response.data;
+				}
+				
+		);
+		
+		registarService.getUser(workerID).then(
+				
+				function(response){
+					$scope.fullWorker = response.data;
+					
+					if($scope.fullWorker.id == ""){
+						return;
+					}
+					
+					workerService.loadAllMySegments($scope.fullWorker.id).then(
+							function(response){
+								
+								$scope.allMySegments = response.data;
+								
+							}
+							
+					);
+					
+				}
+				
+		);
+		
 	
+		
+	}
 	
+	$scope.newSchedule = {
+			startDate: "",
+			endDate: ""
+	}
+	
+	$scope.shiftType = ""
+	$scope.newSegment = "";
+	
+	$scope.addSchedule = function(){
+		
+		if($scope.newSchedule.startDate < new Date() || $scope.newSchedule.startDate == "" ||
+				$scope.newSchedule.endDate < new Date() || $scope.newSchedule.endDate == "" ||
+				$scope.newSchedule.startDate > $scope.newSchedule.endDate ||
+				$scope.shiftType == "" || $scope.workerID == ""){
+			alert("Los unos!");
+			return;
+		}
+		
+		if($scope.newSegment == ""){
+			$scope.newSegment = 0;
+		}
+		
+		$scope.newSchedule.startDate = new Date($scope.newSchedule.startDate);
+		$scope.newSchedule.endDate = new Date($scope.newSchedule.endDate);
+		
+		
+		
+		workerService.addSchedule($scope.newSchedule, $scope.newSegment,$scope.workerID, $scope.shiftType).then(
+				
+				function(response){
+					if(response.data == "Error free"){
+						alert(response.data);
+						$scope.newSchedule.startDate = "";
+						$scope.newSchedule.endDate = "";
+						$scope.newSegment = "";
+						$scope.shiftType = "";
+						
+						location.reload();
+					}else{
+						alert(response.data);
+					}
+					
+					
+					
+				}
+				
+		);
+		
+	}
 	
 	
 
@@ -136,6 +233,14 @@ restManager.service('registarService',['$window', '$http', function($window, $ht
 		
 	}
 	
+	this.getUser = function (userID){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getUser/" + userID
+		})
+		
+	}
+	
 
 }]);
 
@@ -146,7 +251,7 @@ restManager.service('workerService',['$window', '$http', function($window, $http
 		return $http({
 			  method: 'GET',
 		      url : "../restManager/getCooks/1" //========================================== dodati user email
-		})
+		});
 		
 	}
 	
@@ -154,7 +259,7 @@ restManager.service('workerService',['$window', '$http', function($window, $http
 		return $http({
 			  method: 'GET',
 		      url : "../restManager/getBartenders/1" //========================================== dodati user email
-		})
+		});
 		
 	}
 	
@@ -162,12 +267,47 @@ restManager.service('workerService',['$window', '$http', function($window, $http
 		return $http({
 			  method: 'GET',
 		      url : "../restManager/getWaiters/1" //========================================== dodati user email
-		})
+		});
 		
 	}
 	
 	
+	this.getSchedules = function(workerID){
+		
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getSchedules/" + workerID
+		});
+		
+	}
+	
+	
+	this.loadAllSegments = function(){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/loadAllSegments/1" //========================================== dodati user Email
+		});
+		
+	}
 
+	
+	this.addSchedule = function(newSchedule, scheduleSegment, workerID, shiftType){
+		console.log(newSchedule)
+		return $http({
+			  method: 'POST',
+			  data: newSchedule,
+		      url : "../restManager/addSchedule/"+shiftType+"/"+ workerID + "/" + scheduleSegment
+		});
+	}
+	
+	
+	this.loadAllMySegments = function(workerID){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/loadAllMySegments/" + workerID
+		});		
+	}
+	
 }]);
 
 

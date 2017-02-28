@@ -1,0 +1,22 @@
+package com.sms.dao;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.Repository;
+
+import com.sms.beans.Cook;
+import com.sms.beans.Restaurant;
+import com.sms.beans.Schedule;
+import com.sms.beans.SysUser;
+
+public interface ScheduleDao extends Repository<Schedule, Long>{
+	
+	public Schedule findById(Integer id);
+	
+	public Cook save(Cook cook);
+	
+	public Cook findByUser(SysUser user);
+
+}

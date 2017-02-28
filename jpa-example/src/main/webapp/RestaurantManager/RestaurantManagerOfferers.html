@@ -94,18 +94,26 @@
 		<!--  DODAVANJE OGLASA -->
 		<!--  ================================ -->
 		<div ng-show="objavljivanjeShow">
+		<form class="form-horizontal">
 			
 			<div class="form-group">
-				<label for="description">Opis tendera:</label>
-				<textarea class="form-control" rows="5" id="tenderDescription" ng-model="newTender.description" placeholder="Unesite opis..."></textarea>
-				<br/><br/>
-				<label for="startDate">Otvoren od: <input type="date" ng-model="newTender.startDate" > </input> </label> <br/>
-				<label for="startDate">Vazi do: <input type="date" ng-model="newTender.endDate"> </input> </label>
-			
+			<label class="control-label col-sm-2" for="description">Opis tendera:</label>
+				<div class="col-sm-5"><textarea class="form-control" rows="5"  id="tenderDescription" ng-model="newTender.description" placeholder="Unesite opis..."></textarea> </div>
+			</div><br/>
+				
+				
+			<div class="form-group">
+			<label  class="control-label col-sm-2" for="startDate">Otvoren od: </label><div class="col-sm-5"><input type="date" ng-model="newTender.startDate" > </div> <br/>
+			</div>	
+		
+			<div class="form-group">
+			<label class="control-label col-sm-2" for="startDate">Vazi do:</label> <div class="col-sm-5"> <input type="date" ng-model="newTender.endDate"> </div> 
 			</div>
 		
-			<button type="submit" class="btn btn-primary" ng-click="ObjaviTender()">Objavi</button>
-		
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-primary" ng-click="ObjaviTender()">Objavi</button></div>
+			</div>
+		</form>
 		</div>
 		
 		
