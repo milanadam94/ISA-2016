@@ -77,6 +77,7 @@ input[type="number"] {
 				<li><a href="#" ng-click="loadRestaurants()">Restorani</a></li>
 				<li><a href="#" ng-click="loadUserFriends()">Prijatelji</a></li>
 				<li><a href="#" ng-click="loadUserProfile()">Nalog</a></li>
+				<li><a href="#" ng-click="loadGuestReservations()">Rezervacije</a></li>
 			</ul>
 			 <ul class="nav navbar-nav navbar-right">
 		      <li><a href="#" ng-click="userLogout()"><span class="glyphicon glyphicon-log-out"></span> Izloguj se</a></li>
@@ -167,7 +168,9 @@ input[type="number"] {
 							<h4>Izabrani stolovi:</h4>
 							<ul>
 								<li ng-repeat="table in reserved">
-									{{table.tag}}
+									<h4>Sto: {{table.tag}}</h4>
+									<h4>Segment: {{table.segment.name}}</h4>
+									<hr size="5">
 								</li>
 							</ul>
 							<div class="form-group">
@@ -299,6 +302,91 @@ input[type="number"] {
 		</div>
 		</div>
 		
+		<div ng-show="showGuestReservations" ng-controller="reservationsController">
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>Restoran </th>
+	        			<th>Stolovi </th>
+	        			<th>Datum i vreme </th>
+				        <th>Za broj casova</th>
+				      </tr>
+				    </thead>
+				    <tbody>
+				      <tr style="cursor: pointer" ng-repeat="reservation in guestReservations" ng-click="selectReservation(reservation)" data-ng-class="{selected: reservation.id == reservationId}">
+				        <td>{{reservation.restaurant.name}}</td>
+				        <td> <span ng-repeat="table in reservation.tables">{{table.tag}}&nbsp;</span></td>
+				        <td>{{reservation.reservationDateTime}}</td>
+				        <td>{{reservation.duration}}</td>
+				      </tr>
+				    </tbody>
+				</table>
+				<div class="form-group">
+					<button type="button" class="btn btn-danger pull-right" ng-click="cancelReservation()">Otkazi rezervaciju</button>
+					<button type="button" class="btn btn-primary" ng-click="openFriends()" data-toggle="modal" data-target="#inviteFriendsModal">Pozovi prijatelje</button>
+				</div>
+				<hr size="50">
+				<div class="row">
+					<div class="col-md-6">
+					<table class="table table-bordered table-striped">
+					    <thead>
+					      <tr>
+					        <th> Ime i prezime </th>
+		        			<th> Rezervacija za restoran</th>
+		        			<th> Datum</th>
+		        			<th> Prihvatio poziv</th>
+					      </tr>
+					    </thead>
+					    <tbody>
+					      <tr ng-repeat="invite in invites">
+					        <td>{{invite.friend.user.name + " " + invite.friend.user.lastName}}</td>
+					        <td>{{invite.reservation.restaurant.name}}</td>
+					        <td>{{invite.reservation.reservationDateTime}}</td>
+					        <td>{{invite.accepted}}</td>
+					      </tr>
+					    </tbody>
+					</table>
+					</div>
+				</div>
+		
+		</div>
+		
+		
+		<!-- Modal -->
+		<div id="inviteFriendsModal" class="modal fade" role="dialog" ng-controller="reservationsController">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title">Pronadji prijatelje</h4>
+			      </div>
+			       <div class="modal-body">
+			       		 <div class="panel panel-primary fixed-panel">
+						  <div class="panel-body" >
+						  	 <div ng-repeat="friend in guest.friends track by friend.id">
+							  	 	<div class="row">
+							  	 		<div class="col-md-3">
+												<img src="../Images/user.png" class="img-rounded" alt="Cinque Terre" width="80" height="80">
+										</div>
+											<p><b>Ime i prezime:</b> {{friend.user.name + " " + friend.user.lastName}}</p>
+											<p><b>Mesto stanovanja:</b> {{friend.city}}</p>
+											<p><b>Adresa stanovanja:</b> {{friend.address}}</p>
+											  <div ng-if="friend | invited:invites"><button type="button" class="btn btn-primary pull-right" ng-click="inviteFriend(friend)">Pozovi prijatelja</button></div>
+											  <div ng-if="!(friend | invited:invites)"><button type="button" class="btn btn-default pull-right" disabled="true">Prijatelj pozvan</button></div>
+										<div class="col-md-7">
+										</div>
+										</div>
+										<hr size="20">
+								</div>
+					  		</div>
+						  </div>
+				  </div>  
+			      <div class="modal-footer">
+			        	<button type="button" class="btn btn-primary" data-dismiss="modal">Izadji</button>
+			      </div>
+			      </div>
+			  </div>
+			</div>
 		
 		
 		<!-- Modal -->
