@@ -26,16 +26,30 @@ app.controller('restManagerContoller', [ '$scope', 'registrationService',  funct
 	}
 	$scope.passwordConfirm = "";
 	
+	registrationService.getRestaurants().then(
+			function(response){
+				$scope.restaurants = response.data;
+				alert($scope.restaurants);
+			}
+	);
+	
+	
+	
+	
 	$scope.registerManager = function(){
 		
 		retVal = registrationService.validateRegistration($scope.restManager, $scope.passwordConfirm)
+		
+		if($scope.selectedRestoran == ""){
+			retVal = "Morate odabrati restoran!";
+		}
 		
 		if(retVal != "") {
 			$scope.errorMessage = retVal;
 			return;
 		}
 		else {
-			registrationService.registerManager($scope.restManager).then(function(data){
+			registrationService.registerManager($scope.restManager, $scope.selectedRestoran).then(function(data){
 				if(data == "Email error") {
 					$scope.errorMessage = "E-mail nije u validnom formatu."
 				}
@@ -60,6 +74,15 @@ app.controller('restManagerContoller', [ '$scope', 'registrationService',  funct
 
 app.service('registrationService', ['$http', '$window', function($http, $window){
 	
+	this.getRestaurants = function(){
+		return  $http({
+			  method: 'GET',
+		      url : "../restaurant/loadRestaurants"
+		});
+		
+	}
+	
+	
 	this.validateRegistration = function(restManager, passwordConfirm){
 		if(restManager.email == "" || restManager.password == "" || restManager.name == "" || restManager.lastName == "")
 			return "Sva polja moraju biti popunjena."
@@ -69,12 +92,12 @@ app.service('registrationService', ['$http', '$window', function($http, $window)
 		return "";
 	}
 	
-	this.registerManager = function(restManager){
+	this.registerManager = function(restManager, restoranID){
 			
 		 var promise = $http({
 			  method: 'POST',
 			  data : $.param(restManager),
-		      url : "../sysManager/registerRestManager"
+		      url : "../sysManager/registerRestManager/"+restoranID
 		}).then(function success(response) {
 				if(response.data == "Error free"){
 					$window.location.href = '/SystemManager/SystemManager.html'

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,10 +21,10 @@ public class SystemManagerContollerImpl {
 	@Autowired
 	private SystemManagerService service;
 	
-	@PostMapping(path = "/registerRestManager", produces = "text/plain")
+	@PostMapping(path = "/registerRestManager/{restoranID}", produces = "text/plain")
 	@ResponseBody
-	public String registerRestManager(SysUser user) {
-		return service.registarRestManager(user);
+	public String registerRestManager(SysUser user, @PathVariable("restoranID") Integer restoranID) {
+		return service.registarRestManager(user, restoranID);
 	}
 	
 	@PostMapping(path = "/registerRestaurant", produces = "text/plain")

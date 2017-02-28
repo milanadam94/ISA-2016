@@ -13,7 +13,8 @@ public class Schedule {
 	private Date startDate;
 	private Date endDate;
 	private String shift;
-
+	private Segment segment;
+	
 	public ArrayList<SysUser> workers;
 
 	public Schedule() {

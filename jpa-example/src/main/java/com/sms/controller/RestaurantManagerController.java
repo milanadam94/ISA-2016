@@ -13,14 +13,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sms.beans.Bartender;
+import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.Segment;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
+import com.sms.beans.Waiter;
 import com.sms.service.RestaurantManagerService;
 import com.sms.service.RestaurantService;
 import com.sms.utilities.Message;
@@ -149,11 +153,11 @@ public class RestaurantManagerController {
 	}
 	
 	
-	@PostMapping(path = "/registarWorker/{managerID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@PostMapping(path = "/registarWorker/{managerID}/{cookType}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
-	public String registarWorker(@RequestBody SysUser user, @PathVariable("managerID") String managerID){
+	public String registarWorker(@RequestBody SysUser user, @PathVariable("managerID") String managerID, @PathVariable("cookType") String cookType){
 		
-		return restManagerService.registarWorker(user,managerID);
+		return restManagerService.registarWorker(user,managerID,cookType);
 	}
 	
 	
@@ -178,8 +182,32 @@ public class RestaurantManagerController {
 	}
 	
 	
+	@PostMapping(path="/addSegment/{restoranID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public String addSegment(@PathVariable("restoranID") Integer restoranID, @RequestBody Segment newSegment){
+		return restManagerService.addSegment(newSegment,restoranID);
+	}
 	
 	
+	@GetMapping(path="/getCooks/{managerID}")
+	@ResponseBody
+	public List<Cook> getCooks(@PathVariable("managerID") String managerEmail){
+		
+		return restManagerService.getCooks(managerEmail);
+	}
 	
+	@GetMapping(path="/getBartenders/{managerID}")
+	@ResponseBody
+	public List<Bartender> getBartenders(@PathVariable("managerID") String managerEmail){
+		
+		return restManagerService.getBartenders(managerEmail);
+	}
+	
+	@GetMapping(path="/getWaiters/{managerID}")
+	@ResponseBody
+	public List<Waiter> getWaiters(@PathVariable("managerID") String managerEmail){
+		
+		return restManagerService.getWaiters(managerEmail);	
+	}
 	
 }

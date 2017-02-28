@@ -15,11 +15,13 @@ import com.sms.beans.Bartender;
 import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
+import com.sms.beans.FoodType;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerer;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.Segment;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.beans.UserType;
@@ -34,6 +36,7 @@ import com.sms.dao.OffererDao;
 import com.sms.dao.OfferingsDao;
 import com.sms.dao.RestaurantDao;
 import com.sms.dao.RestaurantManagerDao;
+import com.sms.dao.SegmentDao;
 import com.sms.dao.TenderDao;
 import com.sms.dao.UserDao;
 import com.sms.dao.WaiterDao;
@@ -81,6 +84,8 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	@Autowired
 	private TenderDao tenderDao;
 	
+	@Autowired
+	private SegmentDao segmentDao;
 	
 	@Autowired
 	private MailSender mailSender;
@@ -305,7 +310,7 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	
 	
 	@Override
-	public String registarWorker(SysUser user, String managerID) {
+	public String registarWorker(SysUser user, String managerID, String cookType) {
 		// TODO Auto-generated method stub
 		
 		if(user.getEmail() == null || user.getEmail().equals(""))
@@ -342,6 +347,21 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		case "COOK":
 			userDao.save(newUser);
 			Cook cook = new Cook(newUser, manager.getRestaurant());
+			
+			switch (cookType) {
+			case "SALAD":
+				cook.setCookType(FoodType.SALAD);
+				break;
+			case "FRIEDMEAL":
+				cook.setCookType(FoodType.FRIEDMEAL);
+				break;
+			case "COOKEDMEAL":
+				cook.setCookType(FoodType.COOKEDMEAL);
+				break;
+			default:
+				return null;
+			}
+			
 			cookDao.save(cook);
 			break;
 			
@@ -464,6 +484,67 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 			System.out.println(e.toString());
 		}
 		
+	}
+
+	@Override
+	public String addSegment(Segment newSegment, Integer restoranID) {
+		// TODO Auto-generated method stub
+		Restaurant restoran = restourantDao.findById(restoranID);
+		
+		if(restoran == null){
+			return Message.REQUESTERROR;
+		}
+		
+		newSegment.setRestaurant(restoran);
+		
+		if(newSegment.getName() == null || newSegment.getName().equals("")){
+			return Message.REQUESTERROR;
+		}
+		
+		if(segmentDao.findByNameAndRestaurant(newSegment.getName(), restoran) != null){
+			return Message.REQUESTERROR;
+		}
+		
+		
+		segmentDao.save(newSegment);
+		
+		return Message.ERRORFREE;
+	}
+
+	@Override
+	public List<Cook> getCooks(String managerEmail) {
+		// TODO Auto-generated method stub
+		RestaurantManager manager = getRestaurantManager(managerEmail);
+		
+		if(manager == null){
+			return null;
+		}
+		
+		return  cookDao.findByRestaurant(manager.getRestaurant());
+	}
+
+	@Override
+	public List<Bartender> getBartenders(String managerEmail) {
+		// TODO Auto-generated method stub
+		RestaurantManager manager = getRestaurantManager(managerEmail);
+		
+		if(manager == null){
+			return null;
+		}
+		
+		return  bartenderDao.findByRestaurant(manager.getRestaurant());
+	}
+
+	@Override
+	public List<Waiter> getWaiters(String managerEmail) {
+		// TODO Auto-generated method stub
+		RestaurantManager manager = getRestaurantManager(managerEmail);
+		
+		if(manager == null){
+			return null;
+		}
+		
+		return  waiterDao.findByRestaurant(manager.getRestaurant());
 	}
 	
 	

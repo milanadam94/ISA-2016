@@ -50,26 +50,26 @@
 				<li><a href="#" ng-click="getProfile()">Profil</a></li>
 				<li><a href="#" ng-click="getTables()">Raspored stolova</a></li>
 				<li><a href="#" ng-click="getCalendar()">Kalendar</a></li>
-				<li><a href="#" ng-click="getOrders()">Porudzbine</a></li>
+				<li><a href="#" ng-click="getOrders(); getFoods(); getDrinks()">Porudzbine</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 			      <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
 			</ul>
 		</nav>
 		<div ng-show="viewProfile" class="row" ng-controller="profileController">
-			<div class="row">
+			<div class="form">
 				<div class="col-md-4">
 					<img src="../Images/hotel-waiter.jpg" class="img-rounded" alt="Cinque Terre" width="350" height="250">
 				</div>
 				<div class="col-md-8">
-					<label>Ime: {{ waiter.user.name }} </label>
-					<label>Prezime: {{ waiter.user.lastname }} </label>
-					<label>Email: {{ waiter.user.email }} </label>
-					<label>Datum rođenja: {{ waiter.birthday }} </label>
-					<label>Konfekcijski broj: {{ waiter.suitSize }} </label>
-					<label>Veličina obuće: {{ waiter.shoeSize }} </label>
+					<label>Ime: <font size="4" color="blue">{{ waiter.user.name }} </font></label><br>
+					<label>Prezime: <font size="4" color="blue">{{ waiter.user.lastName }} </font></label><br>
+					<label>Email: <font size="4" color="blue">{{ waiter.user.email }} </font></label><br>
+					<label>Datum rođenja: <font size="4" color="blue">{{ waiter.birthday }} </font></label><br>
+					<label>Konfekcijski broj: <font size="4" color="blue">{{ waiter.suitSize }} </font></label><br>
+					<label>Veličina obuće: <font size="4" color="blue">{{ waiter.shoeSize }} </font></label><br>
 					<div class="form-group">
-						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#profileModal" ng-click="updateProfile()"> Izmenite profil </button>
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#profileModal" ng-click="resetNewWaiter()"> Izmenite profil </button>
 					</div>					
 	  			</div>
 	  		</div>
@@ -85,27 +85,27 @@
 			      	<div class="modal-body">
 			      		<div class="form-group">
 							<label class="control-label" for="ime">Ime:</label>
-							<input type="text" class="form-control" id="ime" ng-model="editWaiter.user.name" required>
+							<input type="text" class="form-control" id="ime" ng-model="editWaiter.user.name">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="prezime">Prezime:</label>
-							<input type="text" class="form-control" id="prz" ng-model="editWaiter.user.lastName" required>
+							<input type="text" class="form-control" id="prz" ng-model="editWaiter.user.lastName">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="email">Email:</label>
-							<input type="email" class="form-control" id="email" ng-model="editWaiter.user.email" required>
+							<input type="email" class="form-control" id="email" ng-model="editWaiter.user.email">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="datum">Datum rođenja:</label>
-							<input type="text" class="form-control" id="datum" ng-model="editWaiter.birthday" required>
+							<input type="text" class="form-control" id="datum" ng-model="editWaiter.birthday">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="broj">Konfekcijski broj:</label>
-							<input type="text" class="form-control" id="broj" ng-model="editWaiter.suitSize" required>
+							<input type="text" class="form-control" id="broj" ng-model="editWaiter.suitSize">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="obuca">Veličina obuće:</label>
-							<input type="text" class="form-control" id="obuca" ng-model="editWaiter.shoeSize" required>
+							<input type="text" class="form-control" id="obuca" ng-model="editWaiter.shoeSize">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="staraLozinka">Vaša lozinka:</label>
@@ -113,18 +113,93 @@
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="novaLozinka">Vaša nova lozinka:</label>
-							<input type="password" class="form-control" id="movaLozinka" ng-model="newPassword" required>
+							<input type="password" class="form-control" id="movaLozinka" ng-model="newPassword">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="potvrdaLozinke">Potvda nove lozinke:</label>
-							<input type="password" class="form-control" id="potvrdaLozinke" ng-model="confirmPassword" required>
+							<input type="password" class="form-control" id="potvrdaLozinke" ng-model="confirmPassword">
 						</div>
+						<div class="form-group text-danger" ng-if="errorMessage">{{ errorMessage }}</div>
 			      	</div>
 			      	<div class="modal-footer">
-			      		<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateProfile()">Izađi</button>
+			      		<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="resetNewWaiter()">Izađi</button>
 			        	<button type="submit" class="btn btn-primary pull-left" ng-click="editProfile()" > Izmeni </button>
 			      	</div>
 				</div>
+			</div>
+		</div>
+		
+		<div ng-show="makeOrder">
+			<div class="row">
+				<div class="col-md-8">
+				<label><font color="blue" size="3">Odaberite hranu:</font></label>
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>Naziv</th><th>Opis</th><th>Cena</th><th>Koliko</th><th>&nbsp;</th>
+				      </tr>
+				     </thead>
+				     <tbody>
+				     	<tr ng-repeat="food in foods | orderBy:'name'">
+				     		<td> {{ food.name }} </td>
+				     		<td> {{ food.description }} </td>
+				     		<td> {{ food.price }} </td>
+				     		<td> <input type="number" min="0" max="5" class="form-group" ng-model="food.quantity" ng-value="food.quantity"></td>
+				     		<td> <button type="submit" id="{{food.id}}" class="btn btn-success" ng-click="addFood(food)">Dodaj</button></td>
+				     </tbody>
+				</table>
+				</div>  
+				
+				<div class="col-md-8">
+				<label><font color="blue" size="3">Odaberite pice:</font></label>
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>Naziv</th><th>Opis</th><th>Cena</th><th>Koliko</th><th>&nbsp;</th>
+				      </tr>
+				     </thead>
+				     <tbody>
+				     	<tr ng-repeat="drink in drinks | orderBy:'name'">
+				     		<td> {{ drink.name }} </td>
+				     		<td> {{ drink.description }} </td>
+				     		<td> {{ drink.price }} </td>
+				     		<td> <input type="number" min="0" max="5" class="form-group" ng-model="drink.quantity" ng-value="drink.quantity"></td>
+				     		<td> <button type="submit" id="{{drink.id}}" class="btn btn-success" ng-click="addDrink(drink)">Dodaj</button></td>
+				     </tbody>
+				</table>
+				</div>      
+			</div>
+			<label><font color="blue" size="3">Porudzbina za sto:</font></label>
+			<!-- select tables izabrati indeks stola koji ce se poslati u bazu -->
+			<div class="form-group">	
+				<button type="submit" class="btn btn-primary" ng-click="gotovaPorudzbina()">Dodaj porudzbinu</button>
+			</div>
+		</div>
+		
+		<div ng-show="viewOrders">
+			<div class="row">
+				<div class="col-md-8">
+				<label><font color="blue" size="3">Porudzbine:</font></label>
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>Redni broj</th><th>Sto</th><th>Pripremljena</th><th>&nbsp;</th><th>&nbsp;</th>
+				      </tr>
+				     </thead>
+				     <tbody>
+				     	<tr ng-repeat="order in guestOrders | orderBy:'id'">
+				     		<td> {{ order.id }} </td>
+				     		<td> <label>Sto</label></td>
+				     		<td> {{ order.prepared }} </td>
+				     		<td> <button type="submit" id="{{order.id}}" class="btn btn-danger" ng-click="deleteOrder(order)">Obrisi</button></td>
+				     		<td> <button type="submit" id="{{drink.id}}" class="btn btn-success" ng-click="makeBill()">Naplati</button></td>
+				     	</tr>
+				     </tbody>
+				 </table>
+				 </div>
+			</div>
+			<div class="form-group">	
+				<button type="submit" class="btn btn-primary" ng-click="novaPorudzbina()">Nova porudzbinu</button>
 			</div>
 		</div>
 	</div>

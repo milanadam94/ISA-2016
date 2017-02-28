@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Menadzer Restorana</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
+<!-- TOASTR -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
+
+</head>
+<body ng-app="restManager" ng-controller="restManagerWorkersController">
+	<nav id="myNavbar" class="navbar">
+		<ul class="nav navbar-nav">
+			<li><a href="RestaurantManager.html">Moj Restoran</a></li>
+			<li><a href="RestaurantManagerWorkers.html">Radnici</a></li>
+			<li><a href="RestaurantManagerOfferers.html">Ponude</a></li>
+		</ul>
+	</nav>
+	<div>
+		<div class="form-group">
+			<ul class="nav nav-tabs">
+				<li><a ng-click="registracija()">Registrovanje Radnika</a>
+				<li><a ng-click="slisakRadnika()">Spisak Radnika</a>
+				<li><a ng-click="periodicniNivo()">Raspored Na Periodicnom Nivou</a>
+				<li><a ng-click="reonUSmeni()">Raspored Reona U Smeni</a>
+			</ul>
+		</div>
+		
+		
+		<!--  REGISTRACIJA  -->
+		<!--  ====================================================== -->
+		<div ng-show="registrovanjeShow">
+			<br/><br/><br/>
+			<form class="form-horizontal">
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="email">Email:</label>
+    			<div class="col-sm-10">
+      				<input type="email" class="form-control" id="email" ng-model="newWorker.email" placeholder="Unesite email">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="pwd">Lozinka:</label>
+    			<div class="col-sm-10"> 
+      				<input type="password" class="form-control" id="pwd" ng-model="newWorker.password" placeholder="Unesite lozinku">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="pwd2">Potvrda lozinke:</label>
+    			<div class="col-sm-10"> 
+      				<input type="password" class="form-control" id="pwd2" ng-model="passwordConfirm" placeholder="Potvrdite lozinku">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="ime">Ime:</label>
+    			<div class="col-sm-10"> 
+      				<input type="text" class="form-control" id="ime" ng-model="newWorker.name" placeholder="Unesite ime">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="prezime">Prezime:</label>
+    			<div class="col-sm-10"> 
+      				<input type="text" class="form-control" id="prezime" ng-model="newWorker.lastName" placeholder="Unesite prezime">
+    			</div>
+  			</div>
+  			<div class="form-group">
+  				<label class="control-label col-sm-2" for="tip">Radno mesto:</label>
+  				<div class="col-sm-10">
+						<select class="form-control" id="tip" ng-model="newWorker.userType" title="restaurant.category">
+						<option>BARTENDER</option>
+						<option>COOK</option>
+						<option>WAITER</option>
+						</select>
+				</div>
+  			</div>
+  			
+  			<div class="form-group" ng-if="newWorker.userType == COOK">
+  				<label class="control-label col-sm-2" for="tip">Tip: </label>
+  				<div class="col-sm-10">
+						<select class="form-control" id="tip" ng-model="cookType" title="restaurant.category">
+						<option>BARTENDER</option>
+						<option>COOK</option>
+						<option>WAITER</option>
+						</select>
+				</div>
+  			</div>
+  			
+  			
+  			<div class="form-group text-danger" ng-if="error">{{ errorMessage }}</div>
+  			<div class="form-group"> 
+    			<div class="col-sm-offset-2 col-sm-10">
+      				<button type="submit" class="btn btn-primary" ng-click="registerWorker()">Registracija</button>
+    			</div>
+  			</div>
+  			</form>	
+		
+		</div>
+		
+		
+		<!--  SPISAK RADNIKA SHOW -->
+		<!--  =========================== -->
+		
+		<div ng-show="spisakRadnikaShow">
+			<p1>Kuvari:</p1><br/>
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Email</th>
+				</tr>
+				<tr ng-repeat="i in cooks | orderBy:'name'">
+					<td>{{i.user.name}}</td>
+				 	<td>{{i.user.lastName}}</td>
+					<td>{{i.user.email}}</td>
+				</tr>
+			</table>
+		
+			<p1>Konobari:</p1><br/>
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Email</th>
+				</tr>
+				<tr ng-repeat="i in waiters | orderBy:'name'">
+					<td>{{i.user.name}}</td>
+				 	<td>{{i.user.lastName}}</td>
+					<td>{{i.user.email}}</td>
+				</tr>
+			</table>
+			
+			<p1>Sankeri:</p1><br/>
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Email</th>
+				</tr>
+				<tr ng-repeat="i in bartenders | orderBy:'name'">
+					<td>{{i.user.name}}</td>
+				 	<td>{{i.user.lastName}}</td>
+					<td>{{i.user.email}}</td>
+				</tr>
+			</table>
+		</div>
+		
+		
+		<!--  PERIODICNI NIVO -->
+		<!--  ================================ -->
+		<div ng-show="periodicniShow">
+			
+		
+		</div>
+		
+		
+		
+		<!--  PO SMENAMA -->
+		<!--  ================================ -->
+		<div  ng-show="reonUSmeniShow">
+	
+		</div>
+		
+		
+	</div>
+	
+</body>
+
+
+<!-- ANGULAR SCRIPT -->
+<script src="RestaurantManagerWorkers.js"></script>
+
+</html>

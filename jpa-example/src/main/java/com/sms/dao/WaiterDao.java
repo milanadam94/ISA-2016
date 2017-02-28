@@ -1,7 +1,11 @@
 package com.sms.dao;
 
+import java.util.List;
+
 import org.springframework.data.repository.Repository;
 
+import com.sms.beans.Cook;
+import com.sms.beans.Restaurant;
 import com.sms.beans.Waiter;
 
 public interface WaiterDao extends Repository<Waiter, Long>{
@@ -9,6 +13,8 @@ public interface WaiterDao extends Repository<Waiter, Long>{
 	public Waiter save(Waiter waiter);
 	
 	public void delete(Waiter waiter);
+	
+	public List<Waiter> findByRestaurant(Restaurant restaurant);
 	
 	public Waiter findByUserId(Integer userId);
 	

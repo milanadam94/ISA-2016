@@ -37,6 +37,7 @@ public class Cook implements Serializable {
 	@ManyToOne
 	private Restaurant restaurant;
 	
+	private FoodType cookType;
 	
 	public Cook() {
 	}
@@ -80,6 +81,14 @@ public class Cook implements Serializable {
 
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
+	}
+
+	public FoodType getCookType() {
+		return cookType;
+	}
+
+	public void setCookType(FoodType cookType) {
+		this.cookType = cookType;
 	}
 
 	

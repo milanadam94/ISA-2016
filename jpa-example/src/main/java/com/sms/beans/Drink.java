@@ -22,7 +22,7 @@ public class Drink implements Serializable{
 
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private Integer id;
 	
 	@Column(name = "name")
@@ -37,6 +37,12 @@ public class Drink implements Serializable{
 	@Column(name = "grade")
 	private Integer grade;
 
+	@Column(name = "quantity")
+	private Integer quantity;
+
+	@Column(name = "prepared")
+	private Boolean prepared;
+	
 	public Drink() {
 	}
 
@@ -46,7 +52,32 @@ public class Drink implements Serializable{
 		this.price = price;
 		this.grade = grade;
 	}
+	
+	public Drink(String name, String description, Integer price, Integer grade, Integer quantity, Boolean prepared) {
+		this.name = name;
+		this.description = description;
+		this.price = price;
+		this.grade = grade;
+		this.quantity = quantity;
+		this.prepared = prepared;
+	}
 
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+	
+	public Boolean getPrepared() {
+		return prepared;
+	}
+
+	public void setPrepared(Boolean prepared) {
+		this.prepared = prepared;
+	}
+	
 	public String getName() {
 		return name;
 	}
