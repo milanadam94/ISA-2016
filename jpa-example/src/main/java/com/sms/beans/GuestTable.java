@@ -6,26 +6,24 @@
 package com.sms.beans;
 
 import java.io.Serializable;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "guest_table")
+@Table(name = "Guest_Table")
 public class GuestTable implements Serializable {
 
 	private static final long serialVersionUID = 515162871579073420L;
 
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private Integer id;
 
 	@Column(name = "seat_count")
@@ -33,29 +31,50 @@ public class GuestTable implements Serializable {
 
 	@Column(name = "description")
 	private String description;
+	
+	@Column(name = "xCoord")
+	private Double xCoord;
+	
+	@Column(name = "yCoord")
+	private Double yCoord;
 
-	@Column(name = "smoking")
-	private Boolean smoking;
+	//@ManyToOne
+	//private Segment segment;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	private List<GuestOrder> orders;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Restaurant restaurant;
 
 	public GuestTable() {
 	}
 
-	public GuestTable(Integer seatCount, String description, Boolean smoking, List<GuestOrder> orders) {
+	public GuestTable(Integer seatCount) {
+		this.seatCount = seatCount;
+	}
+
+	public GuestTable(Integer seatCount, String description) {
 		this.seatCount = seatCount;
 		this.description = description;
-		this.smoking = smoking;
-		this.orders = orders;
 	}
 
-	public List<GuestOrder> getOrders() {
-		return orders;
+	public GuestTable(Integer seatCount, Restaurant restaurant) {
+		this.seatCount = seatCount;
+		this.restaurant = restaurant;
 	}
 
-	public void setOrders(List<GuestOrder> orders) {
-		this.orders = orders;
+	public GuestTable(Integer seatCount, String description, Restaurant restaurant) {
+		this.seatCount = seatCount;
+		this.description = description;
+		this.restaurant = restaurant;
+	}
+
+	
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
 	}
 
 	public Integer getSeatCount() {
@@ -82,12 +101,22 @@ public class GuestTable implements Serializable {
 		this.id = id;
 	}
 
-	public Boolean getSmoking() {
-		return smoking;
+	public Double getxCoord() {
+		return xCoord;
 	}
 
-	public void setSmoking(Boolean smoking) {
-		this.smoking = smoking;
+	public void setxCoord(Double xCoord) {
+		this.xCoord = xCoord;
 	}
+
+	public Double getyCoord() {
+		return yCoord;
+	}
+
+	public void setyCoord(Double yCoord) {
+		this.yCoord = yCoord;
+	}
+	
+	
 
 }

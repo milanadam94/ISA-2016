@@ -20,6 +20,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></link>
 
+   
 <script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
 
 <!-- ANGULAR JS -->
@@ -28,6 +29,7 @@
 
 <!-- ANGULAR SCRIPT -->
 <script src="GuestPage.js"></script>
+
 
 <style type="text/css">
 
@@ -41,6 +43,21 @@
 	overflow-y: scroll;
 	min-height: 400px;
 }
+
+.canvas {
+	border : 2px solid;
+	width: 500px;
+	height: 250px;
+}
+
+.selected {
+	color : blue;
+}
+
+input[type="number"] {
+   width:50px;
+}
+
 
 </style>
 
@@ -67,6 +84,23 @@
 		    </div>
 		</nav>
 		<div ng-show="showRestaurants" ng-controller="restaurantsController">
+			
+			<div class="row">
+				<div class="col-md-4">
+				  <div class="form-group">
+				  <label for="cat">Filtraj po kategoriji:</label>
+					  <select class="form-control" id="cat" ng-options="restaurant.category as restaurant.category for restaurant in $parent.restaurants | unique:'category'" ng-model="selectedCategory">
+					  	<option value=""></option>
+					  </select>
+					</div>
+				</div>
+				<div class="col-md-8">
+					<label></label>
+					<div class="form-group">	
+						<button type="submit" class="btn btn-primary" ng-click="goToReservations()" > Rezervisi mesto </button>
+					</div>
+				</div>
+			</div>
 			<table class="table table-bordered table-striped">
 			    <thead>
 			      <tr>
@@ -94,7 +128,7 @@
 			      </tr>
 			    </thead>
 			    <tbody>
-			      <tr ng-repeat="restaurant in restaurants | orderBy:sortType:sortReverse">
+			      <tr style="cursor: pointer" ng-repeat="restaurant in restaurants | orderBy:sortType:sortReverse" ng-if="restaurant.category == selectedCategory || selectedCategory == null || selectedCategory ==''" ng-click="selectRestaurant(restaurant)" data-ng-class="{selected: restaurant.id == idSelected}">
 			        <td>{{restaurant.name}}</td>
 			        <td>{{restaurant.category}}</td>
 			        <td>{{restaurant.name}}</td>
@@ -105,6 +139,27 @@
 			    </tbody>
 			</table>
 		</div>
+		<div ng-show="showReservations" ng-controller="restaurantsController">
+			<h4><b>Restoran:</b> {{selectedRestaurant.name}}</h4>
+			<div class="form-group">	
+				<h4><b>Datum i vreme rezervacije:</b> &nbsp;<input type="datetime-local" ng-model="reservationDateTime"></input></h4>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-2">	
+					<h4> <b>Trajanje u satima:</b>	</h4>
+				</div>
+				<div class="col-md-1">
+						<input type="number" min="1" max="10" class="form-control" ng-model="reservationDuration">
+				</div> 
+			</div>
+			<button type="button" class="btn btn-primary" ng-click="doo()">Prihvati zahtev</button>
+			<div ng-controller="restaurantsController">
+				<canvas id="canvas" class="canvas" ng-click="draw($event)">
+					Vas browser ne podrzava graficki prikaz!
+				</canvas>
+			</div>
+		</div>
+		
 		<div ng-show="showFriends" ng-controller="friendsController">
 			<div class="form-group">	
 				<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addFriendsModal"> Pronadji prijatelje </button>
@@ -218,7 +273,7 @@
 			      </div>
 			  </div>
 			</div>
-			</div>
+			
 			
 			<!-- Modal -->
 			<div id="editProfileModal" class="modal fade" role="dialog" ng-controller="profileController">
@@ -288,10 +343,8 @@
 			  </div>
 			</div>
 			</div>
-			
+		</div>
 	</div>
-	
-</div>
 
 </body>
 </html>

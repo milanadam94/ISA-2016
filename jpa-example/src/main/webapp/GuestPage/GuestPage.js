@@ -16,12 +16,146 @@ var app = angular
 			}
 }]);
 
+
+app.filter('unique', function () {
+
+	  return function (items, filterOn) {
+
+	    if (filterOn === false) {
+	      return items;
+	    }
+
+	    if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
+	      var hashCheck = {}, newItems = [];
+
+	      var extractValueToCompare = function (item) {
+	        if (angular.isObject(item) && angular.isString(filterOn)) {
+	          return item[filterOn];
+	        } else {
+	          return item;
+	        }
+	      };
+
+	      angular.forEach(items, function (item) {
+	        var valueToCheck, isDuplicate = false;
+
+	        for (var i = 0; i < newItems.length; i++) {
+	          if (angular.equals(extractValueToCompare(newItems[i]), extractValueToCompare(item))) {
+	            isDuplicate = true;
+	            break;
+	          }
+	        }
+	        if (!isDuplicate) {
+	          newItems.push(item);
+	        }
+
+	      });
+	      items = newItems;
+	    }
+	    return items;
+	  };
+	});
+
 app.controller('restaurantsController', [ '$scope', 'restaurantsService',  function($scope, restaurantsService) {
 
 	$scope.sortType = 'name';
 	$scope.sortReverse = false;
+	$scope.selectedCategory = "";
+	$scope.idSelected = null;
+	$scope.reservationDateTime;
+	
+	$scope.draw = function(event) {
+	    	var canvas = document.getElementById('canvas');
+	    	var context = canvas.getContext('2d');
+	    	
+	    	var rect = canvas.getBoundingClientRect();
+	        var x = event.clientX - rect.left;
+	        var y = event.clientY - rect.top; var rect = canvas.getBoundingClientRect(), 
+	        scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for X
+	        scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
+
+		    x = (event.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
+		    y = (event.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+		    //  context.clearRect(0, 0, canvas.width, canvas.height);
+		    context.font="10px Arial";
+		    context.fillText("egss!",x,y);
+		    context.globalAlpha = 0.2;
+		    context.fillStyle="#FF0000";
+		    context.fillRect(0,0,30,30);
+		    context.globalAlpha = 1.0;
+		    
+		    startX = x/30.0 + 1;
+		    startY = y/30.0 + 1;
+		    startX = Math.floor(startX);
+		    startY = Math.floor(startY);
+		    var index;
+		    if(startY == 1)
+		    	index = startX+0;
+		    else if(startY == 2)
+		    	index = startX+10;
+		    else if(startY == 3)
+		    	index = startX+20;
+		    else if(startY == 4)
+		    	index = startX+30;
+		    else if(startY == 5)
+		    	index = startX+40;
+		    
+		    xx = startX*30 - 30;
+		    yy = startY*30 - 30;
+		    console.log(xx)
+		    console.log(yy)
+		      
+		    context.beginPath();
+		    
+	     
+	        console.log("x: " + x + " y: " + y);
+	  }
+	
+	
+	$scope.doo = function() {
+		if($scope.reservationDateTime == null || $scope.reservationDateTime == undefined)
+		{
+			
+		}
+		else {
+			
+		}
+		var d = new Date($scope.reservationDateTime);
+	}
+	
+	$scope.goToReservations = function() {
+		toastr.options.timeOut = 10;
+		if($scope.idSelected == null) {
+			toastr.warning('Morate izabrati restoran.');
+		}
+		else {
+			$scope.$parent.showRestaurants = false;
+			$scope.$parent.showReservations = true;
+			var canvas = document.getElementById('canvas');
+	    	var context = canvas.getContext('2d');
+	    	for(var j = 0; j < 5; j++)
+	    	{
+		    	for(var i=0; i < 10; i++)
+		    	{
+		    		context.rect(i*30 ,j*30 ,30,30);
+		            context.stroke();
+		    	}
+	    	}
+		}
+			
+	}
+	
+	$scope.selectRestaurant = function (restaurant) {
+		$scope.$parent.selectedRestaurant = restaurant;
+		if($scope.idSelected == restaurant.id)
+			$scope.idSelected = null;
+		else
+			$scope.idSelected = restaurant.id;
+	};
 
 } ]);
+
+
 
 angular.module('app').filter('doesntContain', function() {
 	  return function (guest, potFriend, what) {
@@ -176,6 +310,8 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 			$scope.showRestaurants = false;
 			$scope.showFriends = false;
 			$scope.showProfile = false;
+			$scope.showReservations = false;
+			$scope.selectedRestaurant = null;
 			
 			$scope.loadRestaurants = function() {
 				restaurantsService.loadRestaurants().then(function(data) {
@@ -184,6 +320,7 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				$scope.showRestaurants = true;
 				$scope.showFriends = false;
 				$scope.showProfile = false;
+				$scope.showReservations = false;
 			}
 
 			$scope.loadUserFriends = function() {
@@ -193,6 +330,7 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				$scope.showRestaurants = false;
 				$scope.showFriends = true;
 				$scope.showProfile = false;
+				$scope.showReservations = false;
 
 			}
 			
@@ -208,6 +346,7 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				$scope.showRestaurants = false;
 				$scope.showFriends = false;
 				$scope.showProfile = true;
+				$scope.showReservations = false;
 			}
 
 		} ]);
@@ -225,7 +364,6 @@ app.service('restaurantsService', [ '$http', '$window',
 					alert(response)
 				});
 			}
-
 } ]);
 
 app.service('guestService', [ '$http', '$window', function($http, $window) {
