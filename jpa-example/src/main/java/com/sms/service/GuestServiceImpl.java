@@ -170,15 +170,6 @@ public class GuestServiceImpl implements GuestService {
 		if(guest == null || friend == null || guest.getFriendRequests() == null)
 			return Message.REQUESTERROR;
 		
-		boolean check = false;
-		for(Guest f : guest.getFriendRequests()) {
-			if(f.getId().equals(friend.getId())) {
-				check=true;
-			}
-		}
-		
-		if(!check)
-			return Message.REQUESTERROR;
 		
 		guest.removeFriendRequest(friend);
 		guestDao.save(guest);
