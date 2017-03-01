@@ -1,6 +1,6 @@
 var waiter = angular.module('waiter', []).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
     
-	/*if (typeof $.cookie('user') === 'undefined') {
+	if (typeof $.cookie('user') === 'undefined') {
 		
 		$window.location.href = "/StartPage/StartPage.html";
 	}
@@ -8,10 +8,20 @@ var waiter = angular.module('waiter', []).run(['$rootScope', '$http', '$window',
 	{
 		user = JSON.parse($.cookie('user'));
 		
-		if(user.userType != "GUEST") {
-			alert("DALJE")
-		}
-	}*/
+		/*if(user.userType == "GUEST") {
+			$window.location.href = "/GuestPage/GuestPage.html";
+		}else if(user.userType == "WAITER"){
+			$window.location.href = "/WorkerPage/WaiterPage.html";
+		}else if(user.userType == "BARTENDER"){
+			$window.location.href = "/WorkerPage/BartenderPage.html";
+		}else if(user.userType == "COOK"){
+			$window.location.href = "/WorkerPage/CookPage.html";
+		}else if(user.userType == "OFFERER"){
+			$window.location.href = "/Offerer/Offerer.html";
+		}else if(user.userType == "RESTAURANTMANAGER"){
+			$window.location.href = "/RestaurantManager/RestaurantManager.html";
+		}*/
+	}
 }]);
 
 waiter.controller('waiterController', [ '$scope', 'waiterService', function($scope, waiterService){
@@ -21,6 +31,7 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 	$scope.viewOrders = false;
 	$scope.firstLogin = false;
 	$scope.total = "";
+	$scope.calendar = false;
 	/*$scope.orderFoods = [];
 	$scope.orderDrinks = [];
 	$scope.order = {
@@ -38,6 +49,7 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 	)
 	$scope.getProfile = function(){
 		
+		$scope.calendar = false;
 		$scope.viewProfile = true;
 		$scope.makeOrder = false;
 		$scope.viewOrders = false;
@@ -88,6 +100,7 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 	}
 	
 	$scope.gotovaPorudzbina = function() {
+		$scope.calendar = false;
 		$scope.viewProfile = false;
 		$scope.makeOrder = true;
 		$scope.viewOrders = false;
@@ -95,6 +108,7 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 		
 	}
 	$scope.porudzbine = function() {
+		$scope.calendar = false;
 		$scope.viewProfile = false;
 		$scope.makeOrder = false;
 		$scope.viewOrders = true;
@@ -105,11 +119,13 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 		)
 	}
 	$scope.novaPorudzbina = function() {
+		$scope.calendar = false;
 		$scope.viewProfile = false;
 		$scope.makeOrder = true;
 		$scope.viewOrders = false;
 	}
 	$scope.getOrders = function() {
+		$scope.calendar = false;
 		$scope.viewProfile = false;
 		$scope.makeOrder = true;
 		$scope.viewOrders = false;
@@ -152,10 +168,63 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 		)
 		$scope.viewOrders = false;
 		$scope.bill = true;
+		$scope.calendar = false;
 	}
 	$scope.racun = function(){
 		$scope.viewOrders = true;
 		$scope.bill = false;
+		$scope.calendar = false;
+	}
+	
+	$scope.konacnaLista = [];
+	
+	$scope.getCalendar = function(){
+		$scope.viewProfile = false;
+		$scope.makeOrder = false;
+		$scope.viewOrders = false;
+		$scope.firstLogin = false;
+		$scope.calendar = true;
+		
+		
+		
+		waiterService.getWaiters().then(
+				function(response){
+					$scope.konacnaLista = [];
+					$scope.waiters = response.data;
+					
+					$scope.waiters.forEach(function(waiter){
+						
+						waiterService.loadSegments(waiter.id).then(
+								function(response){
+									$scope.segments = response.data;
+									
+									//alert(response.data.startDate)
+									response.data.startDate = new Date(response.data.startDate);
+									response.data.endDate = new Date(response.data.endDate);
+									//alert(response.data.startDate)
+									pom = {
+										waiter: waiter,
+										schedule: response.data
+									}
+									
+									$scope.konacnaLista.push(pom);
+								}
+								
+						);
+						
+					});
+					
+					
+					console.log($scope.konacnaLista);
+				}
+				
+				
+		);
+		
+	}
+	
+	$scope.logout = function(){
+		waiterService.logout();
 	}
 }]);
 
@@ -208,7 +277,7 @@ waiter.controller('profileController', [ '$scope', 'waiterService', function($sc
 waiter.service('waiterService', ['$window', '$http', function($window, $http){
 	
 	this.getWaiter = function() {
-		return $http.get("../worker/waiter/3")
+		return $http.get("../worker/waiter/"+user.id)
 	}
 
 	this.editProfile = function(waiter) {
@@ -248,10 +317,10 @@ waiter.service('waiterService', ['$window', '$http', function($window, $http){
 	}
 	
 	this.getFoods = function() {
-		return $http.get("../worker/waiter/getFoods/3")
+		return $http.get("../worker/waiter/getFoods/"+user.id)
 	}
 	this.getDrinks = function() {
-		return $http.get("../worker/waiter/getDrinks/3")
+		return $http.get("../worker/waiter/getDrinks/"+user.id)
 	}
 	this.addOrderDrink = function(drink) {
 		return $http({
@@ -289,7 +358,7 @@ waiter.service('waiterService', ['$window', '$http', function($window, $http){
 	}
 	
 	this.saveGuestOrder = function() {
-		return $http.post("/worker/waiter/saveGuestOrder/3");
+		return $http.post("/worker/waiter/saveGuestOrder/"+user.id);
 		/*return $http({
 			  method: 'POST',
 			  data : order,
@@ -307,7 +376,7 @@ waiter.service('waiterService', ['$window', '$http', function($window, $http){
 		  });*/
 	}
 	this.getGuestOrders = function() {
-		return $http.get("../worker/waiter/getGuestOrders/3");
+		return $http.get("../worker/waiter/getGuestOrders/"+user.id);
 	}
 	this.deleteOrder = function(id){
 		return $http.post("../worker/waiter/deleteGuestOrder/"+id);
@@ -350,7 +419,36 @@ waiter.service('waiterService', ['$window', '$http', function($window, $http){
 			  });
 	 }
 	this.getFirstLogin = function() {
-		return $http.get("../worker/firstLogin/3")
+		return $http.get("../worker/firstLogin/"+user.id)
+	}
+	
+	this.loadSegments = function(id){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/loadAllMySegments/"+id 
+		});
+		
+	}
+	this.getWaiters = function() {
+		return $http.get("../worker/waiters/"+user.id)
+	}
+	
+	this.logout = function() {
+		user = $.cookie("user");
+		$http({
+			method : 'PUT',
+			data : user,
+			url : "../user/logout"
+		}).then(function success(response) {
+
+		}, function error(response) {
+			
+		});
+		$.removeCookie('user', {
+			path : '/',
+			domain : ''
+		});
+		$window.location.href = '/StartPage/StartPage.html';
 	}
 }]);
 	

@@ -9,10 +9,18 @@ var app = angular.module('app', []).run(['$rootScope', '$http', '$window', funct
 		
 		if(user.userType == "GUEST") {
 			$window.location.href = "/GuestPage/GuestPage.html";
+		}else if(user.userType == "WAITER"){
+			$window.location.href = "/WorkerPage/WaiterPage.html";
+		}else if(user.userType == "BARTENDER"){
+			$window.location.href = "/WorkerPage/BartenderPage.html";
+		}else if(user.userType == "COOK"){
+			$window.location.href = "/WorkerPage/CookPage.html";
+		}else if(user.userType == "OFFERER"){
+			$window.location.href = "/Offerer/Offerer.html";
+		}else if(user.userType == "RESTAURANTMANAGER"){
+			$window.location.href = "/RestaurantManager/RestaurantManager.html";
 		}
-		// DALJE
 	}
-		 
 	
 	
 }]);
@@ -70,8 +78,19 @@ app.service('loginService', ['$http', '$window', function($http, $window){
 					$.cookie.json = true;
 					$.cookie("user", response.data, {path    : '/', domain  : ''});
 					
-					if(response.data.userType == "GUEST")
+					if(response.data.userType == "GUEST"){
 						$window.location.href = '/GuestPage/GuestPage.html';
+					}else if(response.data.userType == "WAITER"){
+						$window.location.href = "/WorkerPage/WaiterPage.html";
+					}else if(response.data.userType == "BARTENDER"){
+						$window.location.href = "/WorkerPage/BartenderPage.html";
+					}else if(response.data.userType == "COOK"){
+						$window.location.href = "/WorkerPage/CookPage.html";
+					}else if(response.data.userType == "OFFERER"){
+						$window.location.href = "/Offerer/Offerer.html";
+					}else if(response.data.userType == "RESTAURANTMANAGER"){
+						$window.location.href = "/RestaurantManager/RestaurantManager.html";
+					}
 				}
 				
 			  }, function error(response) {

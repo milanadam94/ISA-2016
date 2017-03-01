@@ -1,6 +1,6 @@
 var bartender = angular.module('bartender', []).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
     
-	/*if (typeof $.cookie('user') === 'undefined') {
+	if (typeof $.cookie('user') === 'undefined') {
 		
 		$window.location.href = "/StartPage/StartPage.html";
 	}
@@ -8,10 +8,7 @@ var bartender = angular.module('bartender', []).run(['$rootScope', '$http', '$wi
 	{
 		user = JSON.parse($.cookie('user'));
 		
-		if(user.userType != "GUEST") {
-			alert("DALJE")
-		}
-	}*/
+	}
 	
 }]);
 
@@ -95,6 +92,10 @@ bartender.controller('bartenderController', [ '$scope', 'bartenderService', func
 		bartenderService.setDrinkOrder(drinkOrder);
 		console.log(drinkOrder.id);
 	}
+	
+	$scope.logout = function(){
+		bartenderService.logout();
+	}
 }]);
 
 bartender.controller('profileController', [ '$scope', 'bartenderService', function($scope, bartenderService){
@@ -144,7 +145,7 @@ bartender.controller('profileController', [ '$scope', 'bartenderService', functi
 bartender.service('bartenderService', ['$window', '$http', function($window, $http){
 	
 	this.getBartender = function() {
-		return $http.get("../worker/bartender/4")
+		return $http.get("../worker/bartender/"+user.id)
 	}
 	
 	this.validatePasswords = function(bartender, password, newPassword, newPasswordConfirm){
@@ -201,10 +202,10 @@ bartender.service('bartenderService', ['$window', '$http', function($window, $ht
 			  });
 	 }
 	this.getFirstLogin = function() {
-		return $http.get("../worker/firstLogin/4")
+		return $http.get("../worker/firstLogin/"+user.id)
 	}
 	this.getDrinkOrders = function() {
-		return $http.get("../worker/bartender/getDrinkOrders/4")
+		return $http.get("../worker/bartender/getDrinkOrders/"+user.id)
 	}
 	this.setDrinkOrder = function(drinkOrder){
 		return $http({
@@ -222,5 +223,22 @@ bartender.service('bartenderService', ['$window', '$http', function($window, $ht
 		  }, function error(response) {
 			  alert(response)
 		  });
+	}
+	this.logout = function() {
+		user = $.cookie("user");
+		$http({
+			method : 'PUT',
+			data : user,
+			url : "../user/logout"
+		}).then(function success(response) {
+
+		}, function error(response) {
+			
+		});
+		$.removeCookie('user', {
+			path : '/',
+			domain : ''
+		});
+		$window.location.href = '/StartPage/StartPage.html';
 	}
 }]);

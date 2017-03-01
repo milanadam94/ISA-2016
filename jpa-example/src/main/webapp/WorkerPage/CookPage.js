@@ -1,17 +1,14 @@
 var cook = angular.module('cook', []).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
     
-	/*if (typeof $.cookie('user') === 'undefined') {
+	if (typeof $.cookie('user') === 'undefined') {
 		
 		$window.location.href = "/StartPage/StartPage.html";
 	}
 	else
 	{
 		user = JSON.parse($.cookie('user'));
-		
-		if(user.userType != "GUEST") {
-			alert("DALJE")
-		}
-	}*/
+	
+	}
 	
 }]);
 
@@ -19,6 +16,8 @@ cook.controller('cookController', [ '$scope', 'cookService', function($scope, co
 	 
 	$scope.viewProfile = true;
 	$scope.firstLogin = false;
+	$scope.viewOrders = false;
+	$scope.calendar = false;
 	
 	cookService.getCook().then(
 			function(response){
@@ -31,7 +30,9 @@ cook.controller('cookController', [ '$scope', 'cookService', function($scope, co
 	
 	$scope.getProfile = function(){
 		$scope.viewProfile = true;
-		$scope.firstLogin = false; 	
+		$scope.firstLogin = false; 
+		$scope.viewOrders = false;
+		$scope.calendar = false;
 		cookService.getCook().then(
 				function(response){
 					$scope.cook = response.data;
@@ -49,9 +50,13 @@ cook.controller('cookController', [ '$scope', 'cookService', function($scope, co
 			if($scope.firstLogin){
 				$scope.firstLogin = false;
 				$scope.viewProfile = true;
+				$scope.viewOrders = false;
+				$scope.calendar = false;
 			}else{
 				$scope.firstLogin = true;
 				$scope.viewProfile = false;
+				$scope.viewOrders = false;
+				$scope.calendar = false;
 			}
 	
 		}
@@ -66,6 +71,8 @@ cook.controller('cookController', [ '$scope', 'cookService', function($scope, co
 			$scope.greska = "";
 			$scope.firstLogin = false;
 			$scope.viewProfile = true;
+			$scope.viewOrders = false;
+			$scope.calendar = false;
 			$scope.cook.user.password = $scope.newFirstPassword;
 			cookService.saveFirstLogin($scope.cook).then(function(data){
 				if(data != "") {
@@ -78,6 +85,72 @@ cook.controller('cookController', [ '$scope', 'cookService', function($scope, co
 				}
 		    });
 		}
+	}
+	
+	$scope.getOrders = function() {
+		$scope.viewProfile = false;
+		$scope.firstLogin = false;
+		$scope.viewOrders = true;
+		$scope.calendar = false;
+		
+		cookService.getFoodOrders().then(
+				function(response){
+					$scope.foodOrders = response.data;
+					console.log($scope.foodOrders);
+				}
+		)
+	}
+	
+	$scope.startPreparing = function(foodOrder){
+		cookService.startPrepareFood(foodOrder);
+	}
+	$scope.preparingDone = function(foodOrder){
+		cookService.prepareDone(foodOrder);
+	}
+	$scope.logout = function(){
+		cookService.logout();
+	}
+	
+	$scope.konacnaLista = [];
+	
+	$scope.getCalendar = function(){
+		$scope.viewProfile = false;
+		//$scope.makeOrder = false;
+		$scope.viewOrders = false;
+		$scope.firstLogin = false;
+		$scope.calendar = true;
+		
+		
+		
+		cookService.getCooks().then(
+				function(response){
+					$scope.konacnaLista = [];
+					$scope.cooks = response.data;
+					
+					$scope.cooks.forEach(function(cook){
+						
+						cookService.loadSegments(cook.id).then(
+								function(response){
+									$scope.segments = response.data;
+									
+									//alert(response.data.startDate)
+									response.data.startDate = new Date(response.data.startDate);
+									response.data.endDate = new Date(response.data.endDate);
+									//alert(response.data.startDate)
+									pom = {
+										cook: cook,
+										schedule: response.data
+									}
+									
+									$scope.konacnaLista.push(pom);
+								}
+								
+						);
+						
+					});
+					console.log($scope.konacnaLista);
+				}
+		);	
 	}
 }]);
 
@@ -123,12 +196,13 @@ cook.controller('profileController', [ '$scope', 'cookService', function($scope,
 			
 		}
 	}
+	
 }]);
 
 cook.service('cookService', ['$window', '$http', function($window, $http){
 	
 	this.getCook = function() {
-		return $http.get("../worker/cook/5")
+		return $http.get("../worker/cook/"+user.id)
 	}
 	
 	this.validatePasswords = function(cook, password, newPassword, newPasswordConfirm){
@@ -188,6 +262,75 @@ cook.service('cookService', ['$window', '$http', function($window, $http){
 			  });
 	 }
 	this.getFirstLogin = function() {
-		return $http.get("../worker/firstLogin/5")
+		return $http.get("../worker/firstLogin/"+user.id)
+	}
+	
+	this.getFoodOrders = function() {
+		return $http.get("../worker/cook/getFoodOrders/"+user.id)
+	}
+	
+	this.startPrepareFood = function(foodOrder) {
+		return $http({
+			  method: 'POST',
+			  data : foodOrder,
+		      url : "../worker/cook/startPrepareFood",
+		}).then(function success(response) {
+			if(response.data == "Error free") {
+				return "";
+			}
+			else {
+				return response.data;
+			}
+			
+		  }, function error(response) {
+			  alert(response)
+		  });
+	}
+	this.prepareDone = function(foodOrder) {
+		return $http({
+			  method: 'POST',
+			  data : foodOrder,
+		      url : "../worker/cook/prepareFoodDone",
+		}).then(function success(response) {
+			if(response.data == "Error free") {
+				return "";
+			}
+			else {
+				return response.data;
+			}
+			
+		  }, function error(response) {
+			  alert(response)
+		  });
+	}
+	
+	this.logout = function() {
+		user = $.cookie("user");
+		$http({
+			method : 'PUT',
+			data : user,
+			url : "../user/logout"
+		}).then(function success(response) {
+
+		}, function error(response) {
+			
+		});
+		$.removeCookie('user', {
+			path : '/',
+			domain : ''
+		});
+		$window.location.href = '/StartPage/StartPage.html';
+	}
+	
+	this.loadSegments = function(id){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/loadAllMySegments/"+id 
+		});
+		
+	}
+	
+	this.getCooks = function() {
+		return $http.get("../worker/cooks/"+user.id)
 	}
 }]);

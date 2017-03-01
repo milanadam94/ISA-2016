@@ -7,7 +7,10 @@ import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.DrinkOrder;
 import com.sms.beans.Food;
+import com.sms.beans.FoodOrder;
 import com.sms.beans.GuestOrder;
+import com.sms.beans.Schedule;
+import com.sms.beans.SysUser;
 import com.sms.beans.Waiter;
 
 public interface WorkerService {
@@ -34,6 +37,8 @@ public interface WorkerService {
 	
 	public int getTotal(Integer orderId);
 	
+	public List<Waiter> getWaiters(Integer userId);
+	
 	//sankeri
 	public Bartender getBartenderByUserId(Integer userId);
 	
@@ -52,6 +57,15 @@ public interface WorkerService {
 	
 	public String saveFirstLogin(Cook cook);
 	
+	public List<FoodOrder> getFoodOrders(Integer userId);
+	
+	public void setStartPrepareFood(FoodOrder foodOrder);
+	
+	public void setPrepareFoodDone(FoodOrder foodOrder);
+	
+	public List<Cook> getCooks(Integer userId);
+	
 	//svim radnicima
 	public Boolean getFirstLogin(Integer userId);
+	
 }

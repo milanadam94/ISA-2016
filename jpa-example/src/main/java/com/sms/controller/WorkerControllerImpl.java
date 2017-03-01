@@ -17,7 +17,9 @@ import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.DrinkOrder;
 import com.sms.beans.Food;
+import com.sms.beans.FoodOrder;
 import com.sms.beans.GuestOrder;
+import com.sms.beans.SysUser;
 import com.sms.beans.Waiter;
 import com.sms.service.UserService;
 import com.sms.service.WorkerService;
@@ -145,10 +147,39 @@ public class WorkerControllerImpl{
 		return workerService.saveFirstLogin(cook);
 	}
 	
+	@GetMapping(path = "/cook/getFoodOrders/{userId}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<FoodOrder> getFoodOrders(@PathVariable(value = "userId") Integer userId){
+		return workerService.getFoodOrders(userId);
+	}
+	
+	@PostMapping(path = "/cook/startPrepareFood", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void setStartPrepare(@RequestBody FoodOrder order){
+		workerService.setStartPrepareFood(order);
+	}
+	
+	@PostMapping(path = "/cook/prepareFoodDone", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void prepareFoodDone(@RequestBody FoodOrder order){
+		workerService.setPrepareFoodDone(order);
+	}
 	//svim radnicima
 	@GetMapping(path = "/firstLogin/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public Boolean getFirstLogin(@PathVariable(value = "userId") Integer userId){
 		return workerService.getFirstLogin(userId);
+	}
+	
+	@GetMapping(path = "/waiters/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Waiter> getWaiters(@PathVariable(value="userId") Integer userId){
+		return workerService.getWaiters(userId);
+	}
+	
+	@GetMapping(path = "/cooks/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Cook> getCooks(@PathVariable(value="userId") Integer userId){
+		return workerService.getCooks(userId);
 	}
 }

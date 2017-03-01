@@ -22,6 +22,8 @@
 <!-- TOASTR -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
 
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
 <!-- ANGULAR SCRIPT -->
 <script src="WaiterPage.js"></script>
 <style type="text/css">
@@ -48,7 +50,7 @@
 			</div>
 			<ul class="nav navbar-nav">
 				<li><a href="#" ng-click="getProfile()">Profil</a></li>
-				<li><a href="#" ng-click="getTables()">Raspored stolova</a></li>
+				<!-- <li><a href="#" ng-click="getTables()">Raspored stolova</a></li>  -->
 				<li><a href="#" ng-click="getCalendar()">Kalendar</a></li>
 				<li><a href="#" ng-click="getOrders(); getFoods(); getDrinks()">Porudzbine</a></li>
 			</ul>
@@ -169,8 +171,11 @@
 				</table>
 				</div>      
 			</div>
-			<label><font color="blue" size="3">Porudzbina za sto:</font></label>
-			<!-- select tables izabrati indeks stola koji ce se poslati u bazu -->
+			<!-- <label><font color="blue" size="3">Porudzbina za sto:</font></label>  -->
+				
+				
+				
+				
 			<div class="form-group">	
 				<button type="submit" class="btn btn-primary" ng-click="gotovaPorudzbina()">Dodaj porudzbinu</button>
 			</div>
@@ -186,18 +191,17 @@
 				<table class="table table-bordered table-striped">
 				    <thead>
 				      <tr>
-				        <th>Redni broj</th><th>Sto</th><th>Status</th><th>&nbsp;</th><th>&nbsp;</th>
+				        <th>Redni broj</th><th>Status</th><th>Obrisi</th><th>Racun</th>
 				      </tr>
 				     </thead>
 				     <tbody>
 				     	<tr ng-repeat="order in guestOrders">
 				     		<td> {{ order.id }} </td>
-				     		<td> <label>Sto</label></td>
+				     		<!-- <td> <label>Sto</label></td>  -->
 				     		<td ng-if="order.prepared == false" style="background:red" >Nije pripremljena</td>
 				     		<td ng-if="order.prepared == true" style="background: green">Pripremljena</td>
-				     		<td> <button type="submit" id="{{order.id}}" class="btn btn-danger" ng-click="deleteOrder(order.id)">Obrisi</button></td>
-				     		<td ng-if="order.prepared == true"> <button type="submit" id="{{order.id}}" class="btn btn-success" ng-click="makeBill(order.id)">Naplati</button></td>
-				     		<td ng-if="order.prepared == false">&nbsp;</td>
+				     		<td> <button type="submit" id="{{order.id}}" class="btn btn-danger" ng-disabled="order.prepared == true" ng-click="deleteOrder(order.id)">Obrisi</button></td>
+				     		<td> <button type="submit" id="{{order.id}}" class="btn btn-success" ng-disabled="order.prepared == false" ng-click="makeBill(order.id)">Naplati</button></td>
 				     	</tr>
 				     </tbody>
 				 </table>
@@ -231,6 +235,29 @@
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary pull-left" ng-click="novaLozinka()">Izmeni</button>
 			</div>
+		</div>
+		
+		<div ng-show="calendar">
+			<div ng-repeat="wait in konacnaLista">
+			<div ng-if="wait.schedule.length != 0">
+				<div class="container">
+					<label class="control-label" for="potvrdaLozinke">Ime i prezime:&nbsp;<font color="blue">{{$parent.wait.waiter.user.name}}&nbsp;{{wait.waiter.user.lastName}}</font></label>
+					<table class="table table-bordered">
+						<tr bgcolor="lightgrey">
+							<th>Pocetak</th>
+							<th>Kraj</th>
+							<th>Smena</th>
+						</tr>
+						<tr  ng-repeat="i in wait.schedule">
+							<td>{{i.startDate | date: 'yyyy-MM-dd'}}</td>
+							<td>{{i.endDate | date: 'yyyy-MM-dd'}}</td>
+							<td>{{i.shift}}</td>
+						</tr>
+					</table>
+				</div>
+				</div>
+			</div>
+		</div>
 		</div>
 	</div>
 </body>

@@ -15,6 +15,7 @@ import com.sms.beans.FoodOrder;
 import com.sms.beans.GuestOrder;
 import com.sms.beans.Menu;
 import com.sms.beans.Restaurant;
+import com.sms.beans.Schedule;
 import com.sms.beans.SysUser;
 import com.sms.beans.Waiter;
 import com.sms.dao.BartenderDao;
@@ -249,6 +250,76 @@ public class WorkerServiceImpl implements WorkerService	{
 		SysUser user = userDao.findById(userId);
 		System.out.println(user.getEmail() +" "+ user.getFirstLogin());
 		return user.getFirstLogin();
+	}
+	
+	@Override
+	public List<FoodOrder> getFoodOrders(Integer userId) {
+		Cook cook = cookDao.findByUserId(userId);
+		Restaurant restaurant = cook.getRestaurant();
+		List<GuestOrder> orders = guestOrderDao.findByRestaurant(restaurant);
+		List<FoodOrder> foods = new ArrayList<FoodOrder>();
+		for(GuestOrder order : orders){
+			for(FoodOrder food : order.getFoodOrders()){
+				//if( (!food.getPrepared()) && (food.getFood().getFoodType().equals(cook.getCookType())) && (!food.getStarted())){
+				if( (!food.getPrepared()) && (food.getFood().getFoodType().equals(cook.getCookType()))){
+					foods.add(food);
+				}
+			}
+		}
+		return foods;	
+	}
+
+	@Override
+	public void setStartPrepareFood(FoodOrder foodOrder) {
+		List<FoodOrder> orders = foodOrderDao.findAll();
+		for(FoodOrder order : orders){
+			if(order.getId().equals(foodOrder.getId())){
+				order.setStarted(true);
+				foodOrderDao.save(order);
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void setPrepareFoodDone(FoodOrder foodOrder) {
+		List<FoodOrder> orders = foodOrderDao.findAll();
+		for(FoodOrder order : orders){
+			if(order.getId().equals(foodOrder.getId())){
+				order.setPrepared(true);
+				foodOrderDao.save(order);
+				break;
+			}
+		}
+		List<GuestOrder> guestOrders = guestOrderDao.findAll();
+		for(GuestOrder order : guestOrders){
+			List<FoodOrder> foodOrders = order.getFoodOrders();
+			for(FoodOrder foodd : foodOrders){
+				if(foodd.getId().equals(foodOrder.getId())){
+					if(order.getDrinkOrdersPrepared() && order.getDrinkOrdersPrepared()){
+						order.setPrepared(true);
+						guestOrderDao.save(order);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public List<Waiter> getWaiters(Integer userId) {
+		Waiter waiter = waiterDao.findByUserId(userId);
+		List<Waiter> waiters = waiterDao.findByRestaurant(waiter.getRestaurant());
+		
+		return waiters;
+	}
+
+	@Override
+	public List<Cook> getCooks(Integer userId) {
+		Cook cook = cookDao.findByUserId(userId);
+		List<Cook> cooks = cookDao.findByRestaurant(cook.getRestaurant());
+		
+		return cooks;
 	}
 
 }

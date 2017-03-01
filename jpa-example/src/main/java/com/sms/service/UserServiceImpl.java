@@ -13,6 +13,7 @@ import com.sms.beans.ActiveUser;
 import com.sms.beans.Guest;
 import com.sms.beans.SysUser;
 import com.sms.beans.SysUserActivation;
+import com.sms.beans.UserType;
 import com.sms.dao.ActiveUserDao;
 import com.sms.dao.GuestDao;
 import com.sms.dao.SysUserActivationDao;
@@ -52,10 +53,11 @@ public class UserServiceImpl implements UserService {
 		if (activeUser != null)
 			return new SysUser();
 		
-		Guest guest = guestDao.findByUserId(sysUser.getId());
-		guest.setVisits(guest.getVisits() + 1);
-		guestDao.save(guest);
-
+		if(sysUser.getUserType().equals(UserType.GUEST)){
+			Guest guest = guestDao.findByUserId(sysUser.getId());
+			guest.setVisits(guest.getVisits() + 1);
+			guestDao.save(guest);
+		}
 		activeUser = new ActiveUser(sysUser, sysUser.getEmail(), sysUser.getUserType());
 
 		activeUserDao.save(activeUser);

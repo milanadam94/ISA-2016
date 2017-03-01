@@ -22,6 +22,8 @@
 <!-- TOASTR -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
 
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
 <!-- ANGULAR SCRIPT -->
 <script src="CookPage.js"></script>
 <style>
@@ -138,6 +140,52 @@
 			<div class="form-group text-danger" ng-if="greska">{{ greska }}</div>
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary pull-left" ng-click="novaLozinka()">Izmeni</button>
+			</div>
+		</div>
+		
+		<div ng-show="viewOrders">
+			<div class="row">
+				<div class="col-md-8">
+				<label><font color="blue" size="3">Hrana za pripremu:</font></label>
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>Redni broj<th>Hrana</th><th>Koliko</th><th>Zapocni spremanje</th><th>Gotova priprema</th>
+				      </tr>
+				     </thead>
+				     <tbody>
+				     	<tr ng-repeat="foodOrder in foodOrders">
+				     		<td> {{ foodOrder.id }} </td>
+				     		<td> {{ foodOrder.food.name }} </td>
+				     		<td> {{ foodOrder.quantity }} </td>
+				     		<td><button type="submit" class="btn btn-warning" ng-click="startPreparing(foodOrder)" ng-disabled="foodOrder.started == true">Zapocni</button></td>
+				     		<td><button type="submit" class="btn btn-success" ng-click="preparingDone(foodOrder)" ng-disabled="foodOrder.started == false">Pripremljena</button></td>
+				     	</tr>
+				     </tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+		
+		<div ng-show="calendar">
+			<div ng-repeat="cooky in konacnaLista">
+			<div ng-if="cooky.schedule.length != 0">
+				<div class="container">
+					<label class="control-label" for="potvrdaLozinke">Ime i prezime:&nbsp;<font color="blue">{{$parent.cooky.cook.user.name}}&nbsp;{{cooky.cook.user.lastName}}</font></label>
+					<table class="table table-bordered">
+						<tr bgcolor="lightgrey">
+							<th>Pocetak</th>
+							<th>Kraj</th>
+							<th>Smena</th>
+						</tr>
+						<tr  ng-repeat="i in cooky.schedule">
+							<td>{{i.startDate | date: 'yyyy-MM-dd'}}</td>
+							<td>{{i.endDate | date: 'yyyy-MM-dd'}}</td>
+							<td>{{i.shift}}</td>
+						</tr>
+					</table>
+				</div>
+				</div>
 			</div>
 		</div>
 	</div>
