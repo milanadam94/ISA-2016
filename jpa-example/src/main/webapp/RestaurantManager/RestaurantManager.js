@@ -37,6 +37,18 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	}
 	
 	
+	findUser = function(){
+		restaurantInfoService.findRestaurantManager().then(
+				function(response){
+					$scope.user = response.data;
+					
+				}
+				
+		);
+	}
+	
+	findUser();
+	
 	setShows = function(profilShow, picaShow, jelovnikShow, konfiguracijaShow){
 		$scope.profilShow = profilShow;
 		$scope.picaShow = picaShow;
@@ -70,6 +82,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	
 
 	$scope.getFoods = function(){
+
 		restaurantInfoService.getMenu($scope.user, $scope.restaurant).then(
 				function(response){
 
@@ -463,6 +476,13 @@ restManager.service('restaurantInfoService',['$window', '$http', function($windo
 		return $http.get("../restManager/myRestaurant/1"); // ================================= OVDE NAMESTITI EMAIL USERA
 	}
 	
+	this.findRestaurantManager = function(){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getUser/1" //========================================== dodati user Email
+		});
+	}
+	
 	this.saveChanges = function(restaurant, user){
 		
 		$http({
@@ -480,7 +500,7 @@ restManager.service('restaurantInfoService',['$window', '$http', function($windo
 	this.getMenu = function (user, restaurant){
 		return $http({
 			method: 'POST',
-			data : $.param(restaurant),
+			data : restaurant,
 			url: "../restManager/getMenu/1"  // ==================== user.mail
 		});
 	}
@@ -493,7 +513,7 @@ restManager.service('foodService',['$window', '$http', function($window, $http){
 	this.saveChanges = function (food, menu){
 		$http({
 			method: 'POST',
-			data: $.param(food),
+			data: food,
 			url: "../restManager/changeFood/" + menu.id
 		}).then(function success() {
 			alert("Uspesno promenjeno!");
@@ -507,7 +527,7 @@ restManager.service('foodService',['$window', '$http', function($window, $http){
 	this.addFood = function (newFood, menu){
 		$http({
 			method: 'POST',
-			data: $.param(newFood),
+			data: newFood,
 			url: "../restManager/addFood/"+menu.id
 		});
 		
@@ -527,7 +547,7 @@ restManager.service('drinkService', ['$window', '$http', function($window, $http
 	this.saveChanges = function (drink, menu){
 		$http({
 			method: 'POST',
-			data: $.param(drink),
+			data: drink,
 			url: "../restManager/changeDrink/" + menu.id
 		}).then(function success() {
 			alert("Uspesno promenjeno!");
@@ -548,7 +568,7 @@ restManager.service('drinkService', ['$window', '$http', function($window, $http
 	this.addDrink = function (newDrink, menu){
 		$http({
 			method: 'POST',
-			data: $.param(newDrink),
+			data: newDrink,
 			url: "../restManager/addDrink/"+menu.id
 		});
 	}

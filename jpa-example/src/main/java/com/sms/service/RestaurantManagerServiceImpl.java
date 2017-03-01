@@ -17,6 +17,7 @@ import com.sms.beans.Bartender;
 import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
+import com.sms.beans.FoodRecension;
 import com.sms.beans.FoodType;
 import com.sms.beans.GuestTable;
 import com.sms.beans.Menu;
@@ -25,6 +26,7 @@ import com.sms.beans.Offerings;
 import com.sms.beans.Reservation;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.RestaurantRecension;
 import com.sms.beans.Schedule;
 import com.sms.beans.Segment;
 import com.sms.beans.ShiftType;
@@ -32,12 +34,14 @@ import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.beans.UserType;
 import com.sms.beans.Waiter;
+import com.sms.beans.WaiterRecension;
 import com.sms.beans.WorkerSchedule;
 import com.sms.dao.ActiveUserDao;
 import com.sms.dao.BartenderDao;
 import com.sms.dao.CookDao;
 import com.sms.dao.DrinkDao;
 import com.sms.dao.FoodDao;
+import com.sms.dao.FoodRecensionDao;
 import com.sms.dao.GuestTableDao;
 import com.sms.dao.MenuDao;
 import com.sms.dao.OffererDao;
@@ -45,11 +49,13 @@ import com.sms.dao.OfferingsDao;
 import com.sms.dao.ReservationDao;
 import com.sms.dao.RestaurantDao;
 import com.sms.dao.RestaurantManagerDao;
+import com.sms.dao.RestaurantRecensionDao;
 import com.sms.dao.ScheduleDao;
 import com.sms.dao.SegmentDao;
 import com.sms.dao.TenderDao;
 import com.sms.dao.UserDao;
 import com.sms.dao.WaiterDao;
+import com.sms.dao.WaiterRecensionDao;
 import com.sms.dao.WorkerScheduleDao;
 import com.sms.utilities.Message;
 
@@ -112,6 +118,15 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	
 	@Autowired
 	private WorkerScheduleDao workerScheduleDao;
+	
+	@Autowired
+	private RestaurantRecensionDao restaurantRecensionDao;
+	
+	@Autowired
+	private FoodRecensionDao foodRecensionDao;
+	
+	@Autowired
+	private WaiterRecensionDao waiterRecensionDao;
 	
 	@Override
 	public Restaurant getRestaurant(String restManagerID) {
@@ -782,6 +797,72 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		}
 		
 		
+	}
+
+	@Override
+	public List<RestaurantRecension> getRestaurantRecension(String managerEmail) {
+		// TODO Auto-generated method stub
+		
+		Restaurant restaurant = getRestaurant(managerEmail);
+		
+		if(restaurant == null){
+			return null;
+		}
+			
+		return restaurantRecensionDao.findByRestaurant(restaurant);
+	}
+
+	@Override
+	public List<FoodRecension> getFoodRecension(String managerEmail,String foodName) {
+		// TODO Auto-generated method stub
+		Restaurant restaurant = getRestaurant(managerEmail);
+		
+		if(restaurant == null){
+			return null;
+		}
+		
+		List<FoodRecension> foodRecensions = foodRecensionDao.findByRestaurant(restaurant);
+		List<FoodRecension> foodRecensionsToReturn = new ArrayList<FoodRecension>();
+	
+		for(FoodRecension rec : foodRecensions){
+			System.out.println(rec.getFood().getName() + " = " + foodName);
+			if(rec.getFood().getName().contains(foodName)){
+				foodRecensionsToReturn.add(rec);
+			}
+		}
+		
+		
+		return foodRecensionsToReturn;
+	}
+
+	@Override
+	public List<WaiterRecension> getWaiterRecension(String managerID, String waiterName) {
+		// TODO Auto-generated method stub
+		
+		Restaurant restoran = getRestaurant(managerID);
+		
+		if(restoran == null){
+			return null;
+		}
+		
+		List<Waiter> waiters = waiterDao.findByRestaurant(restoran);
+		
+		if(waiters == null){
+			return null;
+		}
+		
+		List<WaiterRecension> recensions = new ArrayList<WaiterRecension>();
+		
+		for(Waiter waiter : waiters){
+			if((waiter.getUser().getName() == null && waiterName.equals("")) || (waiter.getUser().getName() != null && waiter.getUser().getName().contains(waiterName))){
+				
+				recensions.addAll(waiterRecensionDao.findByWaiter(waiter));
+					
+			}			
+		}
+		
+		
+		return recensions;
 	}
 	
 	

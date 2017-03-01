@@ -1,0 +1,97 @@
+angular.element(document).ready(function () {
+    console.log('page loading completed');
+});
+var restManager = angular.module('restManager', []).config(['$qProvider', '$httpProvider', function ($qProvider, $httpProvider)  {
+    $qProvider.errorOnUnhandledRejections(false);
+    
+}]).run(['$rootScope', '$http', '$window', function ($rootScope, $http, $window) {
+	
+	//namestiti dole u funckcijama gde treba user.email kada se ovo namesti!
+	if (typeof $.cookie('user') !== 'undefined') {
+		user = JSON.parse($.cookie('user'));
+		
+		if(user.userType == "GUEST") {
+			$window.location.href = "/GuestPage/GuestPage.html";
+		}
+		// DALJE
+	}
+		 
+	
+	
+}]);
+
+
+
+restManager.controller('reportControler', [ '$scope', function($scope){
+	setShows(false,false,false,false,false,false);
+	
+	$scope.choosenOption = "";
+	
+	
+	$scope.setShows = function(ocenaRestoranaShow, jeluShow, konobaruShow, posecenostShow, prihodiShow, prihodiPoKonobaruShow) {
+		$scope.ocenaRestoranaShow = ocenaRestoranaShow;
+		$scope.jeluShow = jeluShow;
+		$scope.konobaruShow = konobaruShow;
+		$scope.posecenostShow = posecenostShow;
+		$scope.prihodiShow = prihodiShow;
+		$scope.prihodiPoKonobaruShow = prihodiPoKonobaruShow;
+		
+	}
+	
+	
+	$scope.reloadPage = function(){
+		
+		if($scope.choosenOption == "Ocena Restorana"){
+			setShows(false,false,false,false,false,false);
+			
+		}else if($scope.choosenOption == "Jelu"){
+			setShows(false,false,false,false,false,false);
+			
+		}else if($scope.choosenOption == "Konobaru"){
+			setShows(false,false,false,false,false,false);
+			
+		}else if($scope.choosenOption == "Posecenosti"){
+			setShows(false,false,false,false,false,false);
+			
+		}else if($scope.choosenOption == "Prihodi"){
+			setShows(false,false,false,false,false,false);
+			
+		}else if($scope.choosenOption == "Prihodi Po Konobaru"){
+			setShows(false,false,false,false,false,false);
+			
+		}else{
+			setShows(false,false,false,false,false,false);
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+}]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
