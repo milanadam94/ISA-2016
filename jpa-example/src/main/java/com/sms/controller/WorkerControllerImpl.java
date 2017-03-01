@@ -72,10 +72,10 @@ public class WorkerControllerImpl{
 		workerService.addOrderFood(food);
 	}
 	
-	@PostMapping(path = "/waiter/saveGuestOrder/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/waiter/saveGuestOrder/{userId}")
 	@ResponseBody
-	public void addGuestOrder(@RequestBody GuestOrder order,@PathVariable(value="userId") Integer userId){
-		workerService.saveGuestOrder(order, userId);
+	public void addGuestOrder(@PathVariable(value="userId") Integer userId){
+		workerService.saveGuestOrder(userId);
 	}
 	
 	@GetMapping(path = "/waiter/getGuestOrders/{userId}", produces=MediaType.APPLICATION_JSON_VALUE)
@@ -84,10 +84,10 @@ public class WorkerControllerImpl{
 		return workerService.getGuestOrders(userId);
 	}
 	
-	@PostMapping(path = "waiter/deleteGuestOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "waiter/deleteGuestOrder/{id}")
 	@ResponseBody
-	public void deleteGuestOrder(@RequestBody GuestOrder order){
-		workerService.deleteGuestOrder(order);
+	public void deleteGuestOrder(@PathVariable(value="id") Integer id){
+		workerService.deleteGuestOrder(id);
 	}
 	
 	@GetMapping(path = "/waiter/getTotal/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)

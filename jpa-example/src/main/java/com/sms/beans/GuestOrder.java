@@ -6,6 +6,7 @@
 package com.sms.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -48,7 +49,8 @@ public class GuestOrder implements Serializable {
 	public Restaurant restaurant;
 
 	public GuestOrder() {
-
+		this.drinkOrders = new ArrayList<DrinkOrder>();
+		this.foodOrders = new ArrayList<FoodOrder>();
 	}
 
 	public GuestOrder(Boolean prepared, List<FoodOrder> foodOrders, List<DrinkOrder> drinkOrders, Waiter waiter) {

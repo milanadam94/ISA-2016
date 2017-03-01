@@ -21,12 +21,12 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 	$scope.viewOrders = false;
 	$scope.firstLogin = false;
 	$scope.total = "";
-	$scope.orderFoods = [];
+	/*$scope.orderFoods = [];
 	$scope.orderDrinks = [];
 	$scope.order = {
 			"foods" : $scope.orderFoods,
 			"drinks" : $scope.orderDrinks
-	};
+	};*/
 	
 	waiterService.getWaiter().then(
 			function(response){
@@ -91,9 +91,7 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 		$scope.viewProfile = false;
 		$scope.makeOrder = true;
 		$scope.viewOrders = false;
-		//$scope.order.push($scope.orderDrinks);
-		//$scope.order.push($scope.orderFoods);
-		waiterService.saveGuestOrder($scope.order);
+		waiterService.saveGuestOrder();
 		
 	}
 	$scope.porudzbine = function() {
@@ -131,16 +129,19 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 		)
 	}
 	$scope.addDrink = function(drink) {
-		$scope.orderDrinks.push(drink);
-		//waiterService.addOrderDrink(drink);
+		waiterService.addOrderDrink(drink);
 	}
 	$scope.addFood = function(food) {
-		$scope.orderFoods.push(food);
-		//waiterService.addOrderFood(food);
+		waiterService.addOrderFood(food);
 	}
-	$scope.deleteOrder = function(order) {
-		$scope.guestOrders.pop(order);
-		waiterService.deleteOrder(order);
+	$scope.deleteOrder = function(id) {
+		waiterService.deleteOrder(id);
+		//$scope.guestOrders.splice(id, 1);
+		/*for(i=0; i<$scope.guestOrders.length; i++){
+		    if($scope.guestOrders[i].id == id){
+		      $scope.guestOrders.shift();
+		    }
+		}*/
 	}
 	$scope.makeBill = function(orderId){
 		waiterService.getTotal(orderId).then(
@@ -149,6 +150,12 @@ waiter.controller('waiterController', [ '$scope', 'waiterService', function($sco
 					console.log($scope.total);
 				}
 		)
+		$scope.viewOrders = false;
+		$scope.bill = true;
+	}
+	$scope.racun = function(){
+		$scope.viewOrders = true;
+		$scope.bill = false;
 	}
 }]);
 
@@ -281,9 +288,9 @@ waiter.service('waiterService', ['$window', '$http', function($window, $http){
 		  });
 	}
 	
-	this.saveGuestOrder = function(order) {
-		//return $http.post("/worker/waiter/saveGuestOrder/3");
-		return $http({
+	this.saveGuestOrder = function() {
+		return $http.post("/worker/waiter/saveGuestOrder/3");
+		/*return $http({
 			  method: 'POST',
 			  data : order,
 		      url : "../worker/waiter/saveGuestOrder/3",
@@ -297,13 +304,14 @@ waiter.service('waiterService', ['$window', '$http', function($window, $http){
 			
 		  }, function error(response) {
 			  alert(response)
-		  });
+		  });*/
 	}
-	this.getGuestOrders = function(order) {
+	this.getGuestOrders = function() {
 		return $http.get("../worker/waiter/getGuestOrders/3");
 	}
-	this.deleteOrder = function(order){
-		return $http({
+	this.deleteOrder = function(id){
+		return $http.post("../worker/waiter/deleteGuestOrder/"+id);
+		/*return $http({
 			  method: 'POST',
 			  data : order,
 		      url : "../worker/waiter/deleteGuestOrder",
@@ -317,7 +325,7 @@ waiter.service('waiterService', ['$window', '$http', function($window, $http){
 			
 		  }, function error(response) {
 			  alert(response)
-		  });
+		  });*/
 	}
 	this.getTotal = function(orderId){
 		return $http.get("../worker/waiter/getTotal/"+orderId);

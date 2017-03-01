@@ -25,11 +25,11 @@ public interface WorkerService {
 	
 	public void addOrderFood(Food food);
 	
-	public void saveGuestOrder(GuestOrder order,Integer userId);
+	public void saveGuestOrder(Integer userId);
 	
 	public List<GuestOrder> getGuestOrders(Integer userId);
 	
-	public void deleteGuestOrder(GuestOrder order);
+	public void deleteGuestOrder(Integer id);
 	
 	public int getTotal(Integer orderId);
 	

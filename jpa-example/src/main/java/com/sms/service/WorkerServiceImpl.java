@@ -8,13 +8,17 @@ import org.springframework.stereotype.Service;
 import com.sms.beans.Bartender;
 import com.sms.beans.Cook;
 import com.sms.beans.Drink;
+import com.sms.beans.DrinkOrder;
 import com.sms.beans.Food;
+import com.sms.beans.FoodOrder;
 import com.sms.beans.GuestOrder;
 import com.sms.beans.Menu;
 import com.sms.beans.SysUser;
 import com.sms.beans.Waiter;
 import com.sms.dao.BartenderDao;
 import com.sms.dao.CookDao;
+import com.sms.dao.DrinkOrderDao;
+import com.sms.dao.FoodOrderDao;
 import com.sms.dao.GuestOrderDao;
 import com.sms.dao.MenuDao;
 import com.sms.dao.UserDao;
@@ -31,18 +35,24 @@ public class WorkerServiceImpl implements WorkerService	{
 	private WaiterDao waiterDao;
 	
 	@Autowired
+	private BartenderDao bartenderDao;
+	
+	@Autowired
+	private CookDao cookDao;
+	
+	@Autowired
+	private FoodOrderDao foodOrderDao;
+	
+	@Autowired
+	private DrinkOrderDao drinkOrderDao;
+	
+	@Autowired
 	private MenuDao menuDao;
 	
 	@Autowired
 	private GuestOrderDao guestOrderDao;
 	
 	private GuestOrder order = new GuestOrder();
-	
-	@Autowired
-	private BartenderDao bartenderDao;
-	
-	@Autowired
-	private CookDao cookDao;
 	
 	public Waiter getWaiterByUserId(Integer userId) {
 		
@@ -85,28 +95,31 @@ public class WorkerServiceImpl implements WorkerService	{
 
 	@Override
 	public void addOrderDrink(Drink drink) {
-		//System.out.println(drink.getQuantity()+" "+drink.getName());
-		//System.out.println(drink.getPrepared());
-		//drink.setPrepared(false);
-		//order.getDrinks().add(drink);
+		System.out.println(drink.getQuantity()+" "+drink.getName());
+		DrinkOrder drinkOrder = new DrinkOrder(drink, drink.getQuantity(), false);
+		drinkOrderDao.save(drinkOrder);
+		order.getDrinkOrders().add(drinkOrder);
+		//guestOrderDao.save(order);
 	}
 
 	@Override
 	public void addOrderFood(Food food) {
-		//System.out.println(food.getQuantity()+" "+food.getName());
-		//System.out.println(food.getPrepared());
-		//food.setPrepared(false);
-		//order.getFoods().add(food);
+		System.out.println(food.getQuantity()+" "+food.getName());
+		FoodOrder foodOrder = new FoodOrder(food, food.getQuantity(), false, false);
+		foodOrderDao.save(foodOrder);
+		order.getFoodOrders().add(foodOrder);
+		guestOrderDao.save(order);
 	}
 
 	@Override
-	public void saveGuestOrder(GuestOrder order,Integer userId) {
+	public void saveGuestOrder(Integer userId) {
 
 		Waiter waiter = waiterDao.findByUserId(userId);
 		order.setWaiter(waiter);
 		order.setPrepared(false);
+		order.setRestaurant(waiter.getRestaurant());
 		guestOrderDao.save(order);
-		//order = new GuestOrder();
+		order = new GuestOrder();
 	}
 
 	@Override
@@ -117,7 +130,8 @@ public class WorkerServiceImpl implements WorkerService	{
 	}
 
 	@Override
-	public void deleteGuestOrder(GuestOrder order) {
+	public void deleteGuestOrder(Integer id) {
+		GuestOrder order = guestOrderDao.findById(id);
 		guestOrderDao.delete(order);
 		
 	}
@@ -127,14 +141,12 @@ public class WorkerServiceImpl implements WorkerService	{
 		GuestOrder order = guestOrderDao.findById(orderId);
 		System.out.println(order.getId());
 		int total = 0;
-		/*for (Drink drink : order.getDrinks()) {
-			System.out.println(drink.getQuantity()+" " +drink.getPrice());
-			total += (drink.getQuantity() * drink.getPrice());
+		for(DrinkOrder drink : order.getDrinkOrders()){
+			total += drink.getQuantity() * (drink.getDrink().getPrice());
 		}
-		for(Food food : order.getFoods()){
-			System.out.println(food.getQuantity()+" " +food.getPrice());
-			total += (food.getQuantity() * food.getPrice());
-		}*/
+		for(FoodOrder food : order.getFoodOrders()){
+			total += food.getQuantity() * (food.getFood().getPrice());
+		}
 		return total;
 	}
 
