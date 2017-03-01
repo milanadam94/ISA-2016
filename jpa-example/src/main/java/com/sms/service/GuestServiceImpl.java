@@ -15,6 +15,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sms.beans.Friendship;
 import com.sms.beans.Guest;
@@ -107,14 +108,22 @@ public class GuestServiceImpl implements GuestService {
 	@Override
 	public String addFriend(Integer guestId, Integer friendId) {
 		
-		if(guestId == null || friendId == null)
+		if(guestId == null || friendId == null || guestId == friendId)
 			return Message.REQUESTERROR;
 		
 		Guest friend = guestDao.findById(friendId);
 		Guest guest = guestDao.findById(guestId);
 		
-		if(friend == null || guestId == null)
+		if(friend == null || guest == null)
 			return Message.REQUESTERROR;
+		
+		if(friend.getFriendRequests() != null) {
+			for(Guest g : friend.getFriendRequests()) {
+				if(g.getId().equals(guest.getId())) {
+					return Message.REQUESTERROR;
+				}
+			}
+		}
 		
 		friend.addFriendRequest(guest);
 		guestDao.save(friend);
@@ -129,16 +138,23 @@ public class GuestServiceImpl implements GuestService {
 		
 		List<Friendship> friendships = friendshipDao.findByGuest(guestId);
 		
+		if(friendships == null)
+			return Message.REQUESTERROR;
+		
 		for(Friendship f : friendships){
-			friendshipDao.delete(f);
+			if(f.getFriend().equals(friendId)) 
+				friendshipDao.delete(f);
 		}
 		
 		friendships = friendshipDao.findByGuest(friendId);
 		
-		for(Friendship f : friendships){
-			friendshipDao.delete(f);
-		}
+		if(friendships == null)
+			return Message.REQUESTERROR;
 		
+		for(Friendship f : friendships){
+			if(f.getFriend().equals(guestId))
+				friendshipDao.delete(f);
+		}
 		
 		return Message.ERRORFREE;
 	}
@@ -151,7 +167,17 @@ public class GuestServiceImpl implements GuestService {
 		Guest friend = guestDao.findById(friendId);
 		Guest guest = guestDao.findById(guestId);
 		
-		if(guest == null || friend == null)
+		if(guest == null || friend == null || guest.getFriendRequests() == null)
+			return Message.REQUESTERROR;
+		
+		boolean check = false;
+		for(Guest f : guest.getFriendRequests()) {
+			if(f.getId().equals(friend.getId())) {
+				check=true;
+			}
+		}
+		
+		if(!check)
 			return Message.REQUESTERROR;
 		
 		guest.removeFriendRequest(friend);
@@ -184,6 +210,7 @@ public class GuestServiceImpl implements GuestService {
 	}
 
 	@Override
+	@Transactional
 	public List<Reservation> loadGuestReservations(Integer userId) {
 		if(userId == null)
 			return new ArrayList<Reservation>();

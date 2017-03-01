@@ -123,7 +123,10 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 		d = new Date($scope.reservationDateTime);
 		date = d.toISOString();
 		restaurantsService.reserveTables($scope.$parent.selectedRestaurant, $scope.$parent.guest, date, $scope.reservationDuration, $scope.reserved).then(function(data){
-			console.log(data)
+			if(data != "Error free") {
+				toastr.options.timeOut = 2500;
+				toastr.info("Neko je vec rezervisao.")
+			}
 		})
 		toastr.options.timeOut = 2500;
 		toastr.info("Vasa rezervacija se nalazi unutar taba 'Rezervacije'. Unutar taba mozete pozvati prijatelje da vas se pridruze.")
@@ -202,10 +205,6 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
     			var check = true;
     			if(resDate.getDate() == selectedDate.getDate() && resDate.getMonth() == selectedDate.getMonth() && resDate.getFullYear() == selectedDate.getFullYear()) {
     				for(var i = 0; i <= duration; i ++){
-    					console.log(selectedMinutes + i*60)
-    					console.log(resMinutes + resDuration * 60)
-    					console.log(selectedMinutes + i*60)
-    					console.log(resMinutes)
     					if((selectedMinutes + i*60) <= (resMinutes + resDuration * 60) && (selectedMinutes + i*60) >= resMinutes) {
     						check = false;
     						break;
@@ -273,11 +272,17 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 		    xIndex = Math.floor(xIndex);
 		    yIndex = Math.floor(yIndex);
 		    
+		    check = false;
 		    $scope.tablesReservedThen.forEach(function(table) {
 				if(table.xCoord == xIndex && table.yCoord == yIndex) {
+					check = true;
 					return;
 				}
 			})
+			
+			if(check) {
+				return;
+			}
 			
 			startX = x/30.0 + 1;
 		    startY = y/30.0 + 1;

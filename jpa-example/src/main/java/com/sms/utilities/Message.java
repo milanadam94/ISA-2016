@@ -16,4 +16,5 @@ public class Message {
 	public static final String CITYERROR = "Mesto stanovanja nije u ispravnom formatu.  Mora poceti velikim slovom i sadrzati iskljucivo slova.";
 	public static final String CREDIDENTIALSERROR = "Greska u podacima";
 	public static final String REQUESTERROR = "Neispravan zahtev.";
+	public static final String RESERVATIONFAILED = "Rezervacija nije uspesna. Vec postoji rezervacija za izabran/e sto/stolove.";
 }
