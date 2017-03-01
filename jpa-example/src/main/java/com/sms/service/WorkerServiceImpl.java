@@ -85,18 +85,18 @@ public class WorkerServiceImpl implements WorkerService	{
 
 	@Override
 	public void addOrderDrink(Drink drink) {
-		System.out.println(drink.getQuantity()+" "+drink.getName());
+		//System.out.println(drink.getQuantity()+" "+drink.getName());
 		//System.out.println(drink.getPrepared());
-		drink.setPrepared(false);
-		order.getDrinks().add(drink);
+		//drink.setPrepared(false);
+		//order.getDrinks().add(drink);
 	}
 
 	@Override
 	public void addOrderFood(Food food) {
-		System.out.println(food.getQuantity()+" "+food.getName());
+		//System.out.println(food.getQuantity()+" "+food.getName());
 		//System.out.println(food.getPrepared());
-		food.setPrepared(false);
-		order.getFoods().add(food);
+		//food.setPrepared(false);
+		//order.getFoods().add(food);
 	}
 
 	@Override
@@ -127,14 +127,14 @@ public class WorkerServiceImpl implements WorkerService	{
 		GuestOrder order = guestOrderDao.findById(orderId);
 		System.out.println(order.getId());
 		int total = 0;
-		for (Drink drink : order.getDrinks()) {
+		/*for (Drink drink : order.getDrinks()) {
 			System.out.println(drink.getQuantity()+" " +drink.getPrice());
 			total += (drink.getQuantity() * drink.getPrice());
 		}
 		for(Food food : order.getFoods()){
 			System.out.println(food.getQuantity()+" " +food.getPrice());
 			total += (food.getQuantity() * food.getPrice());
-		}
+		}*/
 		return total;
 	}
 

@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,6 +41,13 @@ public class Food implements Serializable {
 	@Column(name = "grade")
 	private Integer grade;
 
+	@Column(name = "quantity")
+	private Integer quantity;
+	
+	@Column(name = "food_type", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private FoodType foodType;
+
 	@OneToMany
 	private List<FoodRecension> foodRecensions;
 
@@ -60,13 +69,31 @@ public class Food implements Serializable {
 		this.grade = 0;
 	}
 
-	public Food(String name, String description, Integer price, Integer grade) {
+	public Food(String name, String description, Integer price, Integer grade, Integer quantity, FoodType foodType) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.grade = grade;
+		this.quantity = quantity;
+		this.foodType = foodType;
 	}
 
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public FoodType getFoodType() {
+		return foodType;
+	}
+
+	public void setFoodType(FoodType foodType) {
+		this.foodType = foodType;
+	}
+	
 	public Integer getId() {
 		return id;
 	}

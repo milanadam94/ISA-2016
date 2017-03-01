@@ -196,7 +196,7 @@
 				     		<td ng-if="order.prepared == false" style="background:red" >Nije pripremljena</td>
 				     		<td ng-if="order.prepared == true" style="background: green">Pripremljena</td>
 				     		<td> <button type="submit" id="{{order.id}}" class="btn btn-danger" ng-click="deleteOrder(order)">Obrisi</button></td>
-				     		<td ng-if="order.prepared == false"> <button type="submit" id="{{drink.id}}" class="btn btn-success" ng-click="makeBill(order.id)">Naplati</button></td>
+				     		<td ng-if="order.prepared == false"> <button type="submit" id="{{order.id}}" class="btn btn-success" ng-click="makeBill(order.id)">Naplati</button></td>
 				     		<td ng-if="order.prepared == false">&nbsp;</td>
 				     	</tr>
 				     </tbody>

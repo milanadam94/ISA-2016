@@ -24,6 +24,12 @@ public class FoodOrder implements Serializable {
 	@ManyToOne
 	private Food food;
 
+	@Column(name = "started")
+	private Boolean started;
+	
+	@Column(name = "prepared")
+	private Boolean prepared;
+
 	@Column(name = "quantity")
 	private Integer quantity;
 
@@ -34,6 +40,13 @@ public class FoodOrder implements Serializable {
 		this.food = food;
 		this.quantity = quantity;
 	}
+	
+	public FoodOrder(Food food, Integer quantity, Boolean started, Boolean prepared){
+		this.food = food;
+		this.quantity = quantity;
+		this.started = started;
+		this.prepared = prepared;
+	}
 
 	public Integer getId() {
 		return id;
@@ -43,6 +56,22 @@ public class FoodOrder implements Serializable {
 		this.id = id;
 	}
 
+	public Boolean getStarted() {
+		return started;
+	}
+
+	public void setStarted(Boolean started) {
+		this.started = started;
+	}
+
+	public Boolean getPrepared() {
+		return prepared;
+	}
+
+	public void setPrepared(Boolean prepared) {
+		this.prepared = prepared;
+	}
+	
 	public Food getFood() {
 		return food;
 	}

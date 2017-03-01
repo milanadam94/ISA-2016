@@ -19,6 +19,9 @@ public class DrinkOrder {
 	@ManyToOne
 	private Drink drink;
 
+	@Column(name = "prepared")
+	private Boolean prepared;
+	
 	@Column(name = "quantity")
 	private Integer quantity;
 	
@@ -30,6 +33,12 @@ public class DrinkOrder {
 		this.quantity = quantity;
 	}
 
+	public DrinkOrder(Drink drink, Integer quantity,Boolean prepared) {
+		this.drink = drink;
+		this.quantity = quantity;
+		this.prepared = prepared;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -38,6 +47,14 @@ public class DrinkOrder {
 		this.id = id;
 	}
 
+	public Boolean getPrepared() {
+		return prepared;
+	}
+
+	public void setPrepared(Boolean prepared) {
+		this.prepared = prepared;
+	}
+	
 	public Drink getDrink() {
 		return drink;
 	}
