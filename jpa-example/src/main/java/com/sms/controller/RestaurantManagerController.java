@@ -20,6 +20,7 @@ import com.sms.beans.Food;
 import com.sms.beans.FoodRecension;
 import com.sms.beans.GuestOrder;
 import com.sms.beans.GuestTable;
+import com.sms.beans.Invite;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
@@ -34,6 +35,7 @@ import com.sms.beans.WaiterRecension;
 import com.sms.beans.WorkerSchedule;
 import com.sms.service.RestaurantManagerService;
 import com.sms.service.RestaurantService;
+import com.sms.utilities.GuestsInDate;
 import com.sms.utilities.Message;
 
 @Controller
@@ -315,7 +317,12 @@ public class RestaurantManagerController {
 	}
 	
 	
-	
+	@GetMapping(path="/getAllInvites/{managerID}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<GuestsInDate> getAllInvites(@PathVariable("managerID") String managerEmail){
+		return restManagerService.getAllInvites(managerEmail);
+		
+	}
 	
 	
 	

@@ -1,0 +1,149 @@
+
+insert into Sys_User(id, email, password, user_type) values('1', '1', '1', 'RESTAURANTMANAGER')
+insert into Sys_User(id, email, password, user_type) values('2', '2', '2', 'OFFERER')
+insert into Sys_User(id, email, password, user_type) values('3', '3', '3', 'SYSTEMMANAGER')
+insert into Sys_User(id, email, password, user_type) values('4', '4', '3', 'COOK')
+insert into Sys_User(id, email, password, user_type) values('5', '5', '3', 'COOK')
+insert into Sys_User(id, email, password, user_type) values('6', '6', '3', 'BARTENDER')
+insert into Sys_User(id, email, password, user_type) values('7', '7', '3', 'BARTENDER')
+insert into Sys_User(id, email, password, user_type) values('8', '8', '3', 'WAITER')
+insert into Sys_User(id, email, password, user_type) values('9', '9', '3', 'WAITER')
+insert into Sys_User(id, email, password, user_type) values('10', '10', '3', 'WAITER')
+insert into Sys_User(id, email, password, user_type) values('11', '11', '3', 'GUEST')
+insert into Sys_User(id, email, password, user_type) values('12', '12', '3', 'GUEST')
+insert into Sys_User(id, email, password, user_type) values('13', '13', '3', 'GUEST')
+insert into Sys_User(id, email, password, user_type) values('14', '14', '3', 'GUEST')
+
+
+
+insert into Restaurant(id, name, description, category) values('1', 'Banjalucki', 'rostilj', 'domaca kuhinja')
+insert into Restaurant(id, name, description, category) values('2', 'Burek ispoda saca', 'dobar burek', 'domaca kuhinja')
+insert into Restaurant(id, name, description, category) values('3', 'Stapic', 'kinezi', 'kineski')
+
+
+insert into Restaurant_Manager(id, restaurant_id, user_id) values ('1','1','1')
+insert into Offerer(id,user_id) values('1','2')
+insert into System_Manager(id, user_id) values('1','3')
+
+insert into Cook (id, cook_type, shoe_size, suit_size ,restaurant_id, user_id) values('1','SALAD','0','0','1','4')
+insert into Cook (id, cook_type, shoe_size, suit_size ,restaurant_id, user_id) values('2','SALAD','0','0','1','5')
+
+insert into Bartender(id, restaurant_id, user_id,shoe_size, suit_size) values('1','1','6','0','0')
+insert into Bartender(id, restaurant_id, user_id,shoe_size, suit_size) values('2','1','7','0','0')
+
+insert into Waiter(id, restaurant_id, user_id, shoe_size, suit_size) values('1','1','8','12','122')
+insert into Waiter(id, restaurant_id, user_id, shoe_size, suit_size) values('2','1','9','12','122')
+insert into Waiter(id, restaurant_id, user_id, shoe_size, suit_size) values('3','1','10','12','122')
+
+insert into Guest(id, visits, user_id) values('1','1','11')
+insert into Guest(id, visits, user_id) values('2','1','12')
+insert into Guest(id, visits, user_id) values('3','1','13')
+insert into Guest(id, visits, user_id) values('4','1','14')
+
+
+
+insert into Menu(id,restaurant_id) values ('1','1')
+
+insert into Active_User(id,email,user_type,user_id) values ('1','1','RESTAURANTMANAGER','1')
+insert into Active_User(id,email,user_type,user_id) values ('2','2','OFFERER','2')
+
+
+insert into Tender(id, description, expired, end_date, start_date, restaurant_id) values ('1','To je taj bre', FALSE, '2018-02-21','2015-02-02','1')
+insert into Tender(id, description, expired, end_date, start_date, restaurant_id) values ('2','To je taj bre', FALSE, '2017-01-21','2016-06-06','2')
+insert into Tender(id, description, expired, end_date, start_date, restaurant_id) values ('3','To je taj bre', FALSE, '2019-11-21','2017-01-02','1')
+insert into Tender(id, description, expired, end_date, start_date, restaurant_id) values ('4','To je taj bre', FALSE, '2020-02-21','2015-06-02','2')
+insert into Tender(id, description, expired, end_date, start_date, restaurant_id) values ('5','To je taj bre', FALSE, '2018-03-21','2014-01-02','3')
+
+
+insert into Offerings(id, delivery_date, description, price, offerer_id, tender_id) values('1','2017-02-28','NekiTekst1', '120', '1', '3')
+insert into Offerings(id, delivery_date, description, price, offerer_id, tender_id) values('2','2018-02-28','NekiTekst2', '120', '1', '3')
+insert into Offerings(id, delivery_date, description, price, offerer_id, tender_id) values('3','2019-02-28','NekiTekst3', '120', '1', '1')
+insert into Offerings(id, delivery_date, description, price, offerer_id, tender_id) values('4','2014-02-28','NekiTekst4', '120', '1', '1')
+insert into Offerings(id, delivery_date, description, price, offerer_id, tender_id) values('5','2012-02-28','NekiTekst5', '120', '1', '1')
+insert into Offerings(id, delivery_date, description, price, offerer_id, tender_id) values('6','2014-02-28','NekiTekst6', '120', '1', '3')
+insert into Offerings(id, delivery_date, description, price, offerer_id, tender_id) values('7','2015-02-28','NekiTekst7', '120', '1', '3')
+
+
+
+insert into Segment(id,name,smoking,restaurant_id) values('1','Kul',FALSE,'1')
+
+insert into Guest_Table(id, tag, x_coord,seat_count, y_coord, restaurant_id, segment_id) values('1','A','2','2','3','1','1')
+
+insert into Reservation(id, reservation_date_time, guest_id, restaurant_id) values ('1','2010-01-01','1','1')
+
+insert into Reservation_Tables(reservation_id,tables_id) values('1','1')
+
+
+insert into Restaurant_Recension(id, grade, guest_id, restaurant_id) values ('1','4','1','1')
+insert into Restaurant_Recension(id, grade, guest_id, restaurant_id) values ('2','6','1','1')
+insert into Restaurant_Recension(id, grade, guest_id, restaurant_id) values ('3','1','1','1')
+insert into Restaurant_Recension(id, grade, guest_id, restaurant_id) values ('4','9','1','1')
+
+
+
+--insert into Guest_Order(id, order_date , restaurant_id, waiter_id) values('1','2014-02-28','1','1')
+--insert into Guest_Order(id, order_date , restaurant_id, waiter_id) values('2','2014-02-28','1','1')
+--insert into Guest_Order(id, order_date , restaurant_id, waiter_id) values('3','2014-02-28','1','1')
+--insert into Guest_Order(id, order_date ,restaurant_id, waiter_id) values('4','2014-02-28','1','1')
+
+--insert into Food(id, food_type, grade, name, price, quantity) values('1','SALAD', '4', 'Pica', '100','5')
+--insert into Food(id, food_type, grade, name, price, quantity) values('2','SALAD', '4', 'Pica', '10','5')
+--insert into Food(id, food_type, grade, name, price, quantity) values('3','SALAD', '4', 'Pica', '120','5')
+--insert into Food(id, food_type, grade, name, price, quantity) values('4','SALAD', '4', 'Pica', '140','5')
+
+--insert into Drink(id, grade, name, price, quantity) values('1','5','Sok','10','0')
+--insert into Drink(id, grade, name, price, quantity) values('2','5','Sok','10','0')
+--insert into Drink(id, grade, name, price, quantity) values('3','5','Sok','10','0')
+--insert into Drink(id, grade, name, price, quantity) values('4','5','Sok','10','0')
+
+
+insert into Drink(id, description, grade, name, price, quantity) values ('1', 'tamno', '5', 'Lav', '125', '0')
+insert into Drink(id, description, grade, name, price, quantity) values ('2', 'psenicno', '5', 'Jelen', '170', '0')
+insert into Drink(id, description, grade, name, price, quantity) values ('3', 'svetlo', '5', 'Vino', '150', '0')
+
+insert into Food(id, description, grade, name, price, quantity, food_type) values('1', 'ljuta kobasica', '4', 'Kobasica', '150', '0', 'FRIEDMEAL')
+insert into Food(id, description, grade, name, price, quantity, food_type) values('2', 'fino zacinjena', '4', 'Karadjordjeva', '250', '0', 'FRIEDMEAL')
+insert into Food(id, description, grade, name, price, quantity, food_type) values('3', 'govedji', '5', 'Gulas', '200', '0', 'COOKEDMEAL')
+insert into Food(id, description, grade, name, price, quantity, food_type) values('4', 'malo necega', '5', 'Ruska salata', '150', '0', 'SALAD')
+
+insert into Menu_Foods(menu_id, foods_id) values ('1', '1')
+insert into Menu_Foods(menu_id, foods_id) values ('1', '2')
+insert into Menu_Foods(menu_id, foods_id) values ('1', '3')
+insert into Menu_Foods(menu_id, foods_id) values ('1', '4')
+
+insert into Menu_Drinks(menu_id, drinks_id) values ('1', '1')
+insert into Menu_Drinks(menu_id, drinks_id) values ('1', '2')
+insert into Menu_Drinks(menu_id, drinks_id) values ('1', '3')
+
+
+
+insert into Guest_Order(id,order_date, prepared, restaurant_id, waiter_id)values('1','2018-02-28', FALSE, '1', '1')
+insert into Guest_Order(id,order_date,  prepared, restaurant_id, waiter_id)values('2','2016-02-28', FALSE, '1', '1')
+
+insert into Drink_Order(id, prepared, quantity, drink_id) values('1', FALSE, '2', '1')
+insert into Drink_Order(id, prepared, quantity, drink_id) values('2', FALSE, '2', '3')
+insert into Drink_Order(id, prepared, quantity, drink_id) values('3', FALSE, '4', '1')
+insert into Drink_Order(id, prepared, quantity, drink_id) values('4', FALSE, '4', '3')
+
+insert into Food_Order(id, prepared, quantity, started, food_id) values('1', FALSE, '2', FALSE, '3')
+insert into Food_Order(id, prepared, quantity, started, food_id) values('2', FALSE, '2', FALSE, '1')
+insert into Food_Order(id, prepared, quantity, started, food_id) values('3', FALSE, '4', FALSE, '3')
+insert into Food_Order(id, prepared, quantity, started, food_id) values('4', FALSE, '4', FALSE, '1')
+
+insert into Guest_Order_Drink_Orders(guest_order_id, drink_orders_id) values ('1', '1')
+insert into Guest_Order_Drink_Orders(guest_order_id, drink_orders_id) values ('1', '2')
+insert into Guest_Order_Drink_Orders(guest_order_id, drink_orders_id) values ('2', '3')
+insert into Guest_Order_Drink_Orders(guest_order_id, drink_orders_id) values ('2', '4')
+
+insert into Guest_Order_Food_Orders(guest_order_id, food_orders_id) values ('1', '1')
+insert into Guest_Order_Food_Orders(guest_order_id, food_orders_id) values ('1', '2')
+insert into Guest_Order_Food_Orders(guest_order_id, food_orders_id) values ('2', '3')
+insert into Guest_Order_Food_Orders(guest_order_id, food_orders_id) values ('2', '4')
+
+
+insert into Invite(id,accepted, friend_id, guest_id, reservation_id) values('1',TRUE, '2','1','1')
+insert into Invite(id,accepted, friend_id, guest_id, reservation_id) values('2',TRUE, '3','1','1')
+insert into Invite(id,accepted, friend_id, guest_id, reservation_id) values('3',TRUE,'4','1','1')
+
+
+

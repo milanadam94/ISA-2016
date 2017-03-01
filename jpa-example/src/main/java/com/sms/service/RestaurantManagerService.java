@@ -9,6 +9,7 @@ import com.sms.beans.Food;
 import com.sms.beans.FoodRecension;
 import com.sms.beans.GuestOrder;
 import com.sms.beans.GuestTable;
+import com.sms.beans.Invite;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
@@ -21,6 +22,7 @@ import com.sms.beans.Tender;
 import com.sms.beans.Waiter;
 import com.sms.beans.WaiterRecension;
 import com.sms.beans.WorkerSchedule;
+import com.sms.utilities.GuestsInDate;
 
 public interface RestaurantManagerService {
 
@@ -85,4 +87,6 @@ public interface RestaurantManagerService {
 	public List<WaiterRecension> getWaiterRecension(String managerID, String waiterName);
 
 	public List<GuestOrder> getAllOrders(String managerEmail);
+
+	public List<GuestsInDate> getAllInvites(String managerEmail);
 }

@@ -31,6 +31,8 @@ restManager.controller('reportControler', [ '$scope', 'reportService', function(
 	$scope.waiterPeriodList = [];
 	$scope.restoranPeriodList = [];
 	
+	$scope.dnevnaPosecenost = [];
+	
 	$scope.period = {
 			startDate: "",
 			endDate: ""
@@ -84,8 +86,10 @@ restManager.controller('reportControler', [ '$scope', 'reportService', function(
 			
 			$scope.findWaiter();
 			
-		}else if($scope.choosenOption == "Posecenosti"){
+		}else if($scope.choosenOption == "Posecenost"){
 			setShows(false,false,false,true,false,false);
+			
+			$scope.getAllInvites();
 			
 		}else if($scope.choosenOption == "Prihodu"){
 			setShows(false,false,false,false,true,false);
@@ -278,6 +282,22 @@ restManager.controller('reportControler', [ '$scope', 'reportService', function(
 	
 	
 	
+	$scope.getAllInvites = function(){
+		
+		reportService.getAllInvites().then(
+				function(pomocnaKlasa){
+					
+					if(pomocnaKlasa.data == null || pomocnaKlasa.data.length == 0){
+						toastr.info("Nije pronadjeno!");
+					}
+					
+					$scope.pomocnaKlasa = pomocnaKlasa.data;
+				}
+		);
+		
+		
+	}
+	
 	
 }]);
 
@@ -323,6 +343,16 @@ restManager.service('reportService', ['$window', '$http', function($window, $htt
 		});
 		
 	}
+	
+	
+	this.getAllInvites = function(){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getAllInvites/1" //========================================== dodati user email
+		});
+		
+	}
+	
 	
 }]);
 

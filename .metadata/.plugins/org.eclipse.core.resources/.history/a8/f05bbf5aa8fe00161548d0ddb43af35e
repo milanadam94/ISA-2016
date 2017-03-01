@@ -1,0 +1,13 @@
+package com.sms.utilities;
+
+import java.util.Date;
+
+public class GuestsInDate {
+
+	private Date date;
+	private int numberOfGuests;
+	
+	
+	
+	
+}

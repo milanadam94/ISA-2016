@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder.In;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
@@ -21,6 +23,7 @@ import com.sms.beans.FoodRecension;
 import com.sms.beans.FoodType;
 import com.sms.beans.GuestOrder;
 import com.sms.beans.GuestTable;
+import com.sms.beans.Invite;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerer;
 import com.sms.beans.Offerings;
@@ -45,6 +48,7 @@ import com.sms.dao.FoodDao;
 import com.sms.dao.FoodRecensionDao;
 import com.sms.dao.GuestOrderDao;
 import com.sms.dao.GuestTableDao;
+import com.sms.dao.InviteDao;
 import com.sms.dao.MenuDao;
 import com.sms.dao.OffererDao;
 import com.sms.dao.OfferingsDao;
@@ -59,6 +63,7 @@ import com.sms.dao.UserDao;
 import com.sms.dao.WaiterDao;
 import com.sms.dao.WaiterRecensionDao;
 import com.sms.dao.WorkerScheduleDao;
+import com.sms.utilities.GuestsInDate;
 import com.sms.utilities.Message;
 
 @Service
@@ -129,6 +134,9 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	
 	@Autowired
 	private WaiterRecensionDao waiterRecensionDao;
+	
+	@Autowired
+	private InviteDao inviteDao;
 	
 	@Autowired
 	private GuestOrderDao guestOrderDao;
@@ -880,6 +888,133 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		}
 			
 		return guestOrderDao.findByRestaurant(restaurant);
+	}
+
+	@Override
+	public List<GuestsInDate> getAllInvites(String managerEmail) {
+		// TODO Auto-generated method stub
+		
+		Restaurant restoran = getRestaurant(managerEmail);
+		
+		if(restoran == null){
+			return null;
+		}
+		
+		List<Reservation> reservations = reservationDao.findByRestaurantId(restoran.getId());
+		List<GuestsInDate> guestsInDate = new ArrayList<GuestsInDate>();
+		boolean flag = true;
+
+		for(Reservation reservation : reservations){
+			List<Invite> invites = inviteDao.findByReservation(reservation);
+			
+		
+			for(Invite invite : invites){
+				
+		
+				if(invite.getAccepted()){
+					flag = true;
+					
+					for(GuestsInDate gid : guestsInDate){
+						
+						
+						SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						Date date = null;
+						try
+				        {
+				            date = simpleDateFormat.parse(reservation.getReservationDateTime().split("T")[0]);
+				        }
+				        catch (ParseException ex)
+				        {
+				            System.out.println("Exception "+ex);
+				        }
+						
+						
+						if(gid.getGuestDate().compareTo(date) == 0){
+							gid.setNumberOfGuests(gid.getNumberOfGuests() + 1);
+							
+							
+							flag = false;
+							break;
+						}
+						
+					}
+					
+					if(flag){
+						
+						SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						Date date = null;
+						try
+				        {
+				            date = simpleDateFormat.parse(reservation.getReservationDateTime().split("T")[0]);
+				        }
+				        catch (ParseException ex)
+				        {
+				            System.out.println("Exception "+ex);
+				        }
+				       			
+						guestsInDate.add(new GuestsInDate(date,2));
+					}else{
+						// KADA POSTOJI DODATI 1
+						
+						
+						
+					}
+					
+				}
+				
+				
+			}
+			
+			if(invites == null || invites.isEmpty()){
+				
+				flag = true;
+				for(GuestsInDate gid : guestsInDate){
+					
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					Date date = null;
+					try
+			        {
+			            date = simpleDateFormat.parse(reservation.getReservationDateTime().split("T")[0]);
+			        }
+			        catch (ParseException ex)
+			        {
+			            System.out.println("Exception "+ex);
+			        }
+			        
+					
+					if(gid.getGuestDate().compareTo(date) == 0){
+						gid.setNumberOfGuests(gid.getNumberOfGuests() + 1);
+						flag = false;
+						break;
+					}
+					
+				}
+				
+				if(flag){
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					Date date = null;
+					try
+			        {
+			            date = simpleDateFormat.parse(reservation.getReservationDateTime().split("T")[0]);
+			        }
+			        catch (ParseException ex)
+			        {
+			            System.out.println("Exception "+ex);
+			        }
+				  			
+					guestsInDate.add(new GuestsInDate(date,1));
+					
+				}
+				
+				
+			}
+			
+			
+		}
+		
+		
+		
+		return guestsInDate;
 	}
 	
 	
