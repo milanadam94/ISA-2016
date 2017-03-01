@@ -76,6 +76,28 @@ public class GuestOrder implements Serializable {
 		this.prepared = prepared;
 	}
 
+	public Boolean getDrinkOrdersPrepared(){
+		for(DrinkOrder order : drinkOrders){
+			if(order.getPrepared()){
+				continue;
+			}else{
+				return false;
+			}
+		}	
+		return true;
+	}
+	
+	public Boolean getFoodOrdersPrepared(){
+		for(FoodOrder order : foodOrders){
+			if(order.getPrepared()){
+				continue;
+			}else{
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public Integer getId() {
 		return id;
 	}

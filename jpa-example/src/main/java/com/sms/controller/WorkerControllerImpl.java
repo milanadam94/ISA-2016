@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sms.beans.Bartender;
 import com.sms.beans.Cook;
 import com.sms.beans.Drink;
+import com.sms.beans.DrinkOrder;
 import com.sms.beans.Food;
 import com.sms.beans.GuestOrder;
 import com.sms.beans.Waiter;
@@ -113,6 +114,17 @@ public class WorkerControllerImpl{
 	@ResponseBody
 	public String saveFirstLogin(@RequestBody Bartender bartender){
 		return workerService.saveFirstLogin(bartender);
+	}
+	
+	@GetMapping(path = "/bartender/getDrinkOrders/{userId}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<DrinkOrder> getDrinkOrders(@PathVariable(value = "userId") Integer userId){
+		return workerService.getDrinkOrders(userId);
+	}
+	@PostMapping(path = "/bartender/setDrinkOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void setDrinkOrderPrepared(@RequestBody DrinkOrder drinkOrder){
+		workerService.setDrinkOrderPrepared(drinkOrder);
 	}
 	
 	//kuvari

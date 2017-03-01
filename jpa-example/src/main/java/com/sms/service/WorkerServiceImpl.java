@@ -1,5 +1,6 @@
 package com.sms.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import com.sms.beans.Food;
 import com.sms.beans.FoodOrder;
 import com.sms.beans.GuestOrder;
 import com.sms.beans.Menu;
+import com.sms.beans.Restaurant;
 import com.sms.beans.SysUser;
 import com.sms.beans.Waiter;
 import com.sms.dao.BartenderDao;
@@ -174,7 +176,49 @@ public class WorkerServiceImpl implements WorkerService	{
 		
 		return Message.ERRORFREE;
 	}	
-
+	
+	@Override
+	public List<DrinkOrder> getDrinkOrders(Integer userId) {
+		Bartender bartender = bartenderDao.findByUserId(userId);
+		Restaurant restaurant = bartender.getRestaurant();
+		List<GuestOrder> orders = guestOrderDao.findByRestaurant(restaurant);
+		List<DrinkOrder> drinks = new ArrayList<DrinkOrder>();
+		for(GuestOrder order : orders){
+			for(DrinkOrder drink : order.getDrinkOrders()){
+				if(!drink.getPrepared()){
+					drinks.add(drink);
+				}
+			}
+		}
+		return drinks;
+	}
+	
+	@Override
+	public void setDrinkOrderPrepared(DrinkOrder drinkOrder) {
+		List<DrinkOrder> drinks = drinkOrderDao.findAll();
+		for(DrinkOrder drink : drinks){
+			if(drink.getId().equals(drinkOrder.getId())){
+				drink.setPrepared(true);
+				drinkOrderDao.save(drink);
+				break;
+			}
+			
+		}
+		List<GuestOrder> orders = guestOrderDao.findAll();
+		for(GuestOrder order : orders){
+			List<DrinkOrder> drinkOrders = order.getDrinkOrders();
+			for(DrinkOrder drinkk : drinkOrders){
+				if(drinkk.getId().equals(drinkOrder.getId())){
+					if(order.getDrinkOrdersPrepared() && order.getDrinkOrdersPrepared()){
+						order.setPrepared(true);
+						guestOrderDao.save(order);
+						break;
+					}
+				}
+			}
+		}
+	}
+	
 	@Override
 	public Cook getCookByUserId(Integer userId) {
 		SysUser user = userDao.findById(userId);
