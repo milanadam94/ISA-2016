@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Pozivi prijatelja</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- TOASTR -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></link>
+
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
+
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<!-- ANGULAR SCRIPT -->
+<script src="InvitePage.js"></script>
+
+<style>
+
+.small-panel {
+	max-height: 150px;
+	overflow-y: scroll;
+	min-height: 150px;
+}
+
+
+input[type="number"] {
+   width:70px;
+}
+
+</style>
+
+</head>
+<body ng-app="app"  ng-controller="invitePageController">
+
+<div class="container-fluid">
+	<div class="jumbotron">
+		<h1>Pozivi prijatelja</h1>
+		<button type="submit" class="btn btn-primary pull-right" ng-click="toGuestPage()">Na stranicu gosta</button>
+	</div>
+	
+	<div>
+		<h1 ng-if="invites.length == 0" class="large text-center" style="color : red"><u>Nemate poziva prijatelja </u> </h1>
+		<div ng-repeat="i in invites">
+			<div ng-if="i.invite.accepted == false">
+			<div class="row">
+				<div class="col-md-6">
+					
+						<h4><b>Pozvao/la te: </b>{{i.invite.guest.user.name + ' ' + i.invite.guest.user.lastName}}</h4>
+						<h4><b>Restoran: </b>{{i.invite.reservation.restaurant.name}}</h4>
+						<h4><b>Datum i vreme: </b>{{i.invite.reservation.reservationDateTime}}</h4>
+						<h4><b>U trajanju od: </b>{{i.invite.reservation.duration}} <b> casova.</b></h4>
+						<hr size="10">
+						<button type="button" class="btn btn-primary" ng-click="accept(i)">Potvrdi</button>
+						<button type="button" class="btn btn-danger pull-right" ng-click="decline(i)">Otkazi</button>
+		 		</div>
+		 		<div class="col-md-6">
+		 			<h4><b>Porucite hranu i pice:</b></h4>
+		 		 <div class="row">
+		 		   <div class="col-md-6">
+					<div class="panel panel-primary small-panel">
+			  			<div class="panel-heading">Hrana</div>
+			  				<div class="panel-body" >
+								<ul class="list-group">
+									<li style="height: 60px" class="list-group-item" ng-repeat="food in i.menu.foods">
+										{{food.name}}
+										<input id="{{'food'+food.id}}" type="number" min="0" max="5" class="form-control pull-right">
+									</li>
+								</ul>
+							</div>
+						</div>
+						</div>
+						<div class="col-md-6">
+						<div class="panel panel-primary small-panel">
+			  			<div class="panel-heading">Pice</div>
+			  				<div class="panel-body" >
+								<ul class="list-group">
+									<li style="height: 60px" class="list-group-item" ng-repeat="drink in i.menu.drinks" >
+										{{drink.name}}
+										<input id="{{'drink' + drink.id}}" type="number" min="0" max="5" class="form-control pull-right">
+									</li>
+								</ul>
+							</div>
+						</div>
+						</div>
+						<div class="checkbox">
+						  <label class="pull-right"><input  type="checkbox" ng-model="prepared">Da bude spremno u vreme dolaska?</label>
+						</div>
+						
+		 		</div>
+		 		</div>
+		 		</div>
+		 		<hr style="height:1px;border:none;color:#333;background-color:#333;" />
+		 	</div>
+	 	</div>
+	</div>
+	
+</div>
+
+
+
+
+
+</body>
+</html>

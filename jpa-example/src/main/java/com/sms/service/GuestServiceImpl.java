@@ -1,14 +1,24 @@
 package com.sms.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import com.sms.beans.Friendship;
 import com.sms.beans.Guest;
+import com.sms.beans.History;
 import com.sms.beans.Invite;
 import com.sms.beans.Reservation;
 import com.sms.dao.FriendshipDao;
@@ -35,6 +45,9 @@ public class GuestServiceImpl implements GuestService {
 	
 	@Autowired
 	private InviteDao inviteDao;
+	
+	@Autowired
+	private MailSender mailSender;
 	
 	@Override
 	public Guest getGuestByUserId(Integer userId) {
@@ -176,14 +189,38 @@ public class GuestServiceImpl implements GuestService {
 			return new ArrayList<Reservation>();
 		Guest guest = guestDao.findByUserId(userId);
 		
-		return reservationDao.findByGuest(guest);
+		List<Reservation> reservations = reservationDao.findByGuest(guest);
+		List<Reservation> reservationsToReturn = new ArrayList<Reservation>();
+		Date now = new Date();
+		for(Reservation reservation : reservations) {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = null;
+			try
+	        {
+	            date = simpleDateFormat.parse(reservation.getReservationDateTime().split("T")[0]);
+	           if(now.before(date)) {
+	            	reservationsToReturn.add(reservation);
+	            }
+	        }
+	        catch (ParseException ex)
+	        {
+	        	System.out.println("Exception "+ex);
+	        }
+			
+		}
+		
+		return reservationsToReturn;
 	}
 
 	@Override
 	public String cancelReservation(Reservation reservation) {
-		if(reservation == null || reservation.getId() == null)
+		if(reservation == null || reservation.getId() == null) 
 			return Message.REQUESTERROR;
 		
+		List<Invite> invites = inviteDao.findByReservation(reservation);
+		for(Invite invite : invites) {
+			inviteDao.delete(invite);
+		}
 		reservationDao.delete(reservation);
 		
 		return Message.ERRORFREE;
@@ -206,11 +243,139 @@ public class GuestServiceImpl implements GuestService {
 			|| invite.getReservation() == null || invite.getReservation().getId() == null)
 			return Message.REQUESTERROR;
 		
+		inviteDao.save(invite);
+		
+		
+		sendEmail(invite.getFriend().getUser().getEmail(), invite.getFriend().getUser().getId());
+		
+		return Message.ERRORFREE;
+		
+	}
+	
+	private void sendEmail(String email, Integer userId) {
+		
+		final SimpleMailMessage message = new SimpleMailMessage();
+		message.setSubject("Poziv od strane prijatelja");
+		message.setFrom("isasms2016@gmail.com");
+		message.setTo(email);
+		message.setText("http://localhost:8080/guest/invite/" + userId);
+
+		try {
+			mailSender.send(message);
+		} catch (MailException e) {
+			System.out.println(e.toString());
+		}
+		
+	}
+
+	@Override
+	public String acceptInvite(Invite invite) {
+		if(invite == null || invite.getId() == null)
+			return Message.REQUESTERROR;
+		
+		
+		invite.setAccepted(true);
 		
 		inviteDao.save(invite);
 		
 		return Message.ERRORFREE;
 		
+	}
+
+	@Override
+	public String declineInvite(Invite invite) {
+		if(invite == null || invite.getId() == null)
+			return Message.REQUESTERROR;
+		
+		inviteDao.delete(invite);
+		
+		return Message.ERRORFREE;
+		
+	}
+
+	@Override
+	public List<Invite> getFriendInvites(Integer userId) {
+		if(userId == null)
+			return new ArrayList<Invite>();
+		
+		Guest guest = guestDao.findByUserId(userId);
+		
+		return inviteDao.findByFriend(guest);
+	}
+
+	@Override
+	public List<History> getGuestHistory(Integer userId) {
+		if(userId == null){
+			System.out.println("rsaras");
+			return new ArrayList<History>();
+		}
+		
+		Guest guest = guestDao.findByUserId(userId);
+		List<Invite> guestInvited = inviteDao.findByFriend(guest);
+		List<Invite> guestInvites = inviteDao.findByGuest(guest);
+		List<History> histories = new ArrayList<History>();
+		
+		Map<Integer, List<Guest>> attendesMap = new HashMap<Integer, List<Guest>>();
+		
+		List<Reservation> guestReservations = reservationDao.findByGuest(guest);
+		for(Reservation reservation : guestReservations) {
+			attendesMap.put(reservation.getId(), new ArrayList<Guest>()); 
+		}
+		
+		for(Invite invite : guestInvites) {
+			if(invite.getAccepted()) {
+				attendesMap.get(invite.getReservation().getId()).add(invite.getFriend()); 
+			}
+		}
+		
+		List<Reservation> reservations = new ArrayList<Reservation>();
+		for(Invite invite : guestInvited) {
+			if(invite.getAccepted())
+				reservations.add(invite.getReservation());
+		}
+		
+		for(Reservation reservation : reservations) {
+			attendesMap.put(reservation.getId(), new ArrayList<Guest>()); 
+			List<Invite> invites = inviteDao.findByReservation(reservation);
+			attendesMap.get(reservation.getId()).add(reservation.getGuest()); 
+			for(Invite invite : invites) {
+				
+				if(!invite.getFriend().getId().equals(guest.getId()))
+					attendesMap.get(invite.getReservation().getId()).add(invite.getFriend()); 
+			}
+			
+		}
+		
+		Date now = new Date();
+		
+		@SuppressWarnings("rawtypes")
+		Iterator it = attendesMap.entrySet().iterator();
+	    while (it.hasNext()) {
+	        @SuppressWarnings("rawtypes")
+			Map.Entry pair = (Map.Entry)it.next();
+	        
+	        Reservation reservation = reservationDao.findById((Integer) pair.getKey());
+	        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = null;
+			try
+	        {
+	           date = simpleDateFormat.parse(reservation.getReservationDateTime().split("T")[0]);
+	           if(now.after(date)) {
+	        	   @SuppressWarnings("unchecked")
+	   				List<Guest> values = (List<Guest>) pair.getValue();
+	   	        	histories.add(new History(reservation.getRestaurant(), reservation.getReservationDateTime(), values));
+	            }
+	        }
+	        catch (ParseException ex)
+	        {
+	        	System.out.println("Exception "+ex);
+	        }
+	      
+	        it.remove(); 
+	    }
+		
+		
+		return histories;
 	}
 
 }

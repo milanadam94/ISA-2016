@@ -9,8 +9,20 @@ var app = angular
 			else
 			{
 				user = JSON.parse($.cookie('user'));
-				
-				if(user.userType != "GUEST") {
+				if(user.userType == "GUEST") {
+					$rootScope.histories = [];
+					
+					$http({
+						method : 'POST',
+						url : "../guest/getGuestHistory/" + user.id,
+					}).then(function success(response) {
+							$rootScope.histories = response.data;
+					}, function error(response) {
+						alert(response)
+					});
+					console.log($rootScope.histories)
+				}
+				else if(user.userType != "GUEST") {
 					alert("DALJE")
 				}
 			}
@@ -67,7 +79,6 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 	$scope.reservationDuration = undefined;
 	$scope.tablesReservedThen = [];
 	$scope.reserved = []
-	$scope.menu = undefined;
 	$scope.prepared = false;
 	
 	$scope.hideCanvas = function() {
@@ -80,32 +91,35 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 			toastr.warning("Potrebno je izabrati barem jedan sto.");
 			return;
 		}
-		console.log($scope.prepared)
 		var drinkOrders = [];
 		var foodOrders = [];
-		$scope.menu.drinks.forEach(function(drink) {
-			var val = angular.element('#drink' + drink.id).val();
-			if(val > 0) {
-				var drinkOrder = {"drink" : drink, "quantity" : val};
-				drinkOrders.push(drinkOrder);
+		if($scope.$parent.menu.drinks != undefined && $scope.$parent.menu.foods != undefined) {
+			$scope.$parent.menu.drinks.forEach(function(drink) {
+				var val = angular.element('#drink' + drink.id).val();
+				if(val > 0) {
+					var drinkOrder = {"drink" : drink, "quantity" : val};
+					drinkOrders.push(drinkOrder);
+				}
+			});
+			$scope.$parent.menu.foods.forEach(function(food) {
+				var val = angular.element('#food' + food.id).val();
+				console.log(val)
+				if(val > 0) {
+					var foodOrder = {"food" : food, "quantity" : val};
+					foodOrders.push(foodOrder);
+				}
+			});
+			
+			if(drinkOrders.length != 0 || foodOrders.length != 0) {
+				var guestOrder = {"prepared" : $scope.prepared, "foodOrders" : foodOrders, "drinkOrders" : drinkOrders, "restaurant" : $scope.$parent.selectedRestaurant}
+				restaurantsService.order(guestOrder).then(function(data){
+					console.log(data)
+				})
 			}
-		});
-		$scope.menu.foods.forEach(function(food) {
-			var val = angular.element('#food' + food.id).val();
-			console.log(val)
-			if(val > 0) {
-				var foodOrder = {"food" : food, "quantity" : val};
-				foodOrders.push(foodOrder);
-			}
-		});
-		console.log(drinkOrders)
-		console.log(foodOrders)
-		if(drinkOrders.length != 0 || foodOrders.length != 0) {
-			var guestOrder = {"prepared" : $scope.prepared, "foodOrders" : foodOrders, "drinkOrders" : drinkOrders, "restaurant" : $scope.$parent.selectedRestaurant}
-			restaurantsService.order(guestOrder).then(function(data){
-				console.log(data)
-			})
 		}
+		
+			
+		
 		d = new Date($scope.reservationDateTime);
 		date = d.toISOString();
 		restaurantsService.reserveTables($scope.$parent.selectedRestaurant, $scope.$parent.guest, date, $scope.reservationDuration, $scope.reserved).then(function(data){
@@ -142,11 +156,10 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
     	if(selectedDate.getDate() == now.getDate() && selectedDate.getMonth() == now.getMonth() && selectedDate.getFullYear() == now.getFullYear()) {
     		if(selectedMinutes - nowMinutes < 30) {
     			toastr.options.timeOut = 1500;
-    			toastr.error("Rezervacije se moze izvrsiti najkasnije 30 minuta ranije, a najvise mesec dana unapred.");
+    			toastr.error("Rezervacije se mogu izvrsiti najkasnije 30 minuta ranije, a najvise mesec dana unapred.");
     			return;
     		}
     	}
-    	//else if(selectedDate.getDate() > )
     	if(Math.round((selectedDate-now)/(1000*60*60*24)) > 30 || Math.round((selectedDate-now)/(1000*60*60*24)) < 0) {
     		toastr.options.timeOut = 1500;
 			toastr.error("Rezervacije se moze izvrsiti najkasnije 30 minuta ranije, a najvise mesec dana unapred.");
@@ -226,10 +239,8 @@ app.controller('restaurantsController', [ '$scope', 'restaurantsService',  funct
 		else {
 			$scope.$parent.showRestaurants = false;
 			$scope.$parent.showReservations = true;
-			
 			restaurantsService.getRestaurantMenu($scope.$parent.selectedRestaurant).then(function(data) {
-				$scope.menu = data;
-				console.log(data)
+				$scope.$parent.menu = data;
 			});
 			
 			restaurantsService.loadRestaurantTables($scope.$parent.selectedRestaurant.id).then(function(data) {
@@ -447,10 +458,10 @@ app.controller('profileController', [ '$scope', 'guestService', function($scope,
 } ]);
 
 angular.module('app').filter('invited', function() {
-	  return function (friend, invites) {
+	  return function (friend, invites, reservation) {
 		  check = true;
 		  invites.forEach(function(invite) {
-			  if(invite.friend.id == friend.id) {
+			  if(invite.friend.id == friend.id && reservation.id == invite.reservation.id) {
 				 check = false;
 			  }
 		  });
@@ -492,9 +503,14 @@ app.controller('reservationsController', [ '$scope', 'guestService', function($s
 			
 		}
 		
-		
 		guestService.cancelReservation($scope.reservation);
+		$scope.$parent.invites.forEach(function(invite){
+			if(invite.reservation.id == $scope.reservation.id)
+				$scope.$parent.invites.pop(invite);
+		})
 		$scope.$parent.guestReservations.pop($scope.reservation);
+		$scope.reservationId = null;
+		
 	}
 	
 	$scope.selectReservation = function (reservation) {
@@ -519,8 +535,9 @@ app.controller('reservationsController', [ '$scope', 'guestService', function($s
 	}
 	
 	$scope.inviteFriend = function(friend) {
-		guestService.inviteFriend($scope.$parent.guest, friend, $scope.reservation).then(function(data) {
-			console.log(data);
+		var invite = {"guest" : $scope.$parent.guest, "friend" : friend, "reservation" : $scope.reservation, "accepted" : false}
+		$scope.$parent.invites.push(invite);
+		guestService.inviteFriend(invite).then(function(data) {
 			guestService.loadGuestInvites().then(function(data) {
 				$scope.$parent.invites = data;
 			});
@@ -529,8 +546,8 @@ app.controller('reservationsController', [ '$scope', 'guestService', function($s
 
 } ]);
 
-app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestService', 
-		function($scope, restaurantsService, guestService) {
+app.controller('guestPageController', [ '$scope', '$window', 'restaurantsService', 'guestService', 
+		function($scope, $window, restaurantsService, guestService) {
 			
 			$scope.showRestaurants = false;
 			$scope.showFriends = false;
@@ -539,6 +556,11 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 			$scope.showGuestReservations = false;
 			$scope.selectedRestaurant = null;
 			$scope.invites = []
+			$scope.showHistory = true;
+			
+			$scope.toInvitePage = function() {
+				$window.location.href = "/InvitePage/InvitePage.html";
+			}
 			
 			$scope.loadRestaurants = function() {
 				restaurantsService.loadRestaurants().then(function(data) {
@@ -552,6 +574,7 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				$scope.showProfile = false;
 				$scope.showReservations = false;
 				$scope.showGuestReservations = false;
+				$scope.showHistory = false;
 			}
 
 			$scope.loadUserFriends = function() {
@@ -563,6 +586,7 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				$scope.showProfile = false;
 				$scope.showReservations = false;
 				$scope.showGuestReservations = false;
+				$scope.showHistory = false;
 			}
 			
 			$scope.userLogout = function() {
@@ -584,6 +608,7 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				$scope.showProfile = false;
 				$scope.showReservations = false;
 				$scope.showGuestReservations = true;
+				$scope.showHistory = false;
 			}
 			
 			$scope.loadUserProfile = function() {
@@ -596,14 +621,14 @@ app.controller('guestPageController', [ '$scope', 'restaurantsService', 'guestSe
 				$scope.showProfile = true;
 				$scope.showReservations = false;
 				$scope.showGuestReservations = false;
+				$scope.showHistory = false;
 			}
 
 		} ]);
 
 app.service('guestService', [ '$http', '$window', function($http, $window) {
 	
-	this.inviteFriend = function(guest, friend, reservation) {
-		var invite = {"guest" : guest, "friend" : friend, "reservation" : reservation, "accepted" : false}
+	this.inviteFriend = function(invite) {
 		return $http({
 			method : 'POST',
 			url : "../guest/inviteFriend",

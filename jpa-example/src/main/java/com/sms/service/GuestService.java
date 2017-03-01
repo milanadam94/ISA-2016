@@ -3,6 +3,7 @@ package com.sms.service;
 import java.util.List;
 
 import com.sms.beans.Guest;
+import com.sms.beans.History;
 import com.sms.beans.Invite;
 import com.sms.beans.Reservation;
 
@@ -29,5 +30,13 @@ public interface GuestService {
 	public List<Invite> loadGuestInvites(Integer userId);
 
 	public String inviteFriend(Invite invite);
+
+	public String acceptInvite(Invite invite);
+
+	public String declineInvite(Invite invite);
+
+	public List<Invite> getFriendInvites(Integer userId);
+
+	public List<History> getGuestHistory(Integer userId);
 
 }

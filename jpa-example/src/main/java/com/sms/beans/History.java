@@ -1,31 +1,49 @@
-/***********************************************************************
- * Module:  History.java
- * Author:  Sasa
- * Purpose: Defines the Class History
- ***********************************************************************/
 package com.sms.beans;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.List;
 
-public class History {
-	
-    private ArrayList<Visit> visits;
+public class History implements Serializable {
+
+	private static final long serialVersionUID = -463112696457862764L;
+
+	private Restaurant restaurant;
+
+	private String date;
+
+	private List<Guest> visitors;
 
 	public History() {
-		super();
 	}
 
-	public History(ArrayList<Visit> visits) {
-		super();
-		this.visits = visits;
+	public History(Restaurant restaurant, String date, List<Guest> visitors) {
+		this.restaurant = restaurant;
+		this.date = date;
+		this.visitors = visitors;
 	}
 
-	public ArrayList<Visit> getVisits() {
-		return visits;
+	public Restaurant getRestaurant() {
+		return restaurant;
 	}
 
-	public void setVisits(ArrayList<Visit> visits) {
-		this.visits = visits;
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
 	}
-    
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public List<Guest> getVisitors() {
+		return visitors;
+	}
+
+	public void setVisitors(List<Guest> visitors) {
+		this.visitors = visitors;
+	}
+
 }

@@ -16,5 +16,7 @@ public interface ReservationDao extends Repository<Reservation, Long>{
 	public List<Reservation> findByGuest(Guest guest);
 
 	public void delete(Reservation reservation);
+	
+	public Reservation findById(Integer reservationId);
 
 }

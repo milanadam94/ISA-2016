@@ -27,6 +27,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
 
 
+
 <!-- ANGULAR SCRIPT -->
 <script src="GuestPage.js"></script>
 
@@ -86,10 +87,30 @@ input[type="number"] {
 				<li><a href="#" ng-click="loadGuestReservations()">Rezervacije</a></li>
 			</ul>
 			 <ul class="nav navbar-nav navbar-right">
+		      <li><a href="#" ng-click="toInvitePage()"><span class="glyphicon glyphicon-envelope"></span> Pozivi prijatelja</a></li>
 		      <li><a href="#" ng-click="userLogout()"><span class="glyphicon glyphicon-log-out"></span> Izloguj se</a></li>
 		    </ul>
 		    </div>
 		</nav>
+		<div ng-show="showHistory">
+			<h1>Istorija poseta:</h1>
+			<table class="table table-bordered table-striped">
+			<thead>
+			      <tr>
+        			<th> Restoran</th>
+        			<th> Datum</th>
+			        <th> Prijatelji </th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr ng-repeat="history in histories">
+			        <td>{{history.restaurant.name}}</td>
+			        <td>{{history.date}}</td>
+			        <td> <span ng-repeat="friend in history.visitors">{{friend.user.name}}&nbsp;</span></td>
+			      </tr>
+			    </tbody>
+			</table>
+		</div>
 		<div ng-controller="restaurantsController">
 			<div ng-show="showRestaurants" >
 				
@@ -350,6 +371,7 @@ input[type="number"] {
 	        			<th>Stolovi </th>
 	        			<th>Datum i vreme </th>
 				        <th>Za broj casova</th>
+				        <th>Za broj osoba</th>
 				      </tr>
 				    </thead>
 				    <tbody>
@@ -358,6 +380,7 @@ input[type="number"] {
 				        <td> <span ng-repeat="table in reservation.tables">{{table.tag}}&nbsp;</span></td>
 				        <td>{{reservation.reservationDateTime}}</td>
 				        <td>{{reservation.duration}}</td>
+				       <td> <span ng-repeat="table in reservation.tables">{{table.seatCount}}&nbsp;</span></td>
 				      </tr>
 				    </tbody>
 				</table>
@@ -409,8 +432,8 @@ input[type="number"] {
 											<p><b>Ime i prezime:</b> {{friend.user.name + " " + friend.user.lastName}}</p>
 											<p><b>Mesto stanovanja:</b> {{friend.city}}</p>
 											<p><b>Adresa stanovanja:</b> {{friend.address}}</p>
-											  <div ng-show="friend | invited:$parent.invites"><button type="button" class="btn btn-primary pull-right" ng-click="inviteFriend(friend)">Pozovi prijatelja</button></div>
-											  <div ng-show="!(friend | invited:$parent.invites)"><button type="button" class="btn btn-default pull-right" disabled="true">Prijatelj pozvan</button></div>
+											  <div ng-show="friend | invited:$parent.invites:reservation"><button type="button" class="btn btn-primary pull-right" ng-click="inviteFriend(friend)">Pozovi prijatelja</button></div>
+											  <div ng-show="!(friend | invited:$parent.invites:reservation)"><button type="button" class="btn btn-default pull-right" disabled="true">Prijatelj pozvan</button></div>
 										</div>
 										</div>
 										<hr size="20">
