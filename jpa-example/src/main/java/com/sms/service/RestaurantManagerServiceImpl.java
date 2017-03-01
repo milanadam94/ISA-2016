@@ -19,6 +19,7 @@ import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.FoodRecension;
 import com.sms.beans.FoodType;
+import com.sms.beans.GuestOrder;
 import com.sms.beans.GuestTable;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerer;
@@ -42,6 +43,7 @@ import com.sms.dao.CookDao;
 import com.sms.dao.DrinkDao;
 import com.sms.dao.FoodDao;
 import com.sms.dao.FoodRecensionDao;
+import com.sms.dao.GuestOrderDao;
 import com.sms.dao.GuestTableDao;
 import com.sms.dao.MenuDao;
 import com.sms.dao.OffererDao;
@@ -127,6 +129,9 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	
 	@Autowired
 	private WaiterRecensionDao waiterRecensionDao;
+	
+	@Autowired
+	private GuestOrderDao guestOrderDao;
 	
 	@Override
 	public Restaurant getRestaurant(String restManagerID) {
@@ -863,6 +868,18 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 		
 		
 		return recensions;
+	}
+
+	@Override
+	public List<GuestOrder> getAllOrders(String managerEmail) {
+		// TODO Auto-generated method stub
+		Restaurant restaurant = getRestaurant(managerEmail);
+		
+		if(restaurant == null){
+			return null;
+		}
+			
+		return guestOrderDao.findByRestaurant(restaurant);
 	}
 	
 	

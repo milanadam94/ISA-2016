@@ -175,6 +175,80 @@
 		<!--  POSECENOST -->
 		
 		
+		<!-- PRIHODI PO KONOBARU  -->
+		<div ng-show="prihodiPoKonobaruShow">
+		<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label  class="control-label col-sm-2" for="startDate">Od: </label><div class="col-sm-5"><input type="date" ng-model="period.startDate" > </div> <br/>
+			</div>	
+			<div class="form-group">
+			<label  class="control-label col-sm-2" for="startDate">Do: </label><div class="col-sm-5"><input type="date" ng-model="period.endDate" > </div> <br/>
+			</div>	
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-info" ng-click="findByWaiterPeriod()">Trazi</button></div>
+			</div>		
+			
+			<div class="form-group">			
+			<div class="container">
+			<table class="table table-bordered">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Prihod</th>
+				</tr>
+				<tr ng-repeat="i in waiterPeriodList | orderBy:'i.prihod'">
+					<th>{{i.waiter.user.name}}</th>
+					<td>{{i.waiter.user.name}}</td>
+					<td>{{i.prihod}}</td>
+					</tr>
+			</table>
+			</div>
+			</div>
+			
+		</form>
+		
+		</div>
+		
+		
+		
+		<!--  PRIHOD RESTORANA -->
+		
+		
+		<div ng-show="prihodiShow">
+		<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label  class="control-label col-sm-2" for="startDate">Od: </label><div class="col-sm-5"><input type="date" ng-model="period.startDate" > </div> <br/>
+			</div>	
+			<div class="form-group">
+			<label  class="control-label col-sm-2" for="startDate">Do: </label><div class="col-sm-5"><input type="date" ng-model="period.endDate" > </div> <br/>
+			</div>	
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-info" ng-click="findInPeriod()">Trazi</button></div>
+			</div>		
+			
+			<div class="form-group">			
+			<div class="container">
+			<table class="table table-bordered">
+				<tr bgcolor="lightgrey">
+					<th>Datum</th>
+					<th>Prihod</th>
+				</tr>
+				<tr ng-repeat="i in restoranPeriodList | orderBy:'i.orderDate'">
+					<th>{{i.order.orderDate | date:'yyyy-MM-dd'}}</th>
+					<td>{{i.prihod}}</td>
+					</tr>
+			</table>
+			</div>
+			</div>
+			
+		</form>
+		
+		</div>
+		
+		
+		
 		
 	</div>
 </body>

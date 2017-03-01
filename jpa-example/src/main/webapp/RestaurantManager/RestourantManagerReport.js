@@ -28,6 +28,13 @@ restManager.controller('reportControler', [ '$scope', 'reportService', function(
 	$scope.foodName = "Unesite naziv jela";
 	$scope.ocenaRestorana = 0;
 	$scope.waiterName = "Unesite ime konobara";
+	$scope.waiterPeriodList = [];
+	$scope.restoranPeriodList = [];
+	
+	$scope.period = {
+			startDate: "",
+			endDate: ""
+	}
 	
 	setShows = function(ocenaRestoranaShow, jeluShow, konobaruShow, posecenostShow, prihodiShow, prihodiPoKonobaruShow) {
 		$scope.ocenaRestoranaShow = ocenaRestoranaShow;
@@ -85,7 +92,7 @@ restManager.controller('reportControler', [ '$scope', 'reportService', function(
 			
 		}else if($scope.choosenOption == "Prihodi Po Konobaru"){
 			setShows(false,false,false,false,false,true);
-			
+
 		}else{
 			setShows(false,false,false,false,false,false);
 		}
@@ -134,6 +141,142 @@ restManager.controller('reportControler', [ '$scope', 'reportService', function(
 	}
 	
 	
+	$scope.findByWaiterPeriod = function(){
+		if($scope.period.startDate == "" || $scope.period.endDate == ""){
+			toastr.info("Morate odabrati datum!");
+			return;
+		}
+		$scope.waiterPeriodList = [];
+		
+		reportService.getWaiters().then(
+				function(waiters){
+					
+					if(waiters.data == null){
+						toastr.info("Nisu pronadjeni konobari");
+						return;
+					}
+					
+					
+					reportService.getAllOrders().then(
+							function(orders){
+								
+								if(orders.data == null){
+									toastr.info("Nisu pronadjene porudzbine!");
+									return;
+								}
+								
+								waiters.data.forEach(function(waiter){
+									var mojPrihod = 0;
+									
+									orders.data.forEach(function(order){
+										
+										if(order.waiter.id == waiter.id && $scope.period.startDate < order.orderDate && $scope.period.endDate > order.orderDate){
+											
+											order.foodOrders.forEach(function(food){
+												mojPrihod += (food.quantity * food.food.price);
+											});
+											
+											order.drinkOrders.forEach(function(drink){
+												mojPrihod += (drink.quantity * drink.drink.price);
+											});
+										}
+										
+										
+									});
+									
+									pom = {
+										waiter: waiter,
+										prihod: mojPrihod
+									}
+									
+									$scope.waiterPeriodList.push(pom);
+									
+								});
+								
+							}							
+								
+					);	
+				}	
+		);	
+	}
+	
+	
+	
+	$scope.findInPeriod = function(){
+		
+		if($scope.period.startDate == "" || $scope.period.endDate == ""){
+			toastr.info("Morate odabrati datum!");
+			return;
+		}
+		$scope.restoranPeriodList = [];
+		
+		
+		reportService.getAllOrders().then(
+				function(orders){
+					
+					if(orders.data == null){
+						toastr.info("Nisu pronadjene porudzbine!");
+						return;
+					}
+					
+					
+					pomocnaListOrdera = [];
+			
+						orders.data.forEach(function(order){
+							var mojPrihod = 0;
+							if($scope.period.startDate < order.orderDate && $scope.period.endDate > order.orderDate){
+								
+								order.foodOrders.forEach(function(food){
+									mojPrihod += (food.quantity * food.food.price);
+								});
+								
+								order.drinkOrders.forEach(function(drink){
+									mojPrihod += (drink.quantity * drink.drink.price);
+								});
+								
+								pom = {
+										order: order,
+										prihod: mojPrihod
+								}
+								
+								pomocnaListOrdera.push(pom);
+								
+							}
+							
+							
+						});
+						
+					
+						
+						pomocnaListOrdera.forEach(function(ord1){
+							
+							var flag = true;
+							$scope.restoranPeriodList.forEach(function(ord2){
+								
+								if(ord1.order.orderDate == ord2.order.orderDate){
+									ord2.prihod += ord1.prihod;
+									flag = false;
+								}
+								
+								
+							});
+							
+							if(flag){
+								$scope.restoranPeriodList.push(ord1);
+							}
+							
+						});
+						
+					
+				}							
+					
+		);	
+		
+		
+		
+	}
+	
+	
 	
 	
 }]);
@@ -162,6 +305,23 @@ restManager.service('reportService', ['$window', '$http', function($window, $htt
 			method: 'GET',
 			url: "../restManager/getWaiterRecension/"+waiterName+"/1" //  //==================================== staviti email restoran menagera
 		});
+	}
+	
+	
+	this.getWaiters = function(){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getWaiters/1" //========================================== dodati user email
+		});
+		
+	}
+	
+	this.getAllOrders = function(){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getAllOrders/1" //========================================== dodati user email
+		});
+		
 	}
 	
 }]);
