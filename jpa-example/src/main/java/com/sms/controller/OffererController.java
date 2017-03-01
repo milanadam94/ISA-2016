@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sms.beans.Offerer;
 import com.sms.beans.Offerings;
+import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.service.OffererService;
 
@@ -26,8 +28,18 @@ public class OffererController {
 	private OffererService offererService;
 	
 	
+	@PostMapping(path="/saveOfferer", consumes=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void saveOfferer(@RequestBody SysUser newOfferer){
+		offererService.saveOfferer(newOfferer);
+	}
 	
 	
+	@GetMapping(path="/getOfferer/{offererEmail}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Offerer getOfferer(@PathVariable("offererEmail") String offererEmail){
+		return offererService.getOfferer(offererEmail);
+	}
 	
 	
 	@GetMapping(path="/getActiveTenders", produces=MediaType.APPLICATION_JSON_VALUE)

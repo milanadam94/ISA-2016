@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sms.beans.Offerer;
 import com.sms.beans.Offerings;
+import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 
 public interface OffererService {
@@ -19,4 +20,6 @@ public interface OffererService {
 	public void deleteOffering(Integer offeringID);
 
 	public String changeOfferings(Offerings offering);
+
+	public void saveOfferer(SysUser newOfferer);
 }

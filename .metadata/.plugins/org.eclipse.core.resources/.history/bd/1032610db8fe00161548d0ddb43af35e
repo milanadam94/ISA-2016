@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Ponudjac</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
+<!-- TOASTR -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></link>
+
+</head>
+<body ng-app="offererApp" ng-controller="offererControler">
+	
+	<nav id="myNavbar" class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="Offerer.html" class="navbar-brand">SmS</a>
+			</div>
+		<ul class="nav navbar-nav">
+			<li class="{{tenderActive}}"><a ng-click="tender()" > <span class="glyphicon glyphicon-th-list"> Tenderi</span></a></li>
+			<li class="{{poslaneActive}}"><a ng-click="sended()"><span class="glyphicon glyphicon-list-alt"> Porudzbine</span></a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="#" ng-click="account()"><span class="glyphicon glyphicon-user"> Profil</span> </a>
+			<li><a ng-click="logout()" ><span class="glyphicon glyphicon-log-out"> Izadji </span> </a>
+		</ul>
+		
+		</div>
+	</nav>
+	
+	
+	<div>
+		<!--  TENDERS  -->
+		<!--  ====================================================== -->
+		<div ng-show="tendersShow">
+		
+		<h3 class="text-center"><strong>Kreirajte Vasu Ponudu:</strong></h3> <br/><br/><br/>
+
+		<form class="form-horizontal">
+				
+				<div class="form-group">
+				<label class="control-label col-sm-4" >Cena:</label> <div class="col-sm-4"><input min=0 type="number" class="form-control" ng-model="newOfferings.price"></div>		
+				</div> <br/>
+				
+				<div class="form-group">
+				<label class="control-label col-sm-4"  >Dostavljen do: </label><div class="col-sm-4"><input type="date" class="form-control" ng-model="newOfferings.deliveryDate" ></div>
+				</div> <br/>
+				
+				<div class="form-group">
+				<label class="control-label col-sm-4" >Opis: </label><div class="col-sm-4"><textarea class="form-control" rows="7" cols="100"  ng-model="newOfferings.description" class="form-control" placeholder="Unesite opis..."></textarea></div>
+				</div>
+				
+				<br/><br/><br/>
+		
+		</form>
+		
+			<div ng-repeat="i in activeTenders | orderBy:'restaurant.name'">
+				<div class="form-group">
+				<h4 class="text-center" >{{i.restaurant.name}} ({{i.startDate | date: 'yyyy/MM/dd'}} - {{i.endDate | date: 'yyyy/MM/dd'}}) </h4><br/>
+				</div>
+				
+				<div class="form-group">
+				<h4 class="text-center">Opis: {{i.description}} </h4>
+				</div>
+				
+				<br/><br/>
+				<div class="form-group">
+				<div class="text-center">
+				<button type="submit" class="btn btn-success" ng-click="createNewOfferings( i.id )" >Posalji</button>
+				</div></div>
+				<br/><br/><br/><br/>
+				
+			</div> 
+			
+		</div>
+  		
+  		
+  		<!--  POSLATE PORuDZBINE  -->
+  		<div ng-show="sendedShow">
+
+			<form class="form-horizontal">
+			<div ng-repeat="i in myAllOfferings | orderBy:'tender.restourant.name'">
+				<div ng-if="i.tender.expired != 1 && i.tender.endDate > today">
+				
+				
+				<div class="form-group">
+				<h4 class="text-center">{{i.tender.restaurant.name}} ({{i.tender.startDate | date: 'yyyy/MM/dd'}} - {{i.tender.endDate | date: 'yyyy/MM/dd'}}) </h4><br/>
+				</div>
+				
+				<div class="form-group">
+				<h4 class="text-center">Opis: {{i.tender.description}} </h4><br/><br/>
+				</div>
+				
+				<div class="form-group">
+				<label class="control-label col-sm-4">Cena: </label><div class="col-sm-4"><input min=0 class="form-control" type="number" ng-model="i.price" value="{{i.price}}"></input> </div><br/>
+			    </div>
+			   
+			    <div class="form-group">
+				<label class="control-label col-sm-4">Dostavljeno do:</label> <div class="col-sm-4"><input class="form-control" type="date" value="{{i.deliveryDate | date: 'yyyy-MM-dd'}}" ng-model="i.deliveryDate" ></input></div><br/>
+				 </div>
+			 
+			 	<div class="form-group">
+				<label class="control-label col-sm-4">Opis: </label><div class="col-sm-4"><textarea class="form-control" rows="7" cols="100"  ng-model="i.description" placeholder="{{i.description}}"></textarea></div>
+				</div>
+				<br/>
+			
+			
+				<div class="form-group">
+				<div class="text-center">
+							<button type="submit" class="btn btn-warning" ng-click="changeOfferings( i.id )"  >Promeni</button>
+							<button type="submit" class="btn btn-danger" ng-click="deleteOfferings( i.id )">Izbrisi</button>
+				</div>
+				
+				</div>
+			
+				
+			 	
+			 	</div>
+		
+				
+				
+		
+				<div ng-if="i.tender.expired == 1 || i.tender.endDate < today">
+				
+				<div class="form-group">
+				<p class="text-center"><strong>{{i.tender.restaurant.name}} </strong> ({{i.tender.startDate | date: 'yyyy/MM/dd'}} - {{i.tender.endDate | date: 'yyyy/MM/dd'}})<br/>
+				 <strong>Opis: </strong> {{i.tender.description}} </p><br/>
+				</div>
+			
+				<div class="form-group">
+				<p class="text-center"> <strong>Cena: </strong>{{i.price}} <br/> 
+					<strong>Dostavljeno do:</strong> {{i.deliveryDate | date: 'yyyy-MM-dd'}} <br/> 
+					<strong> Opis: </strong> {{i.description}}</p>
+				</div>
+				
+				<div class="form-group" ng-if="i.isAccepted">
+				<p class="text-center"><strong> Status: </strong><font color="green">PRIHVACEN </font></p>				 
+				</div>
+				
+				<div class="form-group" ng-if="!i.isAccepted">
+				<p class="text-center"><strong> Status: </strong><font color="red">ODBIJEN </font></p>				 
+				</div>
+				
+				</div>
+				
+			<br/><br/><br/><br/>
+				
+		</div> 
+		</form>
+		</div>
+  		
+  				
+  				
+		<!--  PRIHVACENE PORUDZBINE -->
+		<!--  ================================ -->
+		<div ng-show="acceptedShow">
+			
+		
+		</div>
+		
+		
+		
+		<!--  PO SMENAMA -->
+		<!--  ================================ -->
+		<div  ng-show="accountShow">
+	
+		</div>
+		
+		
+		
+		
+		
+		
+		<!--  MENJANJE PROFILA -->
+		
+		
+		<div ng-show="showProfile">
+			<div ng-controller="profileController">
+			<div class="row">
+				<div class="col-md-4">
+					<img src="../Images/user.png" class="img-rounded" alt="Cinque Terre" width="200" height="200">
+				</div>
+				<div class="col-md-8">
+					<h4>E-mail: {{guest.user.email}}</h4>
+					<h4>Ime i prezime: {{guest.user.name + " " + guest.user.lastName}}</h4>
+					<h4>Mesto stanovanja: {{guest.city}}</h4>
+					<h4>Adresa stanovanja: {{guest.address}}</h4>
+					<h4>Broj poseta: {{guest.visits}}</h4>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal" ng-click="resetNewGuest()"> Izmeni svoj profil </button>
+						&nbsp;&nbsp;
+						<button type="submit" class="btn btn-primary" ng-click="openCredidentials()"> Izmeni svoje korisnicke podatke </button>
+					</div>
+				</div>
+	
+			</div>
+			<!-- Modal -->
+			<div id="editProfileModal" class="modal fade" role="dialog" >
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title">Izmena profila</h4>
+			      </div>
+			      <div class="modal-body">
+			      	<div class="form-group">
+						<label for="name" class="control-label"> Ime: </label>  
+						<input type = "text" class="form-control" id="name" ng-model="newGuest.user.name" placeholder="Unesi ime"> 
+					</div>
+			      	<div class="form-group">
+						<label for="lastName" class="control-label"> Prezime: </label>  
+						<input type = "text" class="form-control" id="lastName" ng-model="newGuest.user.lastName" placeholder="Unesi prezime"> 
+					</div>
+			      	<div class="form-group">
+						<label for="city" class="control-label"> Mesto stanovanja: </label>  
+						<input type = "text" class="form-control" id="city" ng-model="newGuest.city" placeholder="Unesi mesto stanovanja"> 
+					</div>
+					<div class="form-group">
+						<label for="address" class="control-label"> Adresa stanovanja: </label>  
+						<input type = "text" class="form-control" id="address" ng-model="newGuest.address" placeholder="Unesi adresu stanovanja"> 
+					</div>
+					<div class="form-group text-danger" ng-if="errorMessage">{{ errorMessage }}</div>
+			      
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="resetNewGuest()">Izadji</button>
+			        <button type="submit" class="btn btn-primary pull-left" ng-click="editProfile()" > Izmeni </button>
+			      </div>
+			  </div>
+			</div>
+			</div>
+			
+			<!-- Modal -->
+			<div id="editGuestInfoModal" class="modal fade" role="dialog">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title">Izmena korisnickih informacija</h4>
+			      </div>
+			      <div class="modal-body">
+					<div class="form-group">
+						<label for="password" class="control-label"> Trenutna lozinka: </label>  
+						<input type = "password" class="form-control" id="password" ng-model="password" placeholder="Unesi trenutnu lozinku"> 
+					</div>
+			      	<div class="form-group">
+						<label for="password" class="control-label"> Nova lozinka: </label>  
+						<input type = "password" class="form-control" id="password" ng-model="newPassword" placeholder="Unesi lozinku"> 
+					</div>
+			      	<div class="form-group">
+						<label for="passwordConfirm" class="control-label"> Potvrda nove lozinke: </label>  
+						<input type = "password" class="form-control" id="passwordConfirm" ng-model="newPasswordConfirm" placeholder="Potvrdi lozinku"> 
+					</div>
+			      	
+					<div class="form-group text-danger" ng-if="userInfoErrorMessage">{{ userInfoErrorMessage }}</div>
+			      
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="resetNewGuest()">Izadji</button>
+			        <button type="submit" class="btn btn-primary pull-left" ng-click="editGuestInfo()" > Izmeni </button>
+			      </div>
+			  </div>
+			</div>
+			</div>
+			</div>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+	
+</body>
+
+
+<!-- ANGULAR SCRIPT -->
+<script src="Offerer.js"></script>
+</html>

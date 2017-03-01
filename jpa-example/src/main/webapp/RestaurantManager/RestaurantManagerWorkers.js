@@ -8,12 +8,19 @@ var restManager = angular.module('restManager', []).config(['$qProvider', '$http
 	
 	//namestiti dole u funckcijama gde treba user.email kada se ovo namesti!
 	if (typeof $.cookie('user') !== 'undefined') {
-		$scope.user = JSON.parse($.cookie('user'));
+		user = JSON.parse($.cookie('user'));
 		
 		if(user.userType == "GUEST") {
 			$window.location.href = "/GuestPage/GuestPage.html";
+		}else if(user.userType == "WAITER"){
+			$window.location.href = "/WorkerPage/WaiterPage.html";
+		}else if(user.userType == "BARTENDER"){
+			$window.location.href = "/WorkerPage/BartenderPage.html";
+		}else if(user.userType == "COOK"){
+			$window.location.href = "/WorkerPage/CookPage.html";
+		}else if(user.userType == "OFFERER"){
+			$window.location.href = "/Offerer/Offerer.html";
 		}
-		// DALJE
 	}
 		 
 }]);
@@ -214,7 +221,9 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 	}
 	
 	
-
+	$scope.logout = function(){
+		registarService.logout();
+	}
 	
 }]);
 
@@ -224,12 +233,31 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 
 restManager.service('registarService',['$window', '$http', function($window, $http){
 
+	this.logout = function() {
+		user = $.cookie("user");
+		$http({
+			method : 'PUT',
+			data : user,
+			url : "../user/logout"
+		}).then(function success(response) {
+
+		}, function error(response) {
+			
+		});
+		$.removeCookie('user', {
+			path : '/',
+			domain : ''
+		});
+		$window.location.href = '/StartPage/StartPage.html';
+	}
+	
+	
 	this.registarWorker = function(newWorker, cookType){
-		
+		user = JSON.parse($.cookie('user'));
 		$http({
 			  method: 'POST',
 			  data : newWorker,
-		      url : "../restManager/registarWorker/1/" + cookType //========================================== dodati user email
+		      url : "../restManager/registarWorker/"+user.email+"/" + cookType 
 		}).then(function success(response){	
 				if(response.data == "Error free"){
 					toastr.success("Uspesno registrovan radnik");	
@@ -247,6 +275,7 @@ restManager.service('registarService',['$window', '$http', function($window, $ht
 	}
 	
 	this.getUser = function (userID){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			  method: 'GET',
 		      url : "../restManager/getUser/" + userID
@@ -260,26 +289,28 @@ restManager.service('registarService',['$window', '$http', function($window, $ht
 restManager.service('workerService',['$window', '$http', function($window, $http){
 
 	this.getCooks = function (){
-		
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			  method: 'GET',
-		      url : "../restManager/getCooks/1" //========================================== dodati user email
+		      url : "../restManager/getCooks/"+user.email
 		});
 		
 	}
 	
 	this.getBartenders = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			  method: 'GET',
-		      url : "../restManager/getBartenders/1" //========================================== dodati user email
+		      url : "../restManager/getBartenders/"+user.email
 		});
 		
 	}
 	
 	this.getWaiters = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			  method: 'GET',
-		      url : "../restManager/getWaiters/1" //========================================== dodati user email
+		      url : "../restManager/getWaiters/"+user.email
 		});
 		
 	}
@@ -296,9 +327,10 @@ restManager.service('workerService',['$window', '$http', function($window, $http
 	
 	
 	this.loadAllSegments = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			  method: 'GET',
-		      url : "../restManager/loadAllSegments/1" //========================================== dodati user Email
+		      url : "../restManager/loadAllSegments/"+user.email
 		});
 		
 	}

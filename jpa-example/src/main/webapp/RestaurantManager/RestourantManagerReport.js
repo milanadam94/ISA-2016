@@ -12,8 +12,15 @@ var restManager = angular.module('restManager', []).config(['$qProvider', '$http
 		
 		if(user.userType == "GUEST") {
 			$window.location.href = "/GuestPage/GuestPage.html";
+		}else if(user.userType == "WAITER"){
+			$window.location.href = "/WorkerPage/WaiterPage.html";
+		}else if(user.userType == "BARTENDER"){
+			$window.location.href = "/WorkerPage/BartenderPage.html";
+		}else if(user.userType == "COOK"){
+			$window.location.href = "/WorkerPage/CookPage.html";
+		}else if(user.userType == "OFFERER"){
+			$window.location.href = "/Offerer/Offerer.html";
 		}
-		// DALJE
 	}
 		 
 	
@@ -298,6 +305,9 @@ restManager.controller('reportControler', [ '$scope', 'reportService', function(
 		
 	}
 	
+	$scope.logout = function(){
+		reportService.logout();
+	}
 	
 }]);
 
@@ -307,48 +317,73 @@ restManager.controller('reportControler', [ '$scope', 'reportService', function(
 restManager.service('reportService', ['$window', '$http', function($window, $http){
 	
 	this.getRestaurantRecension = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			method: 'GET',
-			url: "../restManager/getRestaurantRecension/1" //  //==================================== staviti email restoran menagera
+			url: "../restManager/getRestaurantRecension/"+user.email
 		});
 	}
 	
+	this.logout = function() {
+		user = $.cookie("user");
+		$http({
+			method : 'PUT',
+			data : user,
+			url : "../user/logout"
+		}).then(function success(response) {
+
+		}, function error(response) {
+			
+		});
+		$.removeCookie('user', {
+			path : '/',
+			domain : ''
+		});
+		$window.location.href = '/StartPage/StartPage.html';
+	}
+	
+	
 	this.getFoodRecension = function(foodName){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			method: 'GET',
-			url: "../restManager/getFoodRecension/"+foodName+"/1" //  //==================================== staviti email restoran menagera
+			url: "../restManager/getFoodRecension/"+foodName+"/"+user.email
 		});
 	}
 	
 	this.getWaiterRecension = function(waiterName){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			method: 'GET',
-			url: "../restManager/getWaiterRecension/"+waiterName+"/1" //  //==================================== staviti email restoran menagera
+			url: "../restManager/getWaiterRecension/"+waiterName+"/"+user.email
 		});
 	}
 	
 	
 	this.getWaiters = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			  method: 'GET',
-		      url : "../restManager/getWaiters/1" //========================================== dodati user email
+		      url : "../restManager/getWaiters/"+user.email
 		});
 		
 	}
 	
 	this.getAllOrders = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			  method: 'GET',
-		      url : "../restManager/getAllOrders/1" //========================================== dodati user email
+		      url : "../restManager/getAllOrders/"+user.email
 		});
 		
 	}
 	
 	
 	this.getAllInvites = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			  method: 'GET',
-		      url : "../restManager/getAllInvites/1" //========================================== dodati user email
+		      url : "../restManager/getAllInvites/"+user.email
 		});
 		
 	}

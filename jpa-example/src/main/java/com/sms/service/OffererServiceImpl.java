@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 import com.sms.beans.ActiveUser;
 import com.sms.beans.Offerer;
 import com.sms.beans.Offerings;
+import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.beans.UserType;
 import com.sms.dao.ActiveUserDao;
 import com.sms.dao.OffererDao;
 import com.sms.dao.OfferingsDao;
 import com.sms.dao.TenderDao;
+import com.sms.dao.UserDao;
 import com.sms.utilities.Message;
 
 @Service
@@ -28,6 +30,9 @@ public class OffererServiceImpl implements OffererService {
 	
 	@Autowired
 	private OffererDao offererDao;
+	
+	@Autowired
+	private UserDao userDao;
 	
 	@Autowired
 	private ActiveUserDao activeUserDao;
@@ -107,6 +112,17 @@ public class OffererServiceImpl implements OffererService {
 		offeringsDao.save(offering);
 		
 		return Message.ERRORFREE;
+	}
+
+	@Override
+	public void saveOfferer(SysUser newOfferer) {
+		// TODO Auto-generated method stub
+		
+		if(userDao.findByEmail(newOfferer.getEmail()) == null){
+			return;
+		}
+		
+		userDao.save(newOfferer);
 	}
 	
 	

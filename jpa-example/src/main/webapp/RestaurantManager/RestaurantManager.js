@@ -12,8 +12,15 @@ var restManager = angular.module('restManager', []).config(['$qProvider', '$http
 		
 		if(user.userType == "GUEST") {
 			$window.location.href = "/GuestPage/GuestPage.html";
+		}else if(user.userType == "WAITER"){
+			$window.location.href = "/WorkerPage/WaiterPage.html";
+		}else if(user.userType == "BARTENDER"){
+			$window.location.href = "/WorkerPage/BartenderPage.html";
+		}else if(user.userType == "COOK"){
+			$window.location.href = "/WorkerPage/CookPage.html";
+		}else if(user.userType == "OFFERER"){
+			$window.location.href = "/Offerer/Offerer.html";
 		}
-		// DALJE
 	}
 		 
 	
@@ -85,7 +92,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	$scope.error = false;
 	$scope.errorMessage = "";
 	
-	restaurantInfoService.getRestaurant($scope.user).then(
+	restaurantInfoService.getRestaurant().then(
 			function(response){
 				$scope.restaurant = response.data;
 				
@@ -108,6 +115,11 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 
 	$scope.getFoods = function(){
 
+		if($scope.restaurant == null || $scope.user.email == null){
+			toastr.info("Restoran nije pronadjen");
+			return;
+		}
+		
 		restaurantInfoService.getMenu($scope.user, $scope.restaurant).then(
 				function(response){
 
@@ -190,6 +202,12 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	
 	
 	$scope.getDrinks = function(){
+		
+		if($scope.restaurant == null || $scope.user.email == null){
+			toastr.info("Restoran nije pronadjen");
+			return;
+		}
+		
 		restaurantInfoService.getMenu($scope.user, $scope.restaurant).then(
 				function(response){
 					
@@ -483,6 +501,9 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 		
 	}
 	
+	$scope.logout = function(){
+		restaurantInfoService.logout();
+	}
 	
 	
 }]);
@@ -496,32 +517,56 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 
 restManager.service('restaurantInfoService',['$window', '$http', function($window, $http){
 	
+	this.logout = function() {
+		user = $.cookie("user");
+		$http({
+			method : 'PUT',
+			data : user,
+			url : "../user/logout"
+		}).then(function success(response) {
+
+		}, function error(response) {
+			
+		});
+		$.removeCookie('user', {
+			path : '/',
+			domain : ''
+		});
+		$window.location.href = '/StartPage/StartPage.html';
+	}
+	
+	
+	
 	this.loadAllSegments = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			  method: 'GET',
-		      url : "../restManager/loadAllSegments/1" //========================================== dodati user Email
+		      url : "../restManager/loadAllSegments/"+user.email 
 		});
 		
 	}
 	
 	
-	this.getRestaurant = function(user){
-		return $http.get("../restManager/myRestaurant/1"); // ================================= OVDE NAMESTITI EMAIL USERA
+	this.getRestaurant = function(){
+		user = JSON.parse($.cookie('user'));
+		return $http.get("../restManager/myRestaurant/"+user.email);
 	}
 	
 	this.findRestaurantManager = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			  method: 'GET',
-		      url : "../restManager/getUser/1" //========================================== dodati user Email
+		      url : "../restManager/getUser/"+user.email
 		});
 	}
 	
 	this.saveChanges = function(restaurant, user){
+		user = JSON.parse($.cookie('user'));
 		
 		$http({
 			  method: 'POST',
 			  data : restaurant,
-		      url : "../restManager/saveRestaurantInfo/1" // =================================== OVDE NAMESTITI EMAIL USERA
+		      url : "../restManager/saveRestaurantInfo/"+user.email 
 		}).then(function success(response) {
 					toastr.success("Uspesna promena!");
 			  }, function error(response) {
@@ -531,10 +576,11 @@ restManager.service('restaurantInfoService',['$window', '$http', function($windo
 	};
 	
 	this.getMenu = function (user, restaurant){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			method: 'POST',
 			data : restaurant,
-			url: "../restManager/getMenu/1"  // ==================== user.mail
+			url: "../restManager/getMenu/"+user.email
 		});
 	}
 	
@@ -567,6 +613,7 @@ restManager.service('foodService',['$window', '$http', function($window, $http){
 	}
 	
 	this.deleteFood = function (foodID, menu){
+		user = JSON.parse($.cookie('user'));
 		$http({
 			method: 'DELETE',
 			url: "../restManager/deleteFood/"+foodID+"/"+menu.id
@@ -576,6 +623,7 @@ restManager.service('foodService',['$window', '$http', function($window, $http){
 }]);
 
 restManager.service('drinkService', ['$window', '$http', function($window, $http){
+	user = JSON.parse($.cookie('user'));
 
 	this.saveChanges = function (drink, menu){
 		$http({
@@ -629,17 +677,19 @@ restManager.service('konfService', ['$window', '$http', function($window, $http)
 restManager.service('canvasService', ['$window', '$http', function($window, $http){
 	
 	this.addTable = function(newTable, segmentID){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			method: 'POST',
 			data: newTable,
-			url: "../restManager/addTable/"+segmentID+"/1" //==================================== staviti email restoran menagera
+			url: "../restManager/addTable/"+segmentID+"/"+user.email
 		});
 	}
 	
 	this.getAllTables = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			method: 'GET',
-			url: "../restManager/getAllTables/1" //==================================== staviti email restoran menagera
+			url: "../restManager/getAllTables/"+user.email
 		});
 	}
 	

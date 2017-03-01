@@ -8,12 +8,19 @@ var offererApp = angular.module('offererApp', []).config(['$qProvider', '$httpPr
 	
 	//namestiti dole u funckcijama gde treba user.email kada se ovo namesti!
 	if (typeof $.cookie('user') !== 'undefined') {
-		$scope.user = JSON.parse($.cookie('user'));
+		user = JSON.parse($.cookie('user'));
 		
 		if(user.userType == "GUEST") {
 			$window.location.href = "/GuestPage/GuestPage.html";
+		}else if(user.userType == "WAITER"){
+			$window.location.href = "/WorkerPage/WaiterPage.html";
+		}else if(user.userType == "BARTENDER"){
+			$window.location.href = "/WorkerPage/BartenderPage.html";
+		}else if(user.userType == "COOK"){
+			$window.location.href = "/WorkerPage/CookPage.html";
+		}else if(user.userType == "RESTAURANTMANAGER"){
+			$window.location.href = "/RestaurantManager/RestaurantManager.html";
 		}
-		// DALJE
 	}
 		 
 }]);
@@ -23,11 +30,13 @@ offererApp.controller('offererControler', [ '$scope', 'tenderService', 'accepted
 
 	$scope.today = new Date();
 	
-	setShows = function(tendersShow, acceptedShow, accountShow, sendedShow){
+	setShows = function(tendersShow, acceptedShow, accountShow, sendedShow, showProfile){
 		$scope.tendersShow = tendersShow;
 		$scope.acceptedShow = acceptedShow;
 		$scope.accountShow = accountShow;
 		$scope.sendedShow = sendedShow;
+		
+		$scope.showProfile = showProfile;
 		
 		if(tendersShow){
 			$scope.tenderActive = "active";
@@ -48,7 +57,52 @@ offererApp.controller('offererControler', [ '$scope', 'tenderService', 'accepted
 		}
 		
 	}
-	setShows(false,false,false,false);
+	setShows(false,false,false,false, false);
+	
+	$scope.newPassword = "";
+	
+	
+
+	$scope.account = function(){
+		setShows(false,false,false,false,true);
+		
+		
+		tenderService.getOfferer().then(
+				function(response){
+					
+					if(response.data == null){
+						toastr.info("Nije pronadjen!");
+						return;
+					}
+					
+					$scope.offerer = response.data;
+					$scope.newPassword = response.data.user.password;
+				}
+		);
+		
+		
+		
+	}
+	
+	
+	$scope.promeniAccount = function(){
+		
+		if($scope.offerer.user.name == "" || $scope.offerer.user.lastName == "" || 
+				$scope.offerer.user.password == "" || ($scope.offerer.user.password != $scope.newPassword)){
+			
+			toastr.info("Neispravan unos!");
+			return;
+		}
+		
+		console.log($scope.offerer.user);
+		tenderService.saveOfferer($scope.offerer.user);
+		
+	}
+	
+	
+
+	
+	
 	
 	// TENDER METODE
 	
@@ -59,8 +113,10 @@ offererApp.controller('offererControler', [ '$scope', 'tenderService', 'accepted
 	}
 	
 	
+	
+	
 	$scope.tender = function(){
-		setShows(true,false,false,false);
+		setShows(true,false,false,false, false);
 		
 		tenderService.getActiveTenders().then(
 				function(response){
@@ -82,7 +138,7 @@ offererApp.controller('offererControler', [ '$scope', 'tenderService', 'accepted
 	
 	//SENDED
 	$scope.sended = function(){
-		setShows(false,false,false,true);
+		setShows(false,false,false,true,false);
 		
 		tenderService.getMyAllOfferings().then(
 				function(response){
@@ -139,16 +195,13 @@ offererApp.controller('offererControler', [ '$scope', 'tenderService', 'accepted
 	
 	// ACCEPTED METODE
 	$scope.accepted = function(){
-		setShows(false,true,false,false);
+		setShows(false,true,false,false,false);
 	}
 	
 	
-	// ACCOUNT METODE
-	$scope.account = function(){
-		setShows(false,false,true,false);
+	$scope.logout = function(){
+		accountService.logout();
 	}
-	
-	
 	
 	
 }]);
@@ -156,6 +209,29 @@ offererApp.controller('offererControler', [ '$scope', 'tenderService', 'accepted
 
 
 offererApp.service('tenderService',['$window', '$http', function($window, $http){
+	
+	this.saveOfferer = function(newOfferer){
+		return $http({
+			  method: 'POST',
+			  data: newOfferer,
+			  url : "../offerer/saveOfferer" 
+		}).then(function success(response){
+		
+			toastr.success("Uspesno!");
+		}, function error(response){
+			
+			toastr.error("Error!");
+		});
+	}
+	
+	this.getOfferer = function(){
+		user = JSON.parse($.cookie('user'));
+		return $http({
+			  method: 'GET',
+		      url : "../offerer/getOfferer/"+user.email
+		});
+	}
+	
 	
 	this.getActiveTenders = function(){
 		return $http({
@@ -165,17 +241,19 @@ offererApp.service('tenderService',['$window', '$http', function($window, $http)
 	}
 	
 	this.getMyAllOfferings = function(){
+		user = JSON.parse($.cookie('user'));
 		return $http({
 			method: 'GET',
-			url: "../offerer/getMyAllOfferings/2" //=============================================== nemstiti korisnikov email
+			url: "../offerer/getMyAllOfferings/" + user.email
 		});
 	}
 	
 	this.createNewOfferings = function(newOfferings, tenderID){
+		user = JSON.parse($.cookie('user'));
 		$http({
 			  method: 'POST',
 			  data: newOfferings,
-		      url : "../offerer/createNewOfferings/" + tenderID + "/2" // ============================= ubaciti korisnikov email
+		      url : "../offerer/createNewOfferings/" + tenderID + "/"+user.email 
 		}).then(function success(response) {
 				if(response.data == "Error free"){
 					toastr.success("Uspesno!");
@@ -217,7 +295,24 @@ offererApp.service('acceptedService',['$window', '$http', function($window, $htt
 
 
 offererApp.service('accountService',['$window', '$http', function($window, $http){
+	
+	this.logout = function() {
+		user = $.cookie("user");
+		$http({
+			method : 'PUT',
+			data : user,
+			url : "../user/logout"
+		}).then(function success(response) {
 
+		}, function error(response) {
+			
+		});
+		$.removeCookie('user', {
+			path : '/',
+			domain : ''
+		});
+		$window.location.href = '/StartPage/StartPage.html';
+	}
 	
 
 }]);
