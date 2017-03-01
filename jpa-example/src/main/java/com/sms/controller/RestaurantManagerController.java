@@ -2,8 +2,6 @@ package com.sms.controller;
 
 import java.util.List;
 
-import javax.print.attribute.standard.Media;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -20,6 +18,7 @@ import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.FoodRecension;
+import com.sms.beans.GuestOrder;
 import com.sms.beans.GuestTable;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
@@ -309,7 +308,11 @@ public class RestaurantManagerController {
 	}
 	
 	
-	
+	@GetMapping(path="/getAllOrders/{managerID}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<GuestOrder> getAllOrders(@PathVariable("managerID") String managerEmail){
+		return restManagerService.getAllOrders(managerEmail);
+	}
 	
 	
 	

@@ -7,6 +7,7 @@ package com.sms.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -35,6 +36,8 @@ public class GuestOrder implements Serializable {
 
 	@Column(name = "prepared")
 	private Boolean prepared;
+	
+	private Date orderDate = new Date();
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	public List<FoodOrder> foodOrders;
@@ -138,4 +141,13 @@ public class GuestOrder implements Serializable {
 		this.restaurant = restaurant;
 	}
 
+	public Date getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	
 }

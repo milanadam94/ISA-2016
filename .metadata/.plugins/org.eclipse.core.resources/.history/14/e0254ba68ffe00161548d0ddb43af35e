@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Menadzer Restorana</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
+<!-- TOASTR -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></link>
+
+</head>
+<body ng-app="restManager" ng-controller="reportControler">
+	
+	<nav id="myNavbar" class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a  href="RestourantManagerReport.html" class="navbar-brand">SmS</a>
+			</div>
+		<ul class="nav navbar-nav">
+			<li ><a href="RestaurantManager.html" ng-click="getRestaurant()"><span class="glyphicon glyphicon-home"> Restoran </span></a></li>
+			<li><a href="RestaurantManagerWorkers.html"><span class="glyphicon glyphicon-pawn"> Radnici</span></a></li>
+			<li><a href="RestaurantManagerOfferers.html"><span class="glyphicon glyphicon-inbox"> Ponude </span></a></li>
+			<li class="active"><a href="RestourantManagerReport.html"><span class="glyphicon glyphicon-list"> Izvestaji </span></a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="#"><span class="glyphicon glyphicon-user"> Profil</span> </a>
+			<li><a href="#"><span class="glyphicon glyphicon-log-out"> Izadji </span> </a>
+		</ul>
+		
+		</div>
+	</nav>
+	
+	<div>
+		
+		<form class="form-horizontal">
+			<div class="form-group">
+			<label class="control-label col-sm-2">Kreirati izvestaj po: </label>
+					 <div class="col-sm-5">
+						<select class="form-control" id="kategorija" ng-model="choosenOption" ng-change="reloadPage()" title="restaurant.category">
+						<option>Ocena Restorana</option>
+						<option>Jelu</option>
+						<option>Konobaru</option>
+						<option>Posecenost</option>
+						<option>Prihodu</option>
+						<option>Prihodi Po Konobaru</option>
+						</select>
+					</div>
+			</div> <br/>
+		</form>
+		
+		<br/><br/><br/>
+
+	<!--  OCENA RESTORAN ========= -->
+	
+		<div ng-show="ocenaRestoranaShow">
+		<form class="form-horizontal">
+			<div class="form-group">
+			
+			<div class="container">
+			<table class="table table-bordered">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Komentar</th>
+					<th>Ocena</th>
+				</tr>
+				<tr ng-repeat="i in restaurantRecensions | orderBy:'grade'">
+					<td>{{i.guest.user.name}}</td>
+				 	<td>{{i.guest.user.lastName}}</td>
+					<td>{{i.description}}</td>
+					<td>{{i.grade}}</td>
+					</tr>
+			</table>
+			</div>
+			<p class="text-center">Ocena Restorana: {{ocenaRestorana}}</p>
+			</div> <br/>
+		</form>
+		
+		</div>
+		
+		
+		<!--  FOOOD -->
+		<div ng-show="jeluShow">
+		<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2" >Naziv Jela: </label><div class="col-sm-5"><input type = "text" class="form-control" ng-model="foodName"  placeholder="Unesit ime jela"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-info" ng-click="findFood()">Trazi</button></div>
+			</div>
+		
+			<div class="form-group">			
+			<div class="container">
+			<table class="table table-bordered">
+				<tr bgcolor="lightgrey">
+					<th>Jelo</th>
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Komentar</th>
+					<th>Ocena</th>
+				</tr>
+				<tr ng-repeat="i in foodRecensions | orderBy:'i.food.name'">
+					<th>{{i.food.name}}</th>
+					<td>{{i.guest.user.name}}</td>
+				 	<td>{{i.guest.user.lastName}}</td>
+					<td>{{i.description}}</td>
+					<td>{{i.grade}}</td>
+					</tr>
+			</table>
+			</div>
+			</div>
+			
+		</form>
+		
+		</div>
+		
+		
+		<!--  Konobar -->
+		<div ng-show="konobaruShow">
+		<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2" >Ime Konobara: </label><div class="col-sm-5"><input type = "text" class="form-control" ng-model="waiterName"  placeholder="Unesit ime konobara"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-info" ng-click="findWaiter()">Trazi</button></div>
+			</div>
+		
+			<div class="form-group">			
+			<div class="container">
+			<table class="table table-bordered">
+				<tr bgcolor="lightgrey">
+					<th>Konobar</th>
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Komentar</th>
+					<th>Ocena</th>
+				</tr>
+				<tr ng-repeat="i in waiterRecensions | orderBy:'i.waiter.user.name'">
+					<th>{{i.waiter.user.name}}</th>
+					<td>{{i.guest.user.name}}</td>
+				 	<td>{{i.guest.user.lastName}}</td>
+					<td>{{i.description}}</td>
+					<td>{{i.grade}}</td>
+					</tr>
+			</table>
+			</div>
+			</div>
+			
+		</form>
+		
+		</div>
+		
+		
+		<!--  POSECENOST -->
+		
+		
+		<!-- PRIHODI PO KONOBARU  -->
+		<div ng-show="prihodiPoKonobaruShow">
+		<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label  class="control-label col-sm-2" for="startDate">Od: </label><div class="col-sm-5"><input type="date" ng-model="period.startDate" > </div> <br/>
+			</div>	
+			<div class="form-group">
+			<label  class="control-label col-sm-2" for="startDate">Do: </label><div class="col-sm-5"><input type="date" ng-model="period.endDate" > </div> <br/>
+			</div>	
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-info" ng-click="findByWaiterPeriod()">Trazi</button></div>
+			</div>		
+			
+			<div class="form-group">			
+			<div class="container">
+			<table class="table table-bordered">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Prihod</th>
+				</tr>
+				<tr ng-repeat="i in waiterPeriodList | orderBy:'i.prihod'">
+					<th>{{i.waiter.user.name}}</th>
+					<td>{{i.waiter.user.name}}</td>
+					<td>{{i.prihod}}</td>
+					</tr>
+			</table>
+			</div>
+			</div>
+			
+		</form>
+		
+		</div>
+		
+		
+		
+		<!--  PRIHOD RESTORANA -->
+		
+		
+		<div ng-show="prihodiShow">
+		<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label  class="control-label col-sm-2" for="startDate">Od: </label><div class="col-sm-5"><input type="date" ng-model="period.startDate" > </div> <br/>
+			</div>	
+			<div class="form-group">
+			<label  class="control-label col-sm-2" for="startDate">Do: </label><div class="col-sm-5"><input type="date" ng-model="period.endDate" > </div> <br/>
+			</div>	
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-info" ng-click="findInPeriod()">Trazi</button></div>
+			</div>		
+			
+			<div class="form-group">			
+			<div class="container">
+			<table class="table table-bordered">
+				<tr bgcolor="lightgrey">
+					<th>Datum</th>
+					<th>Prihod</th>
+				</tr>
+				<tr ng-repeat="i in restoranPeriodList | orderBy:'i.orderDate'">
+					<th>{{i.order.orderDate}}</th>
+					<td>{{i.prihod}}</td>
+					</tr>
+			</table>
+			</div>
+			</div>
+			
+		</form>
+		
+		</div>
+		
+		
+		
+		
+	</div>
+</body>
+
+
+<!-- ANGULAR SCRIPT -->
+<script src="RestourantManagerReport.js"></script>
+
+
+</html>

@@ -7,6 +7,7 @@ import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
 import com.sms.beans.FoodRecension;
+import com.sms.beans.GuestOrder;
 import com.sms.beans.GuestTable;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
@@ -82,4 +83,6 @@ public interface RestaurantManagerService {
 	public List<FoodRecension> getFoodRecension(String managerEmail, String foodName);
 
 	public List<WaiterRecension> getWaiterRecension(String managerID, String waiterName);
+
+	public List<GuestOrder> getAllOrders(String managerEmail);
 }
