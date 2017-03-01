@@ -17,6 +17,7 @@ bartender.controller('bartenderController', [ '$scope', 'bartenderService', func
 	$scope.viewProfile = true;
 	$scope.firstLogin = false;
 	$scope.viewOrders = false;
+	$scope.calendar = false;
 	
 	bartenderService.getBartender().then(
 			function(response){
@@ -29,6 +30,7 @@ bartender.controller('bartenderController', [ '$scope', 'bartenderService', func
 	
 	$scope.getProfile = function(){
 		$scope.viewProfile = true;
+		$scope.calendar = false;
 		
 		bartenderService.getBartender().then(
 				function(response){
@@ -46,9 +48,11 @@ bartender.controller('bartenderController', [ '$scope', 'bartenderService', func
 				if($scope.firstLogin){
 					$scope.firstLogin = false;
 					$scope.viewProfile = true;
+					$scope.calendar = false;
 				}else{
 					$scope.firstLogin = true;
 					$scope.viewProfile = false;
+					$scope.calendar = false;
 				}
 		
 			}
@@ -62,6 +66,7 @@ bartender.controller('bartenderController', [ '$scope', 'bartenderService', func
 			$scope.greska = "";
 			$scope.firstLogin = false;
 			$scope.viewProfile = true;
+			$scope.calendar = false;
 			$scope.bartender.user.password = $scope.newFirstPassword;
 			bartenderService.saveFirstLogin($scope.bartender).then(function(data){
 				if(data != "") {
@@ -79,6 +84,7 @@ bartender.controller('bartenderController', [ '$scope', 'bartenderService', func
 	$scope.getOrders = function(){
 		$scope.viewProfile = false;
 		$scope.viewOrders = true;
+		$scope.calendar = false;
 		
 		bartenderService.getDrinkOrders().then(
 				function(response){
@@ -95,6 +101,48 @@ bartender.controller('bartenderController', [ '$scope', 'bartenderService', func
 	
 	$scope.logout = function(){
 		bartenderService.logout();
+	}
+	
+$scope.konacnaLista = [];
+	
+	$scope.getCalendar = function(){
+		$scope.viewProfile = false;
+		//$scope.makeOrder = false;
+		$scope.viewOrders = false;
+		$scope.firstLogin = false;
+		$scope.calendar = true;
+		
+		
+		
+		bartenderService.getBartenders().then(
+				function(response){
+					$scope.konacnaLista = [];
+					$scope.bartenders = response.data;
+					
+					$scope.bartenders.forEach(function(bartender){
+						
+						bartenderService.loadSegments(bartender.id).then(
+								function(response){
+									$scope.segments = response.data;
+									
+									//alert(response.data.startDate)
+									response.data.startDate = new Date(response.data.startDate);
+									response.data.endDate = new Date(response.data.endDate);
+									//alert(response.data.startDate)
+									pom = {
+										bartender: bartender,
+										schedule: response.data
+									}
+									
+									$scope.konacnaLista.push(pom);
+								}
+								
+						);
+						
+					});
+					console.log($scope.konacnaLista);
+				}
+		);	
 	}
 }]);
 
@@ -240,5 +288,17 @@ bartender.service('bartenderService', ['$window', '$http', function($window, $ht
 			domain : ''
 		});
 		$window.location.href = '/StartPage/StartPage.html';
+	}
+	
+	this.loadSegments = function(id){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/loadAllMySegments/"+id 
+		});
+		
+	}
+	
+	this.getBartenders = function() {
+		return $http.get("../worker/bartenders/"+user.id)
 	}
 }]);

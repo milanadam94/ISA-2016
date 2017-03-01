@@ -182,4 +182,10 @@ public class WorkerControllerImpl{
 	public List<Cook> getCooks(@PathVariable(value="userId") Integer userId){
 		return workerService.getCooks(userId);
 	}
+	
+	@GetMapping(path = "/bartenders/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Bartender> getBartenders(@PathVariable(value="userId") Integer userId){
+		return workerService.getBartenders(userId);
+	}
 }

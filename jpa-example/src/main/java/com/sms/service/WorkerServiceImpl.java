@@ -322,4 +322,12 @@ public class WorkerServiceImpl implements WorkerService	{
 		return cooks;
 	}
 
+	@Override
+	public List<Bartender> getBartenders(Integer userId) {
+		Bartender bartender = bartenderDao.findByUserId(userId);
+		List<Bartender> bartenders = bartenderDao.findByRestaurant(bartender.getRestaurant());
+		
+		return bartenders;
+	}
+
 }

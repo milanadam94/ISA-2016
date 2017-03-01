@@ -166,6 +166,28 @@
 				</div>
 			</div>
 		</div>
+		
+		<div ng-show="calendar">
+			<div ng-repeat="bar in konacnaLista">
+			<div ng-if="bar.schedule.length != 0">
+				<div class="container">
+					<label class="control-label" for="bar">Ime i prezime:&nbsp;<font color="blue">{{$parent.bar.bartender.user.name}}&nbsp;{{bar.bartender.user.lastName}}</font></label>
+					<table class="table table-bordered">
+						<tr bgcolor="lightgrey">
+							<th>Pocetak</th>
+							<th>Kraj</th>
+							<th>Smena</th>
+						</tr>
+						<tr  ng-repeat="i in bar.schedule">
+							<td>{{i.startDate | date: 'yyyy-MM-dd'}}</td>
+							<td>{{i.endDate | date: 'yyyy-MM-dd'}}</td>
+							<td>{{i.shift}}</td>
+						</tr>
+					</table>
+				</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

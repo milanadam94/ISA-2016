@@ -50,6 +50,8 @@ public interface WorkerService {
 	
 	public void setDrinkOrderPrepared(DrinkOrder drinkOrder);
 	
+	public List<Bartender> getBartenders(Integer userId);
+	
 	//kuvari
 	public Cook getCookByUserId(Integer userId);
 	
