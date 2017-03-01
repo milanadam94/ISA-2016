@@ -152,7 +152,7 @@ insert into Offerings(id, delivery_date, description, price, offerer_id, tender_
 
 insert into Guest_Table(id, tag, x_coord,seat_count, y_coord, restaurant_id, segment_id) values('4','A','2','2','3','1','1')
 
-insert into Reservation(id, reservation_date_time, guest_id, restaurant_id) values ('1','2010-01-01','1','1')
+insert into Reservation(id, reservation_date_time, guest_id, restaurant_id) values ('1','2010-01-01T00:01:00.000Z','1','1')
 
 insert into Reservation_Tables(reservation_id,tables_id) values('1','1')
 
