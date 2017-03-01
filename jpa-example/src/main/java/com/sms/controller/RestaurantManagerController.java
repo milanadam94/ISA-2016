@@ -54,9 +54,9 @@ public class RestaurantManagerController {
 		return restManagerService.getRestaurant(restManagerID);
 	}
 	
-	@PostMapping(path = "/saveRestaurantInfo/{restManagerID}", produces = MediaType.TEXT_PLAIN_VALUE)
+	@PostMapping(path = "/saveRestaurantInfo/{restManagerID}", produces = MediaType.TEXT_PLAIN_VALUE, consumes=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public String saveRestaurantInfo(@PathVariable(value="restManagerID") String restManagerID, Restaurant restaurant){
+	public String saveRestaurantInfo(@PathVariable(value="restManagerID") String restManagerID,@RequestBody Restaurant restaurant){
 	
 		if(restaurant == null  || restaurant.getName().equals("") || restaurant.getDescription().equals("")){
 			return "Ne moze biti prazno!";

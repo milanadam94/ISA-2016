@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Ponudjac</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
+<!-- TOASTR -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
+
+</head>
+<body ng-app="offererApp" ng-controller="offererControler">
+	
+	<nav id="myNavbar" class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="Offerer.html" class="navbar-brand">SmS</a>
+			</div>
+		<ul class="nav navbar-nav">
+			<li class="{{tenderActive}}"><a ng-click="tender()" >Otvoreni Tenderi</a></li>
+			<li class="{{poslaneActive}}"><a ng-click="sended()" >Poslane Porudzbine</a></li>
+			<li class="{{prihvaceneActive}}"><a ng-click="accepted()" >Prihvacene Porudzbine</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="#" ng-click="account()"><span class="glyphicon glyphicon-user"> Profil</span> </a>
+			<li><a href="#" ><span class="glyphicon glyphicon-log-out"> Izadji </span> </a>
+		</ul>
+		
+		</div>
+	</nav>
+	
+	
+	<div>
+		<!--  TENDERS  -->
+		<!--  ====================================================== -->
+		<div ng-show="tendersShow">
+		
+		<label class="control-label col-sm-5" for="description">Kreirajte Vasu Ponudu:</label> <br/><br/><br/>
+
+		<form class="form-horizontal">
+				
+				<div class="form-group">
+				<label class="control-label col-sm-2" >Cena:</label> <div class="col-sm-5"><input min=0 type="number" class="form-control" ng-model="newOfferings.price"></div>		
+				</div> <br/>
+				
+				<div class="form-group">
+				<label class="control-label col-sm-2" >Dostavljen do: </label><div class="col-sm-5"><input type="date" class="form-control" ng-model="newOfferings.deliveryDate" ></div>
+				</div> <br/>
+				
+				<div class="form-group">
+				<div class="col-sm-10"><textarea class="form-control" rows="5"  ng-model="newOfferings.description" class="form-control" placeholder="Unesite opis..."></textarea></div>
+				</div>
+				
+				<br/><br/><br/>
+		
+		</form>
+		
+			<div ng-repeat="i in activeTenders | orderBy:'restaurant.name'">
+				<h3 class="text-left" >{{i.restaurant.name}} ({{i.startDate | date: 'yyyy/MM/dd'}} - {{i.endDate | date: 'yyyy/MM/dd'}}) </h3><br/>
+				<h3 class="text-left">Opis: {{i.description}} </h3>
+				<br/><br/>
+				<button type="submit" class="btn btn-success" ng-click="createNewOfferings( i.id )" >Posalji</button>
+				<br/><br/><br/><br/>
+				
+			</div> 
+			
+		</div>
+  		
+  		
+  		<!--  POSLATE PORuDZBINE  -->
+  		<div ng-show="sendedShow">
+
+			<form class="form-horizontal">
+			<div ng-repeat="i in myAllOfferings | orderBy:'tender.restourant.name'">
+				<div ng-if="i.tender.expired != 1 && i.tender.endDate > today">
+				
+				
+				<div class="form-group">
+				<h4 class="text-center">{{i.tender.restaurant.name}} ({{i.tender.startDate | date: 'yyyy/MM/dd'}} - {{i.tender.endDate | date: 'yyyy/MM/dd'}}) </h4><br/>
+				</div>
+				
+				<div class="form-group">
+				<h4 class="text-center">Opis: {{i.tender.description}} </h4><br/><br/>
+				</div>
+				
+				<div class="form-group">
+				<label class="control-label col-sm-4">Cena: </label><div class="col-sm-4"><input min=0 class="form-control" type="number" ng-model="i.price" value="{{i.price}}"></input> </div><br/>
+			    </div>
+			   
+			    <div class="form-group">
+				<label class="control-label col-sm-4">Dostavljeno do:</label> <div class="col-sm-4"><input class="form-control" type="date" value="{{i.deliveryDate | date: 'yyyy-MM-dd'}}" ng-model="i.deliveryDate" ></input></div><br/>
+				 </div>
+			 
+			 	<div class="form-group">
+				<label class="control-label col-sm-4">Opis: </label><div class="col-sm-4"><textarea class="form-control" rows="7" cols="100"  ng-model="i.description" placeholder="{{i.description}}"></textarea></div>
+				</div>
+				<br/>
+			
+			
+				<div class="form-group">
+				<div class="col-sm-offset-5 col-sm-10">
+							<button type="submit" class="btn btn-warning" ng-click="changeOfferings( i.id )"  >Promeni</button>
+							<button type="submit" class="btn btn-danger" ng-click="deleteOfferings( i.id )">Izbrisi</button>
+				</div>
+				
+				</div>
+			
+				
+			 	
+			 	</div>
+		
+				
+				
+		
+				<div ng-if="i.tender.expired == 1 || i.tender.endDate < today">
+				
+				<div class="form-group">
+				<p class="text-center"><strong>{{i.tender.restaurant.name}} </strong> ({{i.tender.startDate | date: 'yyyy/MM/dd'}} - {{i.tender.endDate | date: 'yyyy/MM/dd'}})<br/>
+				 <strong>Opis: </strong> {{i.tender.description}} </p><br/>
+				</div>
+			
+				<div class="form-group">
+				<p class="text-center"> <strong>Cena: </strong>{{i.price}} <br/> 
+					<strong>Dostavljeno do:</strong> {{i.deliveryDate | date: 'yyyy-MM-dd'}} <br/> 
+					Opis: {{i.description}}</p>
+				</div>
+				
+				<div class="form-group" ng-if="i.isAccepted">
+				<p class="text-center">Status: PRIHVACEN </p>				 
+				</div>
+				
+				<div class="form-group" ng-if="!i.isAccepted">
+				<p class="text-center">Status: ODBIJEN </p>				 
+				</div>
+				
+				</div>
+				
+			<br/><br/><br/><br/>
+				
+		</div> 
+		</form>
+		</div>
+  		
+  				
+  				
+		<!--  PRIHVACENE PORUDZBINE -->
+		<!--  ================================ -->
+		<div ng-show="acceptedShow">
+			
+		
+		</div>
+		
+		
+		
+		<!--  PO SMENAMA -->
+		<!--  ================================ -->
+		<div  ng-show="accountShow">
+	
+		</div>
+		
+		
+	</div>
+	
+</body>
+
+
+<!-- ANGULAR SCRIPT -->
+<script src="Offerer.js"></script>
+</html>

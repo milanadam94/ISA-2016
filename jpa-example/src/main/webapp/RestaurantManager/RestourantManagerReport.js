@@ -106,7 +106,7 @@ restManager.controller('reportControler', [ '$scope', 'reportService', function(
 					$scope.foodRecensions = response.data;
 				
 					if($scope.foodRecensions.length == 0){
-						alert("Jelo nije ocenjivano.");
+						toastr.info("Jelo nije ocenjivano.");
 					}
 										
 				}
@@ -125,7 +125,7 @@ restManager.controller('reportControler', [ '$scope', 'reportService', function(
 					$scope.waiterRecensions = response.data;
 				
 					if($scope.waiterRecensions.length == 0){
-						alert("Konobar nije ocenjivan.");
+						toastr.info("Konobar nije ocenjivan.");
 					}
 										
 				}

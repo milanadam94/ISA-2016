@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Menadzer Restorana</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
+<!-- TOASTR -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
+
+
+</head>
+<body ng-app="restManager" ng-controller="restManagerOfferersController">
+	
+	<nav id="myNavbar" class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="RestaurantManagerOfferers.html" class="navbar-brand">SmS</a>
+			</div>
+		<ul class="nav navbar-nav">
+			<li><a href="RestaurantManager.html" ng-click="getRestaurant()"><span class="glyphicon glyphicon-home"> Restoran </span></a></li>
+			<li><a href="RestaurantManagerWorkers.html"><span class="glyphicon glyphicon-pawn"> Radnici</span></a></li>
+			<li class="active"><a href="RestaurantManagerOfferers.html"><span class="glyphicon glyphicon-inbox"> Ponude </span></a></li>
+			<li><a href="RestourantManagerReport.html"><span class="glyphicon glyphicon-list"> Izvestaji </span></a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="#"><span class="glyphicon glyphicon-user"> Profil</span> </a>
+			<li><a href="#"><span class="glyphicon glyphicon-log-out"> Izadji </span> </a>
+		</ul>
+		
+		</div>
+	</nav>
+	
+	<div>
+	
+	<nav clas="navbar navbar-default">
+			<div class="container-fluid">
+			<div class="form-group">
+			<ul class="nav nav-tabs">
+				<li class="{{registracijaActive}}"><a ng-click="registracija()">Registrovanje Ponudjaca</a>
+				<li class="{{objavljivanjeActive}}"><a ng-click="objavljivanje()">Objavljivanje Tendera</a>
+				<li class={{pregledActive}}><a ng-click="pregled()">Pregled Ponuda</a>
+			</ul>
+		</div>
+		</div>
+	</nav>
+		
+		<!--  REGISTRACIJA  -->
+		<!--  ====================================================== -->
+		<div ng-show="registrovanjeShow">
+			<br/><br/><br/>
+			<form class="form-horizontal">
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="email">Email:</label>
+    			<div class="col-sm-10">
+      				<input type="email" class="form-control" id="email" ng-model="newOfferer.email" placeholder="Unesite email">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="pwd">Lozinka:</label>
+    			<div class="col-sm-10"> 
+      				<input type="password" class="form-control" id="pwd" ng-model="newOfferer.password" placeholder="Unesite lozinku">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="pwd2">Potvrda lozinke:</label>
+    			<div class="col-sm-10"> 
+      				<input type="password" class="form-control" id="pwd2" ng-model="passwordConfirm" placeholder="Potvrdite lozinku">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="ime">Ime:</label>
+    			<div class="col-sm-10"> 
+      				<input type="text" class="form-control" id="ime" ng-model="newOfferer.name" placeholder="Unesite ime">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="prezime">Prezime:</label>
+    			<div class="col-sm-10"> 
+      				<input type="text" class="form-control" id="prezime" ng-model="newOfferer.lastName" placeholder="Unesite prezime">
+    			</div>
+  			</div>
+  			<div class="form-group text-danger" ng-if="error">{{ errorMessage }}</div>
+  			<div class="form-group"> 
+    			<div class="col-sm-offset-2 col-sm-10">
+      				<button type="submit" class="btn btn-primary" ng-click="registerOfferer()">Registracija</button>
+    			</div>
+  			</div>
+  			</form>	
+		
+		</div>
+		
+		
+		
+		<!--  DODAVANJE OGLASA -->
+		<!--  ================================ -->
+		<div ng-show="objavljivanjeShow">
+		<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2" for="description">Opis tendera:</label>
+				<div class="col-sm-5"><textarea class="form-control" rows="5"  id="tenderDescription" ng-model="newTender.description" placeholder="Unesite opis..."></textarea> </div>
+			</div><br/>
+				
+				
+			<div class="form-group">
+			<label  class="control-label col-sm-2" for="startDate">Otvoren od: </label><div class="col-sm-5"><input type="date" ng-model="newTender.startDate" > </div> <br/>
+			</div>	
+		
+			<div class="form-group">
+			<label class="control-label col-sm-2" for="startDate">Vazi do:</label> <div class="col-sm-5"> <input type="date" ng-model="newTender.endDate"> </div> 
+			</div>
+		
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-primary" ng-click="ObjaviTender()">Objavi</button></div>
+			</div>
+		</form>
+		</div>
+		
+		
+		
+		<!-- PREGLED PONUDA  -->
+		
+		<div  ng-show="pregledShow">
+		
+			<div ng-show="tenderiPregled" ng-repeat="i in myAllActiveTenders | orderBy:'endDate'">
+				<label>{{i.startDate | date: 'yyyy/MM/dd'}} - {{i.endDate | date: 'yyyy/MM/dd'}} </label><br/>
+				<label>Opis: {{i.description}} </label>
+				<br/><br/>
+				<button type="submit" class="btn btn-success" ng-click="showOfferings( i.id )" >Prikazi Ponude</button>
+				<br/><br/><br/><br/>
+			</div> 
+			
+			<table ng-show="offeringsPregled" class="table">
+				<tr bgcolor="lightgrey">
+					<th>Ponudjac</th>
+					<th>Opis</th>
+					<th>Cena</th>
+					<th>Rok isporuke</th>
+					<th>Odaberi</th>
+				</tr>
+				<tr ng-repeat="i in selectedOfferings | orderBy:'price'">
+					<td> {{ i.offerer.user.name }} </td>
+				 	<td> {{ i.description }} </td>
+					<td> {{ i.price }} </td>
+					<td> {{ i.deliveryDate | date: 'yyyy/MM/dd' }}</td>
+					<td> <button type="submit" class="btn btn-success" ng-click="chooseOffering( i.id )" >Odaberi Ponudu</button></td>
+				
+				</tr>
+			
+			</table>
+			
+		</div>
+		
+		
+	</div>
+	
+</body>
+
+
+<!-- ANGULAR SCRIPT -->
+<script src="RestaurantManagerOfferers.js"></script>
+
+
+</html>
