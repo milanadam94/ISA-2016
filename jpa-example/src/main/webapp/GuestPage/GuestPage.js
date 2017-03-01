@@ -384,6 +384,14 @@ app.controller('friendsController', [ '$scope', 'guestService', function($scope,
 
 } ]);
 
+app.filter('parseDate', function() {
+    return function(date) {
+    	d = date.split("T")[0].toString();
+    	t = date.split("T")[1].toString();
+        return d + "  " + t.substring(0, 5);
+    };
+});
+
 app.controller('profileController', [ '$scope', 'guestService', function($scope, guestService) {
 	
 	$scope.errorMessage = false;
@@ -401,10 +409,16 @@ app.controller('profileController', [ '$scope', 'guestService', function($scope,
 		$scope.$parent.newGuest.user.lastName = $scope.$parent.guest.user.lastName;
 		$scope.$parent.newGuest.city = $scope.$parent.guest.city;
 		$scope.$parent.newGuest.address = $scope.$parent.guest.address;
-		$scope.password = "";
-		$scope.newPassword = "";
-		$scope.newPasswordConfirm = "";
 		$scope.errorMessage = false;
+	}
+	
+	$scope.openCredidentials = function() {
+			$scope.password = "";
+			$scope.newPassword = "";
+			$scope.newPasswordConfirm = "";
+			$scope.userInfoErrorMessage = false;
+			$('#myModal').modal({ show: false})
+			angular.element('#editGuestInfoModal').modal('show');
 	}
 	
 	$scope.editGuestInfo = function() {
@@ -424,8 +438,6 @@ app.controller('profileController', [ '$scope', 'guestService', function($scope,
 				else
 				{
 					$scope.$parent.guest = $scope.$parent.newGuest;
-					$.cookie.json = true;
-					$.cookie("user", $scope.$parent.newGuest.user, {path    : '/', domain  : ''});
 					angular.element('#editGuestInfoModal').modal('hide');
 				}
 		    });
@@ -447,8 +459,6 @@ app.controller('profileController', [ '$scope', 'guestService', function($scope,
 				else
 				{
 					$scope.$parent.guest = $scope.$parent.newGuest;
-					$.cookie.json = true;
-					$.cookie("user", $scope.$parent.newGuest.user, {path    : '/', domain  : ''});
 					angular.element('#editProfileModal').modal('hide');
 				}
 		    });

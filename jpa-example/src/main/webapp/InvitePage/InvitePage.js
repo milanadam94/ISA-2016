@@ -38,7 +38,8 @@ var app = angular.module('app', []).run(['$rootScope', '$http', '$window', funct
 	}
 		 
 }]);
-				
+	
+
 						 
 app.controller('invitePageController', [ '$scope', '$rootScope', '$window', 'invitePageService',  function($scope, $rootScope, $window, invitePageService){
 	

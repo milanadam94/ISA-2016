@@ -105,7 +105,7 @@ input[type="number"] {
 			    <tbody>
 			      <tr ng-repeat="history in histories">
 			        <td>{{history.restaurant.name}}</td>
-			        <td>{{history.date}}</td>
+			        <td>{{history.date | parseDate}}</td>
 			        <td> <span ng-repeat="friend in history.visitors">{{friend.user.name}}&nbsp;</span></td>
 			      </tr>
 			    </tbody>
@@ -113,7 +113,7 @@ input[type="number"] {
 		</div>
 		<div ng-controller="restaurantsController">
 			<div ng-show="showRestaurants" >
-				
+				<h1>Restorani:</h1>
 				<div class="row">
 					<div class="col-md-4">
 					  <div class="form-group">
@@ -130,6 +130,7 @@ input[type="number"] {
 						</div>
 					</div>
 				</div>
+				
 				<table class="table table-bordered table-striped">
 				    <thead>
 				      <tr>
@@ -147,28 +148,24 @@ input[type="number"] {
 	        			</th>
 	        			<th>
 				        	<a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-					        Udaljenost 
+					        Opis 
 					        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
 					        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
 	        			</th>
-				        <th>Ocena</th>
-				        <th>Ocena prijatelja</th>
-				        <th>Rezervacija</th>
 				      </tr>
 				    </thead>
 				    <tbody>
 				      <tr style="cursor: pointer" ng-repeat="restaurant in restaurants | orderBy:sortType:sortReverse" ng-if="restaurant.category == selectedCategory || selectedCategory == null || selectedCategory ==''" ng-click="selectRestaurant(restaurant)" data-ng-class="{selected: restaurant.id == idSelected}">
 				        <td>{{restaurant.name}}</td>
 				        <td>{{restaurant.category}}</td>
-				        <td>{{restaurant.name}}</td>
-				        <td>{{restaurant.name}}</td>
-				        <td>{{restaurant.name}}</td>
-				        <td>{{restaurant.name}}</td>
+				        <td>{{restaurant.description}}</td>
 				      </tr>
 				    </tbody>
 				</table>
 			</div>
 			<div ng-show="showReservations">
+			<h1>Rezervacija:</h1>
+				&nbsp;
 				<h4><b>Restoran:</b> {{selectedRestaurant.name}}</h4>
 				<div class="form-group">	
 					<h4><b>Datum i vreme rezervacije:</b> &nbsp;<input type="datetime-local" ng-model="reservationDateTime" ng-change="hideCanvas()"></input></h4>
@@ -210,7 +207,7 @@ input[type="number"] {
 						</div>
 						<div class="col-md-4">
 <!-- PORUCI HRANU -->
-							<h5>Porucite hranu i pice:</h5>
+							<h4>Porucite hranu i pice:</h4>
 								<div class="panel panel-primary small-panel">
 						  			<div class="panel-heading">Hrana</div>
 						  				<div class="panel-body" >
@@ -247,6 +244,7 @@ input[type="number"] {
 			<div class="form-group">	
 				<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addFriendsModal"> Pronadji prijatelje </button>
 			</div>
+			<h1>Prijatelji:</h1>
 			<div class="row">
 				<div class="col-md-8">
 				<table class="table table-bordered table-striped">
@@ -306,10 +304,78 @@ input[type="number"] {
 					<div class="form-group">
 						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal" ng-click="resetNewGuest()"> Izmeni svoj profil </button>
 						&nbsp;&nbsp;
-						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editGuestInfoModal" ng-click="resetNewGuest()"> Izmeni svoje korisnicke podatke </button>
+						<button type="submit" class="btn btn-primary" ng-click="openCredidentials()"> Izmeni svoje korisnicke podatke </button>
 					</div>
 				</div>
 	
+			</div>
+			<!-- Modal -->
+			<div id="editProfileModal" class="modal fade" role="dialog" >
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title">Izmena profila</h4>
+			      </div>
+			      <div class="modal-body">
+			      	<div class="form-group">
+						<label for="name" class="control-label"> Ime: </label>  
+						<input type = "text" class="form-control" id="name" ng-model="newGuest.user.name" placeholder="Unesi ime"> 
+					</div>
+			      	<div class="form-group">
+						<label for="lastName" class="control-label"> Prezime: </label>  
+						<input type = "text" class="form-control" id="lastName" ng-model="newGuest.user.lastName" placeholder="Unesi prezime"> 
+					</div>
+			      	<div class="form-group">
+						<label for="city" class="control-label"> Mesto stanovanja: </label>  
+						<input type = "text" class="form-control" id="city" ng-model="newGuest.city" placeholder="Unesi mesto stanovanja"> 
+					</div>
+					<div class="form-group">
+						<label for="address" class="control-label"> Adresa stanovanja: </label>  
+						<input type = "text" class="form-control" id="address" ng-model="newGuest.address" placeholder="Unesi adresu stanovanja"> 
+					</div>
+					<div class="form-group text-danger" ng-if="errorMessage">{{ errorMessage }}</div>
+			      
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="resetNewGuest()">Izadji</button>
+			        <button type="submit" class="btn btn-primary pull-left" ng-click="editProfile()" > Izmeni </button>
+			      </div>
+			  </div>
+			</div>
+			</div>
+			
+			<!-- Modal -->
+			<div id="editGuestInfoModal" class="modal fade" role="dialog">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title">Izmena korisnickih informacija</h4>
+			      </div>
+			      <div class="modal-body">
+					<div class="form-group">
+						<label for="password" class="control-label"> Trenutna lozinka: </label>  
+						<input type = "password" class="form-control" id="password" ng-model="password" placeholder="Unesi trenutnu lozinku"> 
+					</div>
+			      	<div class="form-group">
+						<label for="password" class="control-label"> Nova lozinka: </label>  
+						<input type = "password" class="form-control" id="password" ng-model="newPassword" placeholder="Unesi lozinku"> 
+					</div>
+			      	<div class="form-group">
+						<label for="passwordConfirm" class="control-label"> Potvrda nove lozinke: </label>  
+						<input type = "password" class="form-control" id="passwordConfirm" ng-model="newPasswordConfirm" placeholder="Potvrdi lozinku"> 
+					</div>
+			      	
+					<div class="form-group text-danger" ng-if="userInfoErrorMessage">{{ userInfoErrorMessage }}</div>
+			      
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="resetNewGuest()">Izadji</button>
+			        <button type="submit" class="btn btn-primary pull-left" ng-click="editGuestInfo()" > Izmeni </button>
+			      </div>
+			  </div>
+			</div>
 			</div>
 			</div>
 			<hr size="100">
@@ -317,6 +383,7 @@ input[type="number"] {
 			<div class="form-group">	
 				<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addFriendsModal"> Pronadji prijatelje </button>
 			</div>
+			<h1>Prijatelji:</h1>
 			<div class="row">
 				<div class="col-md-8">
 				<table class="table table-bordered table-striped">
@@ -364,6 +431,7 @@ input[type="number"] {
 		</div>
 		
 		<div ng-show="showGuestReservations" ng-controller="reservationsController">
+		<h1>Rezervacije:</h1>
 				<table class="table table-bordered table-striped">
 				    <thead>
 				      <tr>
@@ -378,7 +446,7 @@ input[type="number"] {
 				      <tr style="cursor: pointer" ng-repeat="reservation in guestReservations" ng-click="selectReservation(reservation)" data-ng-class="{selected: reservation.id == reservationId}">
 				        <td>{{reservation.restaurant.name}}</td>
 				        <td> <span ng-repeat="table in reservation.tables">{{table.tag}}&nbsp;</span></td>
-				        <td>{{reservation.reservationDateTime}}</td>
+				        <td>{{reservation.reservationDateTime | parseDate}}</td>
 				        <td>{{reservation.duration}}</td>
 				       <td> <span ng-repeat="table in reservation.tables">{{table.seatCount}}&nbsp;</span></td>
 				      </tr>
@@ -389,6 +457,7 @@ input[type="number"] {
 					<button type="button" class="btn btn-primary" ng-click="openFriends()" >Pozovi prijatelje</button>
 				</div>
 				<hr size="50">
+					<h1>Pozvani prijatelji:</h1>
 				<div class="row">
 					<div class="col-md-6">
 					<table class="table table-bordered table-striped">
@@ -397,15 +466,15 @@ input[type="number"] {
 					        <th> Ime i prezime </th>
 		        			<th> Rezervacija za restoran</th>
 		        			<th> Datum</th>
-		        			<th> Prihvatio poziv</th>
+		        			<th> Status poziva</th>
 					      </tr>
 					    </thead>
 					    <tbody>
 					      <tr ng-repeat="invite in invites">
 					        <td>{{invite.friend.user.name + " " + invite.friend.user.lastName}}</td>
 					        <td>{{invite.reservation.restaurant.name}}</td>
-					        <td>{{invite.reservation.reservationDateTime}}</td>
-					        <td>{{invite.accepted}}</td>
+					        <td>{{invite.reservation.reservationDateTime | parseDate}}</td>
+					        <td><div ng-if="invite.accepted">Prihvatio</div><div ng-if="!invite.accepted">Na cekanju</div></td>
 					      </tr>
 					    </tbody>
 					</table>
@@ -494,74 +563,7 @@ input[type="number"] {
 			</div>
 			
 			
-			<!-- Modal -->
-			<div id="editProfileModal" class="modal fade" role="dialog" ng-controller="profileController">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal">&times;</button>
-			        <h4 class="modal-title">Izmena profila</h4>
-			      </div>
-			      <div class="modal-body">
-			      	<div class="form-group">
-						<label for="name" class="control-label"> Ime: </label>  
-						<input type = "text" class="form-control" id="name" ng-model="newGuest.user.name" placeholder="Unesi ime"> 
-					</div>
-			      	<div class="form-group">
-						<label for="lastName" class="control-label"> Prezime: </label>  
-						<input type = "text" class="form-control" id="lastName" ng-model="newGuest.user.lastName" placeholder="Unesi prezime"> 
-					</div>
-			      	<div class="form-group">
-						<label for="city" class="control-label"> Mesto stanovanja: </label>  
-						<input type = "text" class="form-control" id="city" ng-model="newGuest.city" placeholder="Unesi mesto stanovanja"> 
-					</div>
-					<div class="form-group">
-						<label for="address" class="control-label"> Adresa stanovanja: </label>  
-						<input type = "text" class="form-control" id="address" ng-model="newGuest.address" placeholder="Unesi adresu stanovanja"> 
-					</div>
-					<div class="form-group text-danger" ng-if="errorMessage">{{ errorMessage }}</div>
-			      
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="resetNewGuest()">Izadji</button>
-			        <button type="submit" class="btn btn-primary pull-left" ng-click="editProfile()" > Izmeni </button>
-			      </div>
-			  </div>
-			</div>
-			</div>
 			
-			<!-- Modal -->
-			<div id="editGuestInfoModal" class="modal fade" role="dialog" ng-controller="profileController">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal">&times;</button>
-			        <h4 class="modal-title">Izmena korisnickih informacija</h4>
-			      </div>
-			      <div class="modal-body">
-					<div class="form-group">
-						<label for="password" class="control-label"> Trenutna lozinka: </label>  
-						<input type = "password" class="form-control" id="password" ng-model="password" placeholder="Unesi trenutnu lozinku"> 
-					</div>
-			      	<div class="form-group">
-						<label for="password" class="control-label"> Nova lozinka: </label>  
-						<input type = "password" class="form-control" id="password" ng-model="newPassword" placeholder="Unesi lozinku"> 
-					</div>
-			      	<div class="form-group">
-						<label for="passwordConfirm" class="control-label"> Potvrda nove lozinke: </label>  
-						<input type = "password" class="form-control" id="passwordConfirm" ng-model="newPasswordConfirm" placeholder="Potvrdi lozinku"> 
-					</div>
-			      	
-					<div class="form-group text-danger" ng-if="userInfoErrorMessage">{{ userInfoErrorMessage }}</div>
-			      
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="resetNewGuest()">Izadji</button>
-			        <button type="submit" class="btn btn-primary pull-left" ng-click="editGuestInfo()" > Izmeni </button>
-			      </div>
-			  </div>
-			</div>
-			</div>
 		</div>
 	</div>
 
