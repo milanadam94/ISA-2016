@@ -6,16 +6,19 @@ import com.sms.beans.Bartender;
 import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
+import com.sms.beans.FoodRecension;
 import com.sms.beans.GuestTable;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.RestaurantRecension;
 import com.sms.beans.Schedule;
 import com.sms.beans.Segment;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.beans.Waiter;
+import com.sms.beans.WaiterRecension;
 import com.sms.beans.WorkerSchedule;
 
 public interface RestaurantManagerService {
@@ -73,4 +76,10 @@ public interface RestaurantManagerService {
 	public List<GuestTable> getAllTables(String managerID);
 
 	public void deleteTable(GuestTable table);
+
+	public List<RestaurantRecension> getRestaurantRecension(String managerEmail);
+
+	public List<FoodRecension> getFoodRecension(String managerEmail, String foodName);
+
+	public List<WaiterRecension> getWaiterRecension(String managerID, String waiterName);
 }

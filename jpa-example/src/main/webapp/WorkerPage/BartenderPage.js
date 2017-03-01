@@ -19,6 +19,7 @@ bartender.controller('bartenderController', [ '$scope', 'bartenderService', func
 	
 	$scope.viewProfile = true;
 	$scope.firstLogin = false;
+	$scope.viewOrders = false;
 	
 	bartenderService.getBartender().then(
 			function(response){
@@ -77,7 +78,23 @@ bartender.controller('bartenderController', [ '$scope', 'bartenderService', func
 		    });
 		}
 	}
+	
+	$scope.getOrders = function(){
+		$scope.viewProfile = false;
+		$scope.viewOrders = true;
 		
+		bartenderService.getDrinkOrders().then(
+				function(response){
+					$scope.drinkOrders = response.data;
+					//console.log($scope.drinkOrders);
+				}
+			
+		)
+	}
+	$scope.spremiPice = function(drinkOrder){
+		bartenderService.setDrinkOrder(drinkOrder);
+		console.log(drinkOrder.id);
+	}
 }]);
 
 bartender.controller('profileController', [ '$scope', 'bartenderService', function($scope, bartenderService){
@@ -185,5 +202,25 @@ bartender.service('bartenderService', ['$window', '$http', function($window, $ht
 	 }
 	this.getFirstLogin = function() {
 		return $http.get("../worker/firstLogin/4")
+	}
+	this.getDrinkOrders = function() {
+		return $http.get("../worker/bartender/getDrinkOrders/4")
+	}
+	this.setDrinkOrder = function(drinkOrder){
+		return $http({
+			  method: 'POST',
+			  data : drinkOrder,
+		      url : "../worker/bartender/setDrinkOrder",
+		}).then(function success(response) {
+			if(response.data == "Error free") {
+				return "";
+			}
+			else {
+				return response.data;
+			}
+			
+		  }, function error(response) {
+			  alert(response)
+		  });
 	}
 }]);

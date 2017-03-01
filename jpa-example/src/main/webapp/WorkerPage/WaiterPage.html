@@ -190,13 +190,13 @@
 				      </tr>
 				     </thead>
 				     <tbody>
-				     	<tr ng-repeat="order in guestOrders | orderBy:'id'">
+				     	<tr ng-repeat="order in guestOrders">
 				     		<td> {{ order.id }} </td>
 				     		<td> <label>Sto</label></td>
 				     		<td ng-if="order.prepared == false" style="background:red" >Nije pripremljena</td>
 				     		<td ng-if="order.prepared == true" style="background: green">Pripremljena</td>
-				     		<td> <button type="submit" id="{{order.id}}" class="btn btn-danger" ng-click="deleteOrder(order)">Obrisi</button></td>
-				     		<td ng-if="order.prepared == false"> <button type="submit" id="{{drink.id}}" class="btn btn-success" ng-click="makeBill(order.id)">Naplati</button></td>
+				     		<td> <button type="submit" id="{{order.id}}" class="btn btn-danger" ng-click="deleteOrder(order.id)">Obrisi</button></td>
+				     		<td ng-if="order.prepared == true"> <button type="submit" id="{{order.id}}" class="btn btn-success" ng-click="makeBill(order.id)">Naplati</button></td>
 				     		<td ng-if="order.prepared == false">&nbsp;</td>
 				     	</tr>
 				     </tbody>
@@ -207,7 +207,12 @@
 				<button type="submit" class="btn btn-primary" ng-click="novaPorudzbina()">Nova porudzbinu</button>
 			</div>
 		</div>
-		
+		<div ng-show="bill" class="form-group">
+			<label>Račun za ovu porudzbinu iznosi:&nbsp;</label><b><font size="3" color="blue">{{ total }}</font></b> <label>dinara.</label>
+			<div>
+				<button type="submit" class="btn btn-primary" ng-click="racun()">Naplati</button>
+			</div>
+		</div>
 		<div ng-show="firstLogin" class="form-group" >
 			<label>Promenite vašu lozinku:</label>
 			<div class="form-group">

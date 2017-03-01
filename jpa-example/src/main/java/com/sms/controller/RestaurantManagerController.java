@@ -2,6 +2,8 @@ package com.sms.controller;
 
 import java.util.List;
 
+import javax.print.attribute.standard.Media;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -17,16 +19,19 @@ import com.sms.beans.Bartender;
 import com.sms.beans.Cook;
 import com.sms.beans.Drink;
 import com.sms.beans.Food;
+import com.sms.beans.FoodRecension;
 import com.sms.beans.GuestTable;
 import com.sms.beans.Menu;
 import com.sms.beans.Offerings;
 import com.sms.beans.Restaurant;
 import com.sms.beans.RestaurantManager;
+import com.sms.beans.RestaurantRecension;
 import com.sms.beans.Schedule;
 import com.sms.beans.Segment;
 import com.sms.beans.SysUser;
 import com.sms.beans.Tender;
 import com.sms.beans.Waiter;
+import com.sms.beans.WaiterRecension;
 import com.sms.beans.WorkerSchedule;
 import com.sms.service.RestaurantManagerService;
 import com.sms.service.RestaurantService;
@@ -49,9 +54,9 @@ public class RestaurantManagerController {
 		return restManagerService.getRestaurant(restManagerID);
 	}
 	
-	@PostMapping(path = "/saveRestaurantInfo/{restManagerID}", produces = MediaType.TEXT_PLAIN_VALUE)
+	@PostMapping(path = "/saveRestaurantInfo/{restManagerID}", produces = MediaType.TEXT_PLAIN_VALUE, consumes=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public String saveRestaurantInfo(@PathVariable(value="restManagerID") String restManagerID, Restaurant restaurant){
+	public String saveRestaurantInfo(@PathVariable(value="restManagerID") String restManagerID,@RequestBody Restaurant restaurant){
 	
 		if(restaurant == null  || restaurant.getName().equals("") || restaurant.getDescription().equals("")){
 			return "Ne moze biti prazno!";
@@ -85,9 +90,9 @@ public class RestaurantManagerController {
 	}
 	
 	
-	@PostMapping(path = "/getMenu/{restManagerID}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(path = "/getMenu/{restManagerID}", consumes=MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public Menu getMenu(@PathVariable("restManagerID") String managerID, Restaurant restaurant){
+	public Menu getMenu(@PathVariable("restManagerID") String managerID,@RequestBody Restaurant restaurant){
 		
 		return restManagerService.getMenu(managerID, restaurant);
 	}
@@ -101,17 +106,17 @@ public class RestaurantManagerController {
 	}
 	
 	
-	@PostMapping(path = "/addFood/{menuID}")
+	@PostMapping(path = "/addFood/{menuID}", consumes=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public void addFood(@PathVariable("menuID") Integer menuID,  Food newFood){
+	public void addFood(@PathVariable("menuID") Integer menuID, @RequestBody Food newFood){
 		
 		restManagerService.addFood(menuID, newFood);		
 		
 	}
 	
-	@PostMapping(path = "/addDrink/{menuID}")
+	@PostMapping(path = "/addDrink/{menuID}", consumes=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public void addDrink(@PathVariable("menuID") Integer menuID, Drink newDrink){
+	public void addDrink(@PathVariable("menuID") Integer menuID,@RequestBody Drink newDrink){
 		
 		restManagerService.addDrink(menuID, newDrink);		
 		
@@ -125,17 +130,17 @@ public class RestaurantManagerController {
 	}
 	
 	
-	@PostMapping(path = "/changeFood/{menuID}")
+	@PostMapping(path = "/changeFood/{menuID}", consumes=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public void changeFood(Food newFood, @PathVariable("menuID") Integer menu){
+	public void changeFood(@RequestBody Food newFood, @PathVariable("menuID") Integer menu){
 
 		restManagerService.changeFood(newFood, menu);
 		
 	}
 	
-	@PostMapping(path = "/changeDrink/{menuID}")
+	@PostMapping(path = "/changeDrink/{menuID}", consumes=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public void changeDrink(Drink newDrink, @PathVariable("menuID") Integer menu){
+	public void changeDrink(@RequestBody Drink newDrink, @PathVariable("menuID") Integer menu){
 
 		restManagerService.changeDrink(newDrink, menu);
 		
@@ -271,6 +276,48 @@ public class RestaurantManagerController {
 	public void deleteTable(@RequestBody GuestTable table){
 		restManagerService.deleteTable(table);
 	}
+	
+	
+	
+	// IZVESTAJI ======
+	
+	@GetMapping(path="/getRestaurantRecension/{managerID}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<RestaurantRecension> getRestaurantRecension(@PathVariable("managerID") String managerEmail){
+		return restManagerService.getRestaurantRecension(managerEmail);
+	}
+	
+	
+	@GetMapping(path="/getFoodRecension/{foodName}/{managerID}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<FoodRecension> getFoodRecension(@PathVariable("foodName") String foodName,@PathVariable("managerID") String managerEmail){
+		if(foodName.equals("Unesite naziv jela")){
+			foodName = "";
+		}
+		return restManagerService.getFoodRecension(managerEmail, foodName);
+	}
+	
+	
+	@GetMapping(path="/getWaiterRecension/{waiterName}/{managerID}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<WaiterRecension> getWaiterRecension(@PathVariable("waiterName") String waiterName, @PathVariable("managerID") String managerID){
+		if(waiterName.equals("Unesite ime konobara")){
+			waiterName = "";
+		}
+		
+		return restManagerService.getWaiterRecension(managerID, waiterName);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }

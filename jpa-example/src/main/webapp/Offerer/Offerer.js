@@ -28,6 +28,25 @@ offererApp.controller('offererControler', [ '$scope', 'tenderService', 'accepted
 		$scope.acceptedShow = acceptedShow;
 		$scope.accountShow = accountShow;
 		$scope.sendedShow = sendedShow;
+		
+		if(tendersShow){
+			$scope.tenderActive = "active";
+		}else{
+			$scope.tenderActive = "";
+		}
+		
+		if(sendedShow){
+			$scope.poslaneActive = "active";
+		}else{
+			$scope.poslaneActive = "";
+		}
+		
+		if(acceptedShow){
+			$scope.prihvaceneActive = "active";
+		}else{
+			$scope.prihvaceneActive = "";
+		}
+		
 	}
 	setShows(false,false,false,false);
 	
@@ -53,7 +72,7 @@ offererApp.controller('offererControler', [ '$scope', 'tenderService', 'accepted
 	
 	$scope.createNewOfferings = function(tenderID){
 		if($scope.newOfferings.price < 0 || $scope.newOfferings.deliveryDate == "" || $scope.newOfferings.deliveryDate < new Date()){
-			alert("Cena ne sme biti manja od nule i morate predefinisati datum dostavljanja u buducnosti")
+			toastr.info("Cena ne sme biti manja od nule i morate predefinisati datum dostavljanja u buducnosti")
 			return;
 		}
 		
@@ -92,13 +111,17 @@ offererApp.controller('offererControler', [ '$scope', 'tenderService', 'accepted
 			if(values.id == offeringID){
 				
 				if(values.price < 0 || values.deliveryDate == "" || values.deliveryDate < new Date()){
-					alert("Cena ne sme biti manja od nule i morate predefinisati datum dostavljanja u buducnosti")
+					toastr.info("Cena ne sme biti manja od nule i morate predefinisati datum dostavljanja u buducnosti")
 					return;
 				}
 				
 				tenderService.changeOfferings(values).then(
 						function(response){
-							alert(response.data);
+							if(response.data == "Error free"){
+								toastr.success("Uspesno!");
+							}else{
+								toastr.info(response.data);
+							}
 							location.reload();
 							
 						}
@@ -154,10 +177,14 @@ offererApp.service('tenderService',['$window', '$http', function($window, $http)
 			  data: newOfferings,
 		      url : "../offerer/createNewOfferings/" + tenderID + "/2" // ============================= ubaciti korisnikov email
 		}).then(function success(response) {
-				alert(response.data);
+				if(response.data == "Error free"){
+					toastr.success("Uspesno!");
+				}else{
+					toastr.info(response.data);
+				}
 				location.reload();
 		  }, function error(response) {
-			  	alert("Error!");
+			  	toastr.error("Error!");
 		  }
 		);
 	}

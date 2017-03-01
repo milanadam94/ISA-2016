@@ -5,17 +5,61 @@
  ***********************************************************************/
 package com.sms.beans;
 
-public class RestaurantRecension {
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Restaurant_Recension")
+public class RestaurantRecension implements Serializable{
  
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4345097491577479123L;
+	
+	@Id
+	@Column(name = "id")
+	@GeneratedValue
+	private Integer id;
+	
 	private int grade;
 
+	@ManyToOne
+	private Guest guest;
+	
+	@ManyToOne
+	private Restaurant restaurant;
+	
+	private String description;
+	
 	public RestaurantRecension() {
 		super();
 	}
 
-	public RestaurantRecension(int grade) {
+	
+	
+	public RestaurantRecension(int grade, Guest guest,String description ,Restaurant restaurant) {
 		super();
 		this.grade = grade;
+		this.guest = guest;
+		this.description = description;
+		this.restaurant = restaurant;
+	}
+
+
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public int getGrade() {
@@ -25,5 +69,36 @@ public class RestaurantRecension {
 	public void setGrade(int grade) {
 		this.grade = grade;
 	}
+
+	public Guest getGuest() {
+		return guest;
+	}
+
+	public void setGuest(Guest guest) {
+		this.guest = guest;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	
+
 	
 }

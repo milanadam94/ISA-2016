@@ -28,6 +28,24 @@ restManager.controller('restManagerOfferersController', [ '$scope', 'registarSer
 		$scope.objavljivanjeShow = objavljivanjeShow;
 		$scope.pregledShow = pregledShow;
 		
+		if(registrovanjeShow){
+			$scope.registracijaActive = "active";
+		}else{
+			$scope.registracijaActive = "";
+		}
+		
+		if(objavljivanjeShow){
+			$scope.objavljivanjeActive = "active";
+		}else{
+			$scope.objavljivanjeActive = "";
+		}
+		
+		if(pregledShow){
+			$scope.pregledActive = "active";
+		}else{
+			$scope.pregledActive = "";
+		}
+		
 		$scope.tenderiPregled = false;
 		$scope.offeringsPregled = false;
 	}
@@ -98,12 +116,12 @@ restManager.controller('restManagerOfferersController', [ '$scope', 'registarSer
 	$scope.ObjaviTender = function(){
 		
 		if($scope.newTender.description == "" || $scope.newTender.startDate == "" || $scope.newTender.endDate == ""){
-			alert("Ne sme biti prazno!");
+			toastr.info("Ne sme biti prazno!");
 			return;
 		}
 		
 		if($scope.newTender.startDate > $scope.newTender.endDate){
-			alert("Datum pocetka mora biti pre datuma zavrsetka.");
+			toastr.info("Datum pocetka mora biti pre datuma zavrsetka.");
 			return;
 		}
 		
@@ -130,7 +148,12 @@ restManager.controller('restManagerOfferersController', [ '$scope', 'registarSer
 	$scope.chooseOffering = function(offeringsID){
 		tenderService.chooseOffering(offeringsID).then(
 				function(response){
-					alert(response.data);
+					if(resposne.data == "Error free"){
+						toastr.success("Uspesno!");
+					}else{
+						toastr.info(response.data);
+					}
+					
 					location.reload();
 				}
 		);
@@ -151,15 +174,15 @@ restManager.service('registarService',['$window', '$http', function($window, $ht
 		      url : "../restManager/registarOfferer"
 		}).then(function success(response){	
 				if(response.data == "Error free"){
-					alert("Uspesno registrovan ponudjac");	
+					toastr.success("Uspesno registrovan ponudjac");	
 					location.reload();
 				}else{
-					alert(response.data);
+					toastr.info(response.data);
 				}
 				
 			},
 				function error(response) {
-				  	alert("Error!");
+					toastr.error("Error!");
 			  }
 		);
 		
@@ -180,15 +203,15 @@ restManager.service('tenderService',['$window','$http', function($window, $http)
 		      url : "../restManager/createTender/1" //========================================== staviti user email
 		}).then(function success(response){	
 				if(response.data == "Error free"){
-					alert("Uspesno kreiran tender");	
+					toastr.success("Uspesno kreiran tender");	
 					location.reload();
 				}else{
-					alert(response.data);
+					toastr.info(response.data);
 				}
 				
 			},
 				function error(response) {
-				  	alert("Error!");
+					toastr.error("Error!");
 			  }
 		);		
 		

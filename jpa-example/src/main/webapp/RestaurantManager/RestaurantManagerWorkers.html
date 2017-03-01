@@ -22,24 +22,44 @@
 <script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
 
 <!-- TOASTR -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></link>
 
 </head>
 <body ng-app="restManager" ng-controller="restManagerWorkersController">
-	<nav id="myNavbar" class="navbar">
+	
+	<nav id="myNavbar" class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="RestaurantManagerWorkers.html" class="navbar-brand">SmS</a>
+			</div>
 		<ul class="nav navbar-nav">
-			<li><a href="RestaurantManager.html">Moj Restoran</a></li>
-			<li><a href="RestaurantManagerWorkers.html">Radnici</a></li>
-			<li><a href="RestaurantManagerOfferers.html">Ponude</a></li>
+			<li><a href="RestaurantManager.html" ng-click="getRestaurant()"><span class="glyphicon glyphicon-home"> Restoran </span></a></li>
+			<li class="active"><a href="RestaurantManagerWorkers.html"><span class="glyphicon glyphicon-pawn"> Radnici</span></a></li>
+			<li><a href="RestaurantManagerOfferers.html"><span class="glyphicon glyphicon-inbox"> Ponude </span></a></li>
+			<li><a href="RestourantManagerReport.html"><span class="glyphicon glyphicon-list"> Izvestaji </span></a></li>
 		</ul>
-	</nav>
-	<div>
-		<div class="form-group">
-			<ul class="nav nav-tabs">
-				<li><a ng-click="registracija()">Registrovanje Radnika</a>
-				<li><a ng-click="slisakRadnika()">Spisak Radnika</a>
-			</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="#"><span class="glyphicon glyphicon-user"> Profil</span> </a>
+			<li><a href="#"><span class="glyphicon glyphicon-log-out"> Izadji </span> </a>
+		</ul>
+		
 		</div>
+	</nav>
+	
+	
+	<div>
+	
+		<nav clas="navbar navbar-default">
+			<div class="container-fluid">
+			<div class="form-group">
+				<ul class="nav nav-tabs">
+					<li class={{registracijaActive}}><a ng-click="registracija()">Registrovanje Radnika</a>
+					<li class={{spisakActive}}><a ng-click="slisakRadnika()">Spisak Radnika</a>
+			</ul>
+			</div>
+			</div>
+		</nav>
 		
 		
 		<!--  REGISTRACIJA  -->
@@ -115,8 +135,9 @@
 		<!--  =========================== -->
 		
 		<div ng-show="spisakRadnikaShow">
-			<p1>Kuvari:</p1><br/>
-			<table class="table">
+			<h3 class="text-center"> <strong> Kuvari: </strong> </h3><br/>
+			<div class="container">
+			<table class="table table-bordered">
 				<tr bgcolor="lightgrey">
 					<th>Ime</th>
 					<th>Prezime</th>
@@ -130,9 +151,12 @@
 					<td><button type="submit" class="btn btn-info" ng-click="checkSchedule( i.user.id )">Pregled</button></td>
 				</tr>
 			</table>
+			</div>
+			<br/><br/>
 		
-			<p1>Konobari:</p1><br/>
-			<table class="table">
+			<h3 class="text-center"> <strong> Konobari: </strong></h3><br/>
+			<div class="container">
+			<table class="table table-bordered">
 				<tr bgcolor="lightgrey">
 					<th>Ime</th>
 					<th>Prezime</th>
@@ -146,9 +170,12 @@
 					<td><button type="submit" class="btn btn-info" ng-click="checkSchedule( i.user.id )">Pregled</button></td>
 				</tr>
 			</table>
+			</div>
+			<br/><br/>
 			
-			<p1>Sankeri:</p1><br/>
-			<table class="table">
+			<h3 class="text-center"> <strong> Sankeri: </strong></h3><br/>
+			<div class="container">
+			<table class="table table-bordered">
 				<tr bgcolor="lightgrey">
 					<th>Ime</th>
 					<th>Prezime</th>
@@ -162,6 +189,7 @@
 					<td><button type="submit" class="btn btn-info" ng-click="checkSchedule( i.user.id )">Pregled</button></td>
 				</tr>
 			</table>
+			</div>
 		</div>
 		
 		
@@ -169,8 +197,9 @@
 		<!--  ================================ -->
 		<div ng-show="pregledRaspored">
 			
-			<label>{{fullWorker.name}} {{fullWorker.lastName}} ({{fullWorker.email}}) </label>
-			<table class="table">
+			<h3 class="text-center">{{fullWorker.name}} {{fullWorker.lastName}} ({{fullWorker.email}}) </h3>
+			<div class="container">
+			<table class="table table-bordered">
 				<tr bgcolor="lightgrey">
 					<th>Pocetak</th>
 					<th>Kraj</th>
@@ -186,10 +215,10 @@
 					<td ng-if="fullWorker.userType == 'WAITER'"> {{ $parent.i.segment.name }}</td>
 					<td ng-if="i.endDate < today"> <font color="red">ISTEKAO</font></td>
 					<td ng-if="i.endDate > today && i.startDate <= today"> <font color="green">U TOKU</font></td>
-					<td ng-if="i.endDate > today && i.startDate > today"> <font color="yellow">USKORO</font></td>
+					<td ng-if="i.endDate > today && i.startDate > today"> <font color="brown">USKORO</font></td>
 				</tr>
 			</table>
-			
+			</div>
 			
 			
 			
@@ -215,16 +244,18 @@
 				<div ng-if="fullWorker.userType == 'WAITER'">
 				<label  class="control-label col-sm-2" >Region:</label>
 					<div class="col-sm-5">
-					<select class="form-group" ng-model="$parent.newSegment">
+					<select  class="form-control" ng-model="$parent.newSegment">
 						<option ng-repeat="i in segments" value="{{i.id}}">{{i.name}}</option>
 					</select>
 					</div>
 				</div>
-				 <br/><br/>
-				<div class="form-group"> 
-				<div class="col-sm-offset-2 col-sm-10">
+				<br/><br/>
+				 
+				<div class="form-group">
+				<div class="text-center">
 					<button type="submit" class="btn btn-success" ng-click="addSchedule()">Dodaj Raspored</button>
-					</div>
+				</div>
+				
 				</div>
 				</div>
 			</form>

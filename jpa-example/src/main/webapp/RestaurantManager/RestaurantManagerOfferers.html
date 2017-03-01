@@ -22,27 +22,44 @@
 <script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
 
 <!-- TOASTR -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
-
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></link>
 
 </head>
 <body ng-app="restManager" ng-controller="restManagerOfferersController">
-	<nav id="myNavbar" class="navbar">
+	
+	<nav id="myNavbar" class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="RestaurantManagerOfferers.html" class="navbar-brand">SmS</a>
+			</div>
 		<ul class="nav navbar-nav">
-			<li><a href="RestaurantManager.html">Moj Restoran</a></li>
-			<li><a href="RestaurantManagerWorkers.html">Radnici</a></li>
-			<li><a href="RestaurantManagerOfferers.html">Ponude</a></li>
+			<li><a href="RestaurantManager.html" ng-click="getRestaurant()"><span class="glyphicon glyphicon-home"> Restoran </span></a></li>
+			<li><a href="RestaurantManagerWorkers.html"><span class="glyphicon glyphicon-pawn"> Radnici</span></a></li>
+			<li class="active"><a href="RestaurantManagerOfferers.html"><span class="glyphicon glyphicon-inbox"> Ponude </span></a></li>
+			<li><a href="RestourantManagerReport.html"><span class="glyphicon glyphicon-list"> Izvestaji </span></a></li>
 		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="#"><span class="glyphicon glyphicon-user"> Profil</span> </a>
+			<li><a href="#"><span class="glyphicon glyphicon-log-out"> Izadji </span> </a>
+		</ul>
+		
+		</div>
 	</nav>
+	
 	<div>
-		<div class="form-group">
+	
+	<nav clas="navbar navbar-default">
+			<div class="container-fluid">
+			<div class="form-group">
 			<ul class="nav nav-tabs">
-				<li><a ng-click="registracija()">Registrovanje Ponudjaca</a>
-				<li><a ng-click="objavljivanje()">Objavljivanje Tendera</a>
-				<li><a ng-click="pregled()">Pregled Ponuda</a>
+				<li class="{{registracijaActive}}"><a ng-click="registracija()">Registrovanje Ponudjaca</a>
+				<li class="{{objavljivanjeActive}}"><a ng-click="objavljivanje()">Objavljivanje Tendera</a>
+				<li class={{pregledActive}}><a ng-click="pregled()">Pregled Ponuda</a>
 			</ul>
 		</div>
-		
+		</div>
+	</nav>
 		
 		<!--  REGISTRACIJA  -->
 		<!--  ====================================================== -->
@@ -123,14 +140,24 @@
 		<div  ng-show="pregledShow">
 		
 			<div ng-show="tenderiPregled" ng-repeat="i in myAllActiveTenders | orderBy:'endDate'">
-				<label>{{i.startDate | date: 'yyyy/MM/dd'}} - {{i.endDate | date: 'yyyy/MM/dd'}} </label><br/>
-				<label>Opis: {{i.description}} </label>
-				<br/><br/>
+				<div class="form-group">
+				<h4 class="text-center">{{i.startDate | date: 'yyyy/MM/dd'}} - {{i.endDate | date: 'yyyy/MM/dd'}} <br/>
+				
+				<strong>Opis: </strong> <i> {{i.description}} </i></h4>
+				</div>
+				
+				<br/>
+				<div class="form-group">
+				<div class="text-center">
 				<button type="submit" class="btn btn-success" ng-click="showOfferings( i.id )" >Prikazi Ponude</button>
+				</div></div>
+				
 				<br/><br/><br/><br/>
 			</div> 
+		
+			<div class="container">
+			<table ng-show="offeringsPregled" class="table table-bordered">
 			
-			<table ng-show="offeringsPregled" class="table">
 				<tr bgcolor="lightgrey">
 					<th>Ponudjac</th>
 					<th>Opis</th>
@@ -148,7 +175,7 @@
 				</tr>
 			
 			</table>
-			
+			</div>
 		</div>
 		
 		

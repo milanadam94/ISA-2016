@@ -1,0 +1,16 @@
+package com.sms.dao;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.Repository;
+
+import com.sms.beans.City;
+import com.sms.beans.Restaurant;
+import com.sms.beans.RestaurantRecension;
+
+public interface RestaurantRecensionDao extends Repository<RestaurantRecension, Long> {
+	
+	public List<RestaurantRecension> findByRestaurant(Restaurant restaurant)''
+	
+}
+

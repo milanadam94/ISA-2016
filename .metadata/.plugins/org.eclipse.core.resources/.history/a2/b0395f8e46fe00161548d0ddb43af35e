@@ -1,0 +1,38 @@
+/***********************************************************************
+ * Module:  WaiterRecension.java
+ * Author:  Sasa
+ * Purpose: Defines the Class WaiterRecension
+ ***********************************************************************/
+package com.sms.beans;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "waiter_recension")
+public class WaiterRecension implements Serializable{
+ 
+	
+	
+	private int grade;
+
+	public WaiterRecension() {
+		super();
+	}
+
+	public WaiterRecension(int grade) {
+		super();
+		this.grade = grade;
+	}
+
+	public int getGrade() {
+		return grade;
+	}
+
+	public void setGrade(int grade) {
+		this.grade = grade;
+	}
+	
+}

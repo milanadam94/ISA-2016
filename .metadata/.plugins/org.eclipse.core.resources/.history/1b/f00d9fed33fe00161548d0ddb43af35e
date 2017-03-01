@@ -1,0 +1,11 @@
+package com.sms.dao;
+
+import org.springframework.data.repository.Repository;
+
+import com.sms.beans.Food;
+import com.sms.beans.FoodRecension;
+
+public interface FoodRecensionDao extends Repository<FoodRecension, Long>{
+	
+	
+}

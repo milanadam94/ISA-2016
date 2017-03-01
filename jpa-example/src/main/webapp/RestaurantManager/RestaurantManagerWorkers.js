@@ -28,6 +28,19 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 		$scope.periodicniShow = periodicniShow;
 		$scope.spisakRadnikaShow = spisakRadnikaShow;
 		$scope.pregledRaspored = pregledRaspored;
+		
+		if(registrovanjeShow){
+			$scope.registracijaActive = "active";
+		}else{
+			$scope.registracijaActive = "";
+		}
+		
+		if(spisakRadnikaShow){
+			$scope.spisakActive = "active";
+		}else{
+			$scope.spisakActive = "";
+		}
+		
 	}
 	setShows(false,false,false,false);
 	
@@ -164,7 +177,7 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 				$scope.newSchedule.endDate < new Date() || $scope.newSchedule.endDate == "" ||
 				$scope.newSchedule.startDate > $scope.newSchedule.endDate ||
 				$scope.shiftType == "" || $scope.workerID == ""){
-			alert("Los unos!");
+			toastr.info("Los unos!");
 			return;
 		}
 		
@@ -181,7 +194,7 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 				
 				function(response){
 					if(response.data == "Error free"){
-						alert(response.data);
+						toastr.success("Uspesno!");
 						$scope.newSchedule.startDate = "";
 						$scope.newSchedule.endDate = "";
 						$scope.newSegment = "";
@@ -189,7 +202,7 @@ restManager.controller('restManagerWorkersController', [ '$scope', 'registarServ
 						
 						location.reload();
 					}else{
-						alert(response.data);
+						toastr.info(response.data);
 					}
 					
 					
@@ -219,15 +232,15 @@ restManager.service('registarService',['$window', '$http', function($window, $ht
 		      url : "../restManager/registarWorker/1/" + cookType //========================================== dodati user email
 		}).then(function success(response){	
 				if(response.data == "Error free"){
-					alert("Uspesno registrovan radnik");	
+					toastr.success("Uspesno registrovan radnik");	
 					location.reload();
 				}else{
-					alert(response.data);
+					toastr.info(response.data);
 				}
 				
 			},
 				function error(response) {
-				  	alert("Error!");
+					toastr.error("Error!");
 			  }
 		);
 		

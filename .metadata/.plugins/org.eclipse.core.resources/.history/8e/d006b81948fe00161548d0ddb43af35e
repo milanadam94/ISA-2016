@@ -1,0 +1,11 @@
+package com.sms.dao;
+
+import org.springframework.data.repository.Repository;
+
+import com.sms.beans.Menu;
+import com.sms.beans.Restaurant;
+
+public interface WaiterRecensionDao extends Repository<Waiter, Long>{
+
+	
+}

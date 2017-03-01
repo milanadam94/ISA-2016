@@ -1,0 +1,10 @@
+package com.sms.dao;
+
+import org.springframework.data.repository.Repository;
+
+import com.sms.beans.Waiter;
+
+public interface WaiterRecensionDao extends Repository<Waiter, Long>{
+
+	
+}

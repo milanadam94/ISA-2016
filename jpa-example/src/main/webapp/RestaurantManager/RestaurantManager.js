@@ -23,7 +23,7 @@ var restManager = angular.module('restManager', []).config(['$qProvider', '$http
 
 
 restManager.controller('restManagerController', [ '$scope', 'konfService', 'drinkService', 'restaurantInfoService', 'foodService','canvasService', function($scope, konfService, drinkService, restaurantInfoService, foodService, canvasService ){
-
+	toastr.options.timeOut = 2000;
 	$scope.newFood = {
 			name: "",
 			description: "",
@@ -37,11 +37,48 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	}
 	
 	
+	
+	findUser = function(){
+		restaurantInfoService.findRestaurantManager().then(
+				function(response){
+					$scope.user = response.data;
+					
+				}
+				
+		);
+	}
+	
+	findUser();
+	
 	setShows = function(profilShow, picaShow, jelovnikShow, konfiguracijaShow){
 		$scope.profilShow = profilShow;
+		if(profilShow){
+			$scope.restoranActive = "active";
+		}else{
+			$scope.restoranActive = "";
+		}
 		$scope.picaShow = picaShow;
+		
+		if(picaShow){
+			$scope.kartaPicaActive = "active";
+		}else{
+			$scope.kartaPicaActive = "";
+		}
+		
 		$scope.jelovnikShow = jelovnikShow;
+		if(jelovnikShow){
+			$scope.jelovnikActive = "active";
+		}else{
+			$scope.jelovnikActive = "";
+		}
+		
 		$scope.konfiguracijaShow = konfiguracijaShow;
+		if(konfiguracijaShow){
+			$scope.konfiguracijaActive = "active";
+		}else{
+			$scope.konfiguracijaActive = "";
+		}
+		
 	}
 	setShows(false,false,false,false);
 	
@@ -53,7 +90,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 				$scope.restaurant = response.data;
 				
 				if(response.data.name == null){
-					alert("Restoran nije pronadjen!");
+					toastr.error("Restoran nije pronadjen!");
 				}
 			}
 	);
@@ -63,13 +100,14 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 			if($scope.restaurant.name != null){
 				setShows(true, false, false, false);
 			}else{
-				alert("Restoran nije pronadjen!");
+				toastr.error("Restoran nije pronadjen!");
 			}
 			
 	}
 	
 
 	$scope.getFoods = function(){
+
 		restaurantInfoService.getMenu($scope.user, $scope.restaurant).then(
 				function(response){
 
@@ -77,7 +115,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 						setShows(false, false, true, false);
 						$scope.menu = response.data;
 					}else{
-						alert("Meni nije pronadjen!");
+						toastr.error("Meni nije pronadjen!");
 					}	
 					
 				}
@@ -96,7 +134,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 		})
 		
 		if(selectedFood.name == "" || selectedFood.price < 0 || $scope.restaurant == null){
-			alert("Ime ne sme biti prazno. Cena ne sme biti manja od 0");
+			toastr.info("Ime ne sme biti prazno. Cena ne sme biti manja od 0");
 			return;
 		}
 		
@@ -108,7 +146,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	$scope.addFood = function(){
 		
 		if($scope.newFood.name == "" || $scope.newFood.price < 0 || $scope.restaurant == null){
-			alert("Ime ne sme biti prazno i cena ne sme biti manja od 0!");
+			toastr.info("Ime ne sme biti prazno i cena ne sme biti manja od 0!");
 			return;
 		}
 		
@@ -120,7 +158,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 						$scope.menu = response.data;
 						location.reload();
 					}else{
-						alert("Meni nije pronadjen!");
+						toastr.error("Meni nije pronadjen!");
 					}	
 								
 				}
@@ -140,7 +178,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 					$scope.menu = response.data;
 					location.reload();
 				}else{
-					alert("Meni nije pronadjen!");
+					toastr.error("Meni nije pronadjen!");
 				}	
 							
 			}
@@ -159,7 +197,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 						setShows(false, true, false, false);
 						$scope.menu = response.data;
 					}else{
-						alert("Meni nije pronadjen!");
+						toastr.error("Meni nije pronadjen!");
 					}	
 					
 				}
@@ -171,7 +209,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	$scope.addDrink = function(){
 		
 		if($scope.newDrink.name == "" || $scope.newDrink.price < 0 || $scope.restaurant == null){
-			alert("Ime ne sme biti prazno i cena ne sme biti manja od 0!");
+			toastr.info("Ime ne sme biti prazno i cena ne sme biti manja od 0!");
 			return;
 		}
 		
@@ -183,7 +221,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 						$scope.menu = response.data;
 						location.reload();
 					}else{
-						alert("Meni nije pronadjen!");
+						toastr.error("Meni nije pronadjen!");
 					}	
 								
 				}
@@ -201,7 +239,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 		})
 		
 		if(selectedDrink.name == "" || selectedDrink.price < 0 || $scope.restaurant == null){
-			alert("Ime ne sme biti prazno. Cena ne sme biti manja od 0");
+			toastr.info("Ime ne sme biti prazno. Cena ne sme biti manja od 0");
 			return;
 		}
 		
@@ -218,7 +256,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 					$scope.menu = response.data;
 					location.reload();
 				}else{
-					alert("Meni nije pronadjen!");
+					toastr.error("Meni nije pronadjen!");
 				}	
 							
 			}
@@ -251,13 +289,17 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 	$scope.addKonfig = function(){
 		
 		if($scope.newSegment.name == "" || $scope.restaurant == null){
-			alert("Neispravan unos ili restoran nije pronadjen")
+			toastr.info("Neispravan unos ili restoran nije pronadjen")
 			return;
 		}
 		
 		konfService.addSegment($scope.newSegment, $scope.restaurant.id).then(
 				function(response){
-					alert(response.data);
+					if(response.data == "Error free"){
+						toastr.success(response.data);
+					}else{
+						toastr.info(response.data);
+					}
 					
 					location.reload();
 				}
@@ -304,7 +346,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 		}else if ($scope.konfiguracijaShow){
 			
 		}else {
-			alert("Error! Nothing selected.");
+			toastr.error("Error! Nothing selected.");
 		}
 		
 	}
@@ -398,19 +440,23 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 		
 		if($scope.newTable.seatCount < 0 || $scope.newTable.seatCount > 20 ||
 				$scope.newTable.tag == "" || $scope.myNewSegment == ""){
-			alert("Los unos!");
+			toastr.info("Los unos!");
 			return;			
 		}
 		
 		if($scope.newTable.tag.length > 2){
-			alert("Oznaka moze imati maksimalno 2 karaktera!");
+			toastr.info("Oznaka moze imati maksimalno 2 karaktera!");
 			return;
 		}
 		
 		
 		canvasService.addTable($scope.newTable, $scope.myNewSegment).then(
 				function(response){
-					alert(response.data);
+					if(response.data == "Error free"){
+						toastr.success(response.data);
+					}else{
+						toastr.info(response.data);
+					}
 					location.reload();
 				}
 		);
@@ -428,7 +474,7 @@ restManager.controller('restManagerController', [ '$scope', 'konfService', 'drin
 		});
 		
 		if(!flag){
-			alert("Niste selektovali sto");
+			toastr.info("Niste selektovali sto");
 			return;
 		}
 		
@@ -463,16 +509,23 @@ restManager.service('restaurantInfoService',['$window', '$http', function($windo
 		return $http.get("../restManager/myRestaurant/1"); // ================================= OVDE NAMESTITI EMAIL USERA
 	}
 	
+	this.findRestaurantManager = function(){
+		return $http({
+			  method: 'GET',
+		      url : "../restManager/getUser/1" //========================================== dodati user Email
+		});
+	}
+	
 	this.saveChanges = function(restaurant, user){
 		
 		$http({
 			  method: 'POST',
-			  data : $.param(restaurant),
+			  data : restaurant,
 		      url : "../restManager/saveRestaurantInfo/1" // =================================== OVDE NAMESTITI EMAIL USERA
 		}).then(function success(response) {
-					alert("Success!");
+					toastr.success("Uspesna promena!");
 			  }, function error(response) {
-				  	alert("Error!");
+				    toastr.error("Error!");
 			  }
 			);
 	};
@@ -480,7 +533,7 @@ restManager.service('restaurantInfoService',['$window', '$http', function($windo
 	this.getMenu = function (user, restaurant){
 		return $http({
 			method: 'POST',
-			data : $.param(restaurant),
+			data : restaurant,
 			url: "../restManager/getMenu/1"  // ==================== user.mail
 		});
 	}
@@ -493,12 +546,12 @@ restManager.service('foodService',['$window', '$http', function($window, $http){
 	this.saveChanges = function (food, menu){
 		$http({
 			method: 'POST',
-			data: $.param(food),
+			data: food,
 			url: "../restManager/changeFood/" + menu.id
 		}).then(function success() {
-			alert("Uspesno promenjeno!");
+				toastr.success("Uspesno promenjeno!");
 		  }, function error() {
-			  	alert("Error!");
+			  	toastr.error("Error!");
 		  }
 		  
 		);	
@@ -507,7 +560,7 @@ restManager.service('foodService',['$window', '$http', function($window, $http){
 	this.addFood = function (newFood, menu){
 		$http({
 			method: 'POST',
-			data: $.param(newFood),
+			data: newFood,
 			url: "../restManager/addFood/"+menu.id
 		});
 		
@@ -527,12 +580,12 @@ restManager.service('drinkService', ['$window', '$http', function($window, $http
 	this.saveChanges = function (drink, menu){
 		$http({
 			method: 'POST',
-			data: $.param(drink),
+			data: drink,
 			url: "../restManager/changeDrink/" + menu.id
 		}).then(function success() {
-			alert("Uspesno promenjeno!");
+				toastr.success("Uspesno promenjeno!");
 		  }, function error() {
-			  	alert("Error!");
+			  	toastr.error("Error!");
 		  }
 		  
 		);		
@@ -548,7 +601,7 @@ restManager.service('drinkService', ['$window', '$http', function($window, $http
 	this.addDrink = function (newDrink, menu){
 		$http({
 			method: 'POST',
-			data: $.param(newDrink),
+			data: newDrink,
 			url: "../restManager/addDrink/"+menu.id
 		});
 	}
@@ -601,7 +654,7 @@ restManager.service('canvasService', ['$window', '$http', function($window, $htt
 					location.reload();
 				},
 				function error(){
-					alert("Error!");
+					toastr.error("Error!");
 				}
 		);
 	}

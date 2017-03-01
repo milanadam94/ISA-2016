@@ -1,0 +1,42 @@
+/***********************************************************************
+ * Module:  RestaurantRecension.java
+ * Author:  Sasa
+ * Purpose: Defines the Class RestaurantRecension
+ ***********************************************************************/
+package com.sms.beans;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Restaurant_Recension")
+public class RestaurantRecension implements Serializable{
+ 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4345097491577479123L;
+	
+	
+	private int grade;
+
+	public RestaurantRecension() {
+		super();
+	}
+
+	public RestaurantRecension(int grade) {
+		super();
+		this.grade = grade;
+	}
+
+	public int getGrade() {
+		return grade;
+	}
+
+	public void setGrade(int grade) {
+		this.grade = grade;
+	}
+	
+}

@@ -141,6 +141,29 @@
 				<button type="submit" class="btn btn-primary pull-left" ng-click="novaLozinka()">Izmeni</button>
 			</div>
 		</div>
+		
+		<div ng-show="viewOrders">
+			<div class="row">
+				<div class="col-md-8">
+				<label><font color="blue" size="3">Pice za pripremu:</font></label>
+				<table class="table table-bordered table-striped">
+				    <thead>
+				      <tr>
+				        <th>Redni broj<th>Pice</th><th>Koliko</th><th>Spremi</th>
+				      </tr>
+				     </thead>
+				     <tbody>
+				     	<tr ng-repeat="drinkOrder in drinkOrders">
+				     		<td> {{ drinkOrder.id }} </td>
+				     		<td> {{ drinkOrder.drink.name }} </td>
+				     		<td> {{ drinkOrder.quantity }} </td>
+				     		<td><button type="submit" class="btn btn-success" ng-click="spremiPice(drinkOrder)">Spremi</button></td>
+				     	</tr>
+				     </tbody>
+				</table>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Menadzer Restorana</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
+<!-- TOASTR -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
+<style>
+.canvas {
+	border : 2px solid;
+	width: 500px;
+	height: 250px;
+}
+</style>
+</head>
+<body ng-app="restManager" ng-controller="restManagerController">
+	<nav id="myNavbar" class="navbar">
+		<ul class="nav navbar-nav">
+			<li><a href="RestaurantManager.html" ng-click="getRestaurant()">Moj Restoran</a></li>
+			<li><a href="RestaurantManagerWorkers.html">Radnici</a></li>
+			<li><a href="RestaurantManagerOfferers.html">Ponude</a></li>
+		</ul>
+	</nav>
+	<div>
+		<div class="form-group">
+			<ul class="nav nav-tabs">
+				<li><a ng-click="getRestaurant()">Profil Restorana</a>
+				<li><a ng-click="getFoods()">Jelovnik</a>
+				<li><a ng-click="getDrinks()">Karta Pica</a>
+				<li><a ng-click="konfig()">Konfiguracija Sedenja</a>
+			</ul>
+		</div>
+		<div id="profilDiv" ng-show="profilShow">
+		<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2" >Naziv Restorana: </label><div class="col-sm-5"><input type = "text" class="form-control" id="restaurantName" ng-model="restaurant.name" value="restaurant.name" placeholder="Izmenite ime restorana"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Vrsta: </label><div class="col-sm-5"><input type = "text" class="form-control" id="restaurantDescription" ng-model="restaurant.description" value="restaurant.description" placeholder="Izmenite opis restorana"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Kategorija: </label>
+					 <div class="col-sm-5">
+						<select class="form-control" id="kategorija" ng-model="restaurant.category" title="restaurant.category">
+						<option>domaca kuhinja</option>
+						<option>italijanski</option>
+						<option>kineski</option>
+						<option>francuski</option>
+						<option>vegan</option>
+						</select>
+					</div>
+			</div> <br/>
+			
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="saveRestaurantInfo()">Sacuvaj Izmene</button></div>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2" id="errorLabel" ng-show="error" >{{errorMessage}}</label>
+			</div>
+			
+		</form>
+		</div>
+		
+		
+		
+		
+		<div id="jelovnikDiv" ng-show="jelovnikShow" >
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Opis</th>
+					<th>Cena</th>
+					<th>Obrisi</th>
+					<th>Promeni</th>
+				</tr>
+				<tr ng-repeat="i in menu.foods | orderBy:'name'">
+					<td><input type="text" class="form-control" ng-model="i.name"  placeholder="Promenite ime jela" > </td>
+				 	<td><input type = "text" class="form-control" ng-model="i.description" placeholder="Promenite opis jela" value="{{ i.description }}"> </td>
+					<td> <input type = "number" class="form-control" ng-model="i.price" placeholder="Promenite cenu jela" value="{{ i.price }} "></td>
+					<td> <button type="submit" id="{{ i.id }}"  class="btn btn-danger" ng-click="deleteFood( i.id )" >Obrisi</button></td>
+					<td> <button type="submit" id="{{ i.id }}"  class="btn btn-warning" ng-click="changeFood( i.id )" >Promeni</button></td>
+				
+				</tr>
+			</table>
+			<br/><br/>
+			<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Ime: </label><div class="col-sm-5"><input type = "text" class="form-control" id="imeNovogJela" ng-model="newFood.name" placeholder="Unesite ime jela"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Opis: </label><div class="col-sm-5"><input type = "text" class="form-control" id="opisNovogJela" ng-model="newFood.description"  placeholder="Unesite opis jela"></div> <br/> 
+			</div>
+			
+			
+			<div class="form-group">
+			<label  class="control-label col-sm-2">Cena: </label><div class="col-sm-5"><input type = "number" min=0 class="form-control" id="cenaNovogJela" ng-model="newFood.price"  placeholder="Unesite cenu jela"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="addFood()" >Dodaj Jelo</button></div>
+			</div>
+			
+			</form>
+		</div>
+		<div id="picaDiv" ng-show="picaShow">
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Opis</th>
+					<th>Cena</th>
+					<th>Obrisi</th>
+					<th>Promeni</th>
+				</tr>
+				<tr ng-repeat="i in menu.drinks | orderBy:'name'">
+					<td><input type="text" class="form-control" ng-model="i.name"  placeholder="Promenite ime pica" > </td>
+				 	<td><input type = "text" class="form-control" ng-model="i.description" placeholder="Promenite opis pica" value="{{ i.description }}"> </td>
+					<td> <input type = "number" class="form-control" ng-model="i.price" placeholder="Promenite cenu pica" value="{{ i.price }} "></td>
+					<td> <button type="submit" id="{{ i.id }}"  class="btn btn-danger" ng-click="deleteDrink( i.id )" >Obrisi</button></td>
+					<td> <button type="submit" id="{{ i.id }}"  class="btn btn-warning" ng-click="changeDrink( i.id )" >Promeni</button></td>
+				
+				</tr>
+			</table>
+			<br/><br/>
+			<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Ime: </label> <div class="col-sm-5"><input type = "text" class="form-control" id="imeNovogPica" ng-model="newDrink.name" placeholder="Unesite ime pica"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Opis:</label> <div class="col-sm-5"><input type = "text" class="form-control" id="opisNovogPica" ng-model="newDrink.description"  placeholder="Unesite opis pica"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label  class="control-label col-sm-2">Cena: </label><div class="col-sm-5"><input type = "number" class="form-control" min=0 class="form-control" id="cenaNovogPica" ng-model="newDtrink.price"  placeholder="Unesite cenu pica"></div> <br/> 
+			</div>
+			
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="addDrink()" >Dodaj Pice</button></div>
+			</div>
+			
+			</form>
+		</div>
+		
+		
+		<!--  DODAVANJE SEGMENTA -->
+		
+		<div id="konfiguracijaDiv" ng-show="konfiguracijaShow">
+			
+			<form class="form-horizontal">
+			<div class="form-group">
+			<label class="control-label col-sm-2" >Naziv Segmenta: </label> <div class="col-sm-5">  <input type="text" class="form-control" ng-model="newSegment.name" palceholder="Unesite naziv segmenta"> </input></div><br/>
+			</div>
+			<div class="form-group">
+			<label class="control-label col-sm-2">Dozvoljeno Pusenje: </label><div class="col-sm-2"><input type="checkbox" class="form-control" ng-model="newSegment.smoking"></input> </div><br/><br/>
+			</div>
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="addKonfig()">Dodaj Segment</button></div>
+			</div>
+			
+			</form>
+			
+			
+			<br/><br/>
+			
+			<!-- CANVASSS ============ -->
+					
+				
+		<canvas id="canvas" class="canvas" ng-click="draw($event)">
+			Vas browser ne podrzava graficki prikaz!
+		</canvas>
+					 	
+		<br/><br/>
+		<div ng-show="newTableShow">
+			
+			<form class="form-horizontal">
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Oznaka: </label> <div class="col-sm-5"><input type = "text" class="form-control" ng-model="newTable.tag" placeholder="Unesite oznaku stola"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label class="control-label col-sm-2">Opis:</label> <div class="col-sm-5"><input type = "text" class="form-control" ng-model="newTable.description"  placeholder="Unesite opis stola"></div> <br/>
+			</div>
+			
+			<div class="form-group">
+			<label  class="control-label col-sm-2">Broj Mesta: </label><div class="col-sm-5"><input type = "number" class="form-control" min=0 max="20" class="form-control" id="cenaNovogPica" ng-model="newTabel.seatCount"  placeholder="Unesite broj mesta"></div> <br/> 
+			</div>
+			
+			<label  class="control-label col-sm-2" >Region:</label>
+					<div class="col-sm-5">
+					<select class="form-group" ng-model="myNewSegment">
+						<option ng-repeat="i in segments" value="{{i.id}}">{{i.name}}</option>
+					</select>
+					</div>
+			
+			<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="addTable()" >Dodaj Sto</button></div>
+			</div>
+				
+			</form>
+				
+			
+				
+			</div>
+			
+			
+		</div>
+		
+		<div ng-show="deleteTableButtonShow" class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-danger" ng-click="deleteTable()" >Ukloni Sto</button></div>
+		</div>
+		
+	</div>
+</body>
+
+
+<!-- ANGULAR SCRIPT -->
+<script src="RestaurantManager.js"></script>
+
+
+</html>

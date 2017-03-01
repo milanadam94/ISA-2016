@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Menadzer Restorana</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- BOOTSTRAP CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- BOOTSTRAP THEME -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- BOOTSTRAP JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- ANGULAR JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+
+<script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
+
+<!-- TOASTR -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
+
+</head>
+<body ng-app="restManager" ng-controller="restManagerWorkersController">
+	
+	<nav id="myNavbar" class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="RestaurantManagerWorkers.html" class="navbar-brand">SmS</a>
+			</div>
+		<ul class="nav navbar-nav">
+			<li><a href="RestaurantManager.html" ng-click="getRestaurant()"><span class="glyphicon glyphicon-home"> Restoran </span></a></li>
+			<li class="active"><a href="RestaurantManagerWorkers.html"><span class="glyphicon glyphicon-pawn"> Radnici</span></a></li>
+			<li><a href="RestaurantManagerOfferers.html"><span class="glyphicon glyphicon-inbox"> Ponude </span></a></li>
+			<li><a href="RestourantManagerReport.html"><span class="glyphicon glyphicon-list"> Izvestaji </span></a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="#"><span class="glyphicon glyphicon-user"> Profil</span> </a>
+			<li><a href="#"><span class="glyphicon glyphicon-log-out"> Izadji </span> </a>
+		</ul>
+		
+		</div>
+	</nav>
+	
+	
+	<div>
+	
+		<nav clas="navbar navbar-default">
+			<div class="container-fluid">
+			<div class="form-group">
+				<ul class="nav nav-tabs">
+					<li class={{registracijaActive}}><a ng-click="registracija()">Registrovanje Radnika</a>
+					<li class={{spisakActive}}><a ng-click="slisakRadnika()">Spisak Radnika</a>
+			</ul>
+			</div>
+			</div>
+		</nav>
+		
+		
+		<!--  REGISTRACIJA  -->
+		<!--  ====================================================== -->
+		<div ng-show="registrovanjeShow">
+			<br/><br/><br/>
+			<form class="form-horizontal">
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="email">Email:</label>
+    			<div class="col-sm-10">
+      				<input type="email" class="form-control" id="email" ng-model="newWorker.email" placeholder="Unesite email">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="pwd">Lozinka:</label>
+    			<div class="col-sm-10"> 
+      				<input type="password" class="form-control" id="pwd" ng-model="newWorker.password" placeholder="Unesite lozinku">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="pwd2">Potvrda lozinke:</label>
+    			<div class="col-sm-10"> 
+      				<input type="password" class="form-control" id="pwd2" ng-model="passwordConfirm" placeholder="Potvrdite lozinku">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="ime">Ime:</label>
+    			<div class="col-sm-10"> 
+      				<input type="text" class="form-control" id="ime" ng-model="newWorker.name" placeholder="Unesite ime">
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label class="control-label col-sm-2" for="prezime">Prezime:</label>
+    			<div class="col-sm-10"> 
+      				<input type="text" class="form-control" id="prezime" ng-model="newWorker.lastName" placeholder="Unesite prezime">
+    			</div>
+  			</div>
+  			<div class="form-group">
+  				<label class="control-label col-sm-2" for="tip">Radno mesto:</label>
+  				<div class="col-sm-10">
+						<select class="form-control" id="tip" ng-model="newWorker.userType" title="restaurant.category">
+						<option>BARTENDER</option>
+						<option>COOK</option>
+						<option>WAITER</option>
+						</select>
+				</div>
+  			</div>
+  			
+  			<div class="form-group" ng-if="newWorker.userType == 'COOK'">
+  				<label class="control-label col-sm-2" for="tip">Tip: </label>
+  				<div class="col-sm-10" >
+						<select class="form-control" id="tip" ng-model="$parent.cookType" >
+						<option>SALAD</option>
+						<option>FRIEDMEAL</option>
+						<option>COOKEDMEAL</option>
+						</select>
+				</div>
+  			</div>
+  			
+  			
+  			<div class="form-group text-danger" ng-if="error">{{ errorMessage }}</div>
+  			<div class="form-group"> 
+    			<div class="col-sm-offset-2 col-sm-10">
+      				<button type="submit" class="btn btn-primary" ng-click="registerWorker()">Registracija</button>
+    			</div>
+  			</div>
+  			</form>	
+		
+		</div>
+		
+		
+		<!--  SPISAK RADNIKA SHOW -->
+		<!--  =========================== -->
+		
+		<div ng-show="spisakRadnikaShow">
+			<p1>Kuvari:</p1><br/>
+			<div class="container">
+			<table class="table table-bordered">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Email</th>
+					<th>Raspored Rada</th>
+				</tr>
+				<tr ng-repeat="i in cooks | orderBy:'name'">
+					<td>{{i.user.name}}</td>
+				 	<td>{{i.user.lastName}}</td>
+					<td>{{i.user.email}}</td>
+					<td><button type="submit" class="btn btn-info" ng-click="checkSchedule( i.user.id )">Pregled</button></td>
+				</tr>
+			</table>
+			</div>
+		
+			<p1>Konobari:</p1><br/>
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Email</th>
+					<th>Raspored Rada</th>
+				</tr>
+				<tr ng-repeat="i in waiters | orderBy:'name'">
+					<td>{{i.user.name}}</td>
+				 	<td>{{i.user.lastName}}</td>
+					<td>{{i.user.email}}</td>
+					<td><button type="submit" class="btn btn-info" ng-click="checkSchedule( i.user.id )">Pregled</button></td>
+				</tr>
+			</table>
+			
+			<p1>Sankeri:</p1><br/>
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Ime</th>
+					<th>Prezime</th>
+					<th>Email</th>
+					<th>Raspored Rada</th>
+				</tr>
+				<tr ng-repeat="i in bartenders | orderBy:'name'">
+					<td>{{i.user.name}}</td>
+				 	<td>{{i.user.lastName}}</td>
+					<td>{{i.user.email}}</td>
+					<td><button type="submit" class="btn btn-info" ng-click="checkSchedule( i.user.id )">Pregled</button></td>
+				</tr>
+			</table>
+		</div>
+		
+		
+		<!--  PERIODICNI NIVO -->
+		<!--  ================================ -->
+		<div ng-show="pregledRaspored">
+			
+			<label>{{fullWorker.name}} {{fullWorker.lastName}} ({{fullWorker.email}}) </label>
+			<table class="table">
+				<tr bgcolor="lightgrey">
+					<th>Pocetak</th>
+					<th>Kraj</th>
+					<th>Smena</th>
+					<th ng-if="fullWorker.userType == 'WAITER'">Segment</th>
+					<th>Status</th>
+				</tr>
+				<tr ng-repeat="i in allMySegments | orderBy:'startDate' : true">
+				
+					<td> {{ i.startDate | date: 'yyyy/MM/dd' }} </td>
+				 	<td> {{ i.endDate | date: 'yyyy/MM/dd' }} </td>
+					<td> {{ i.shift }} </td>
+					<td ng-if="fullWorker.userType == 'WAITER'"> {{ $parent.i.segment.name }}</td>
+					<td ng-if="i.endDate < today"> <font color="red">ISTEKAO</font></td>
+					<td ng-if="i.endDate > today && i.startDate <= today"> <font color="green">U TOKU</font></td>
+					<td ng-if="i.endDate > today && i.startDate > today"> <font color="yellow">USKORO</font></td>
+				</tr>
+			</table>
+			
+			
+			
+			
+			<!--  DODAVANJE NOVOG  -->
+			
+			<form class="form-horizontal">
+				<div class="form-group">
+				<label class="control-label col-sm-2" >Pocetak: </label> <div class="col-sm-5"> <input type="date"  class="form-control" ng-model="newSchedule.startDate" > </input></div><br/><br/>
+				
+				<label class="control-label col-sm-2" >Kraj: </label> <div class="col-sm-5"><input type="date" class="form-control" ng-model="newSchedule.endDate"> </input>  </div><br/><br/>
+				
+				<label  class="control-label col-sm-2" >Smena:</label>
+					 <div class="col-sm-5">
+						<select class="form-control" ng-model="shiftType" >
+						<option>FIRST</option>
+						<option>SECOUND</option>
+						<option>THRID</option>
+						</select>
+					</div>
+				<br/><br/>
+				
+				
+				<div ng-if="fullWorker.userType == 'WAITER'">
+				<label  class="control-label col-sm-2" >Region:</label>
+					<div class="col-sm-5">
+					<select class="form-group" ng-model="$parent.newSegment">
+						<option ng-repeat="i in segments" value="{{i.id}}">{{i.name}}</option>
+					</select>
+					</div>
+				</div>
+				 <br/><br/>
+				<div class="form-group"> 
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-success" ng-click="addSchedule()">Dodaj Raspored</button>
+					</div>
+				</div>
+				</div>
+			</form>
+		
+		</div>
+		
+		
+		
+		
+	</div>
+	
+</body>
+
+
+<!-- ANGULAR SCRIPT -->
+<script src="RestaurantManagerWorkers.js"></script>
+
+</html>

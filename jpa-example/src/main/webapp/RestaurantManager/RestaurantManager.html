@@ -22,7 +22,9 @@
 <script src="/JQuery-cookie-plugin/jquery.cookie.js"></script>
 
 <!-- TOASTR -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"></script> -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></link>
+
 <style>
 .canvas {
 	border : 2px solid;
@@ -32,22 +34,42 @@
 </style>
 </head>
 <body ng-app="restManager" ng-controller="restManagerController">
-	<nav id="myNavbar" class="navbar">
+	
+	<nav id="myNavbar" class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="RestaurantManager.html" class="navbar-brand">SmS</a>
+			</div>
 		<ul class="nav navbar-nav">
-			<li><a href="RestaurantManager.html" ng-click="getRestaurant()">Moj Restoran</a></li>
-			<li><a href="RestaurantManagerWorkers.html">Radnici</a></li>
-			<li><a href="RestaurantManagerOfferers.html">Ponude</a></li>
+			<li class="active"><a href="RestaurantManager.html" ng-click="getRestaurant()"><span class="glyphicon glyphicon-home"> Restoran </span></a></li>
+			<li><a href="RestaurantManagerWorkers.html"><span class="glyphicon glyphicon-pawn"> Radnici</span></a></li>
+			<li><a href="RestaurantManagerOfferers.html"><span class="glyphicon glyphicon-inbox"> Ponude </span></a></li>
+			<li><a href="RestourantManagerReport.html"><span class="glyphicon glyphicon-list"> Izvestaji </span></a></li>
 		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="#"><span class="glyphicon glyphicon-user"> Profil</span> </a>
+			<li><a href="#"><span class="glyphicon glyphicon-log-out"> Izadji </span> </a>
+		</ul>
+		
+		</div>
 	</nav>
 	<div>
-		<div class="form-group">
-			<ul class="nav nav-tabs">
-				<li><a ng-click="getRestaurant()">Profil Restorana</a>
-				<li><a ng-click="getFoods()">Jelovnik</a>
-				<li><a ng-click="getDrinks()">Karta Pica</a>
-				<li><a ng-click="konfig()">Konfiguracija Sedenja</a>
-			</ul>
-		</div>
+	
+		<nav clas="navbar navbar-default">
+			<div class="container-fluid">
+			<div class="form-group">
+				<ul class="nav nav-tabs">
+					<li class="{{restoranActive}}"><a ng-click="getRestaurant()">Profil Restorana</a>
+					<li class="{{jelovnikActive}}"><a ng-click="getFoods()">Jelovnik</a>
+					<li class="{{kartaPicaActive}}"><a ng-click="getDrinks()">Karta Pica</a>
+					<li class="{{konfiguracijaActive}}"><a ng-click="konfig()">Konfiguracija Sedenja</a>
+				</ul>
+			</div>
+			</div>
+		</nav>
+		
+		
+		
 		<div id="profilDiv" ng-show="profilShow">
 		<form class="form-horizontal">
 			
@@ -87,7 +109,9 @@
 		
 		
 		<div id="jelovnikDiv" ng-show="jelovnikShow" >
-			<table class="table">
+			
+			<div class="container">
+			<table class="table table-bordered">
 				<tr bgcolor="lightgrey">
 					<th>Ime</th>
 					<th>Opis</th>
@@ -95,7 +119,7 @@
 					<th>Obrisi</th>
 					<th>Promeni</th>
 				</tr>
-				<tr ng-repeat="i in menu.foods | orderBy:'name'">
+				<tr ng-repeat="i in menu.foods">
 					<td><input type="text" class="form-control" ng-model="i.name"  placeholder="Promenite ime jela" > </td>
 				 	<td><input type = "text" class="form-control" ng-model="i.description" placeholder="Promenite opis jela" value="{{ i.description }}"> </td>
 					<td> <input type = "number" class="form-control" ng-model="i.price" placeholder="Promenite cenu jela" value="{{ i.price }} "></td>
@@ -104,6 +128,8 @@
 				
 				</tr>
 			</table>
+			</div>
+			
 			<br/><br/>
 			<form class="form-horizontal">
 			
@@ -127,7 +153,9 @@
 			</form>
 		</div>
 		<div id="picaDiv" ng-show="picaShow">
-			<table class="table">
+			
+			<div class="container">
+			<table class="table table-bordered">
 				<tr bgcolor="lightgrey">
 					<th>Ime</th>
 					<th>Opis</th>
@@ -135,7 +163,7 @@
 					<th>Obrisi</th>
 					<th>Promeni</th>
 				</tr>
-				<tr ng-repeat="i in menu.drinks | orderBy:'name'">
+				<tr ng-repeat="i in menu.drinks">
 					<td><input type="text" class="form-control" ng-model="i.name"  placeholder="Promenite ime pica" > </td>
 				 	<td><input type = "text" class="form-control" ng-model="i.description" placeholder="Promenite opis pica" value="{{ i.description }}"> </td>
 					<td> <input type = "number" class="form-control" ng-model="i.price" placeholder="Promenite cenu pica" value="{{ i.price }} "></td>
@@ -144,6 +172,7 @@
 				
 				</tr>
 			</table>
+			</div>
 			<br/><br/>
 			<form class="form-horizontal">
 			
@@ -213,15 +242,18 @@
 			
 			<label  class="control-label col-sm-2" >Region:</label>
 					<div class="col-sm-5">
-					<select class="form-group" ng-model="myNewSegment">
+					<select class="form-control" ng-model="myNewSegment">
 						<option ng-repeat="i in segments" value="{{i.id}}">{{i.name}}</option>
 					</select>
 					</div>
+			<br/><br/><br/><br/>
 			
 			<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" ng-click="addTable()" >Dodaj Sto</button></div>
+				<div class="col-sm-offset-2 col-sm-10">
+				<button type="submit" class="btn btn-success" ng-click="addTable()" >Dodaj Sto</button>
+				</div>
 			</div>
-				
+			
 			</form>
 				
 			
